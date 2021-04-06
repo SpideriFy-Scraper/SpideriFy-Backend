@@ -24,6 +24,9 @@ media
 # C extensions
 *.so
 
+#VSCode
+.vscode/
+
 # Distribution / packaging
 .Python
 build/
