@@ -1,9 +1,14 @@
 import httpx
 import asyncio
 from selectorlib import Extractor
+import json
+import csv
 
 
 class AmScrapper:
+    extracted_data = None
+    normalized_data = None
+    review_counter = 0
     extractor_obj = Extractor.from_yaml_file('selectors.yml')
     headers = {
         'authority': 'www.amazon.com',
@@ -34,9 +39,49 @@ class AmScrapper:
         return response
 
     def extractor(self):
-        data = self.requester()
-        if data != None:
-            extracted_data = self.extractor_obj.extract(self.requester().text)
 
-    def scaper(self):
-        pass
+        data = self.requester()
+        if data == None:
+            return None
+        # log extracing data...
+        self.extracted_data = self.extractor_obj.extract(self.requester().text)
+        self.normalized_data = {
+            "product_title": self.extracted_data["product_title"]}
+        self.normalized_data["URL"] = self.url
+        # log normalizing Data
+        for reviews in self.extracted_data["reviews"]:
+            self.review_counter += 1
+            self.normalized_data["review #{}".format(
+                self.review_counter)] = reviews["content"]
+        self.normalized_data["review_counts"] = self.review_counter
+        return True
+
+    def scaper(self, export_type=json):
+        # log scrapper has started
+        result = self.extractor()
+        if result:
+            return self.export_type()
+        else:
+            return None
+
+    def json(self):
+        # log dumping json
+        return json.dumps(self.normalized_data)
+
+    def csv_file(self):
+        # log exporting csv file
+        with open("\\fixtures\\Scraped-data.csv", 'w', newline='') as writfile:
+            csvwriter = csv.writer(writfile, delimiter=',')
+            for reviews in self.normalized_data.items():
+                csvwriter.writerow([reviews[0], reviews[1]])
+        return "\\fixtures\\Scraped-data.csv"
+
+    def dict(self):
+        # log exporting dictionary obj
+        return self.normalized_data
+
+    def json_file(self):
+        # log exporting json file
+        with open("\\fixtures\\Scraped-data.json", 'w') as writfile:
+            json.dump(self.normalized_data, writfile)
+        return "\\fixtures\\Scraped-data.json"
