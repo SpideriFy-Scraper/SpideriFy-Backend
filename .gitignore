@@ -82,7 +82,8 @@ instance/
 
 # Scrapy stuff:
 .scrapy
-
+#userspecialfiles:
+userspec*
 # Sphinx documentation
 docs/_build/
 doc/_build/
