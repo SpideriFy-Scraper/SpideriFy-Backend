@@ -6,10 +6,11 @@ import csv
 
 
 class AmScrapper:
+    export_type = {"json": 'json', "dict": 'dict', "csv_file": 'csv_file'}
     extracted_data = None
     normalized_data = None
     review_counter = 0
-    extractor_obj = Extractor.from_yaml_file('selectors.yml')
+    extractor_obj = Extractor.from_yaml_file('.\crawler\selectors.yml')
     headers = {
         'authority': 'www.amazon.com',
         'pragma': 'no-cache',
@@ -33,18 +34,22 @@ class AmScrapper:
         # log : Downloading page
         async with httpx.AsyncClient() as requester:
             response = await requester.get(self.url, params=self.headers)
-        if response.status_code >= 500:
-            # log Page was blocked by Amazon. Please try using better proxies
+        if response.status_code != httpx.codes.OK:
+            # log failed to download the page
+            if response.status_code >= 500:
+                pass
+                # log Page was blocked by Amazon. Please try using better proxies
             return None
+
         return response
 
     def extractor(self):
 
-        data = self.requester()
+        data = asyncio.run(self.requester())
         if data == None:
             return None
         # log extracing data...
-        self.extracted_data = self.extractor_obj.extract(self.requester().text)
+        self.extracted_data = self.extractor_obj.extract(data.text)
         self.normalized_data = {
             "product_title": self.extracted_data["product_title"]}
         self.normalized_data["URL"] = self.url
@@ -56,11 +61,11 @@ class AmScrapper:
         self.normalized_data["review_counts"] = self.review_counter
         return True
 
-    def scaper(self, export_type=json):
+    def scrap(self, export_type='json'):
         # log scrapper has started
         result = self.extractor()
         if result:
-            return self.export_type()
+            return getattr(self, export_type)()
         else:
             return None
 
@@ -85,3 +90,9 @@ class AmScrapper:
         with open("\\fixtures\\Scraped-data.json", 'w') as writfile:
             json.dump(self.normalized_data, writfile)
         return "\\fixtures\\Scraped-data.json"
+
+
+if __name__ == '__main__':
+    testScraper = AmScrapper(
+        url="https://www.amazon.com/HP-Business-Dual-core-Bluetooth-Legendary/product-reviews/B07VMDCLXV/ref=cm_cr_dp_d_show_all_btm?ie=UTF8&reviewerType=all_reviews", headers=None)
+    print(testScraper.scrap('dict'))
