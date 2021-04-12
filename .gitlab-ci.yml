@@ -3,6 +3,7 @@ build-job:
   script:
     - echo "Hello, $GITLAB_USER_LOGIN!"
     - git clone "https://gitlab.homayoonsadeghi.com/spiderify/spiderify-backend.git"
+    - cd spiderify-backend
     - git switch develope
 
 
@@ -17,4 +18,4 @@ deploy-prod:
   stage: deploy
   script:
     - echo "This job deploys something from the $CI_COMMIT_BRANCH branch."
-    - python3 .\spiderify-backend\crawler\AmScrapper.py
+    - python3 .\crawler\AmScrapper.py
