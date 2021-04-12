@@ -1,4 +1,5 @@
 build-job:
+  tags: testing
   stage: build
   script:
     - echo "Hello, $GITLAB_USER_LOGIN!"
@@ -9,6 +10,7 @@ build-job:
 
 test-job1:
   stage: test
+  tags: testing
   script:
     - echo "This job tests something"
 
@@ -16,6 +18,7 @@ test-job1:
 
 deploy-prod:
   stage: deploy
+  tags: testing
   script:
     - echo "This job deploys something from the $CI_COMMIT_BRANCH branch."
     - python3 .\crawler\AmScrapper.py
