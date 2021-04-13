@@ -25,6 +25,7 @@ deploy-prod:
     - testing
   script:
     - pwd
+    - git checkout develope
     - echo "This job deploys something from the $CI_COMMIT_BRANCH branch."
     - ls
     - python3 .\crawler\AmScrapper.py
