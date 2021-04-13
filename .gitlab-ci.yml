@@ -24,5 +24,7 @@ deploy-prod:
   tags: 
     - testing
   script:
+    - pwd
     - echo "This job deploys something from the $CI_COMMIT_BRANCH branch."
+    - cd spiderify-backend
     - python3 .\crawler\AmScrapper.py
