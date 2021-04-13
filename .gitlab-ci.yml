@@ -28,4 +28,5 @@ deploy-prod:
     - pwd
     - echo "This job deploys something from the $CI_COMMIT_BRANCH branch."
     - ls
+    - source env/bin/activate
     - python3 crawler/AmScrapper.py
