@@ -10,7 +10,7 @@ class AmScrapper:
     extracted_data = None
     normalized_data = None
     review_counter = 0
-    extractor_obj = Extractor.from_yaml_file('.\crawler\selectors.yml')
+    extractor_obj = Extractor.from_yaml_file('crawler/selectors.yml')
     headers = {
         'authority': 'www.amazon.com',
         'pragma': 'no-cache',
@@ -75,11 +75,11 @@ class AmScrapper:
 
     def csv_file(self):
         # log exporting csv file
-        with open("\\fixtures\\Scraped-data.csv", 'w', newline='') as writfile:
+        with open("/fixtures/Scraped-data.csv", 'w', newline='') as writfile:
             csvwriter = csv.writer(writfile, delimiter=',')
             for reviews in self.normalized_data.items():
                 csvwriter.writerow([reviews[0], reviews[1]])
-        return "\\fixtures\\Scraped-data.csv"
+        return "/fixtures/Scraped-data.csv"
 
     def dict(self):
         # log exporting dictionary obj
@@ -87,9 +87,9 @@ class AmScrapper:
 
     def json_file(self):
         # log exporting json file
-        with open("\\fixtures\\Scraped-data.json", 'w') as writfile:
+        with open("/fixtures/Scraped-data.json", 'w') as writfile:
             json.dump(self.normalized_data, writfile)
-        return "\\fixtures\\Scraped-data.json"
+        return "/fixtures/Scraped-data.json"
 
 
 if __name__ == '__main__':
