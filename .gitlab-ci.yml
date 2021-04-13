@@ -4,7 +4,7 @@ build-job:
   stage: build
   script:
     - echo "Hello, $GITLAB_USER_LOGIN!"
-    - git clone "https://gitlab.homayoonsadeghi.com/spiderify/spiderify-backend.git"
+    - git clone "https://Farid:farid1244@gitlab.homayoonsadeghi.com/spiderify/spiderify-backend.git"
     - cd spiderify-backend
     - git switch develope
 
