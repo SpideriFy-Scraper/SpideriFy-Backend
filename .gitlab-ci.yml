@@ -1,5 +1,5 @@
 build-job:
-  tags: 
+  tags:
     - testing
   stage: build
   script:
@@ -7,21 +7,20 @@ build-job:
     - pwd
     - git clone --branch develope "https://Farid:farid1244@gitlab.homayoonsadeghi.com/spiderify/spiderify-backend.git"
     - cd spiderify-backend
-    
-
+    - apt-get install python3.8-env
+    - python3 -m venv env
+    - poetry install
 
 test-job1:
   stage: test
-  tags: 
+  tags:
     - testing
   script:
     - echo "This job tests something"
 
-
-
 deploy-prod:
   stage: deploy
-  tags: 
+  tags:
     - testing
   only:
     - develope
@@ -29,6 +28,4 @@ deploy-prod:
     - pwd
     - echo "This job deploys something from the $CI_COMMIT_BRANCH branch."
     - ls
-    - poetry install
-    - cd crawler/
-    - python3 AmScrapper.py
+    - python3 crawler/AmScrapper.py
