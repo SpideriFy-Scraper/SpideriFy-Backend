@@ -8,9 +8,11 @@ build-job:
     - git clone --branch develope "https://Farid:farid1244@gitlab.homayoonsadeghi.com/spiderify/spiderify-backend.git"
     - cd spiderify-backend
     # - apt-get install python3.8-env
-    - python3 -m venv env
-    - source env/bin/activate
+    - curl -sSL https://raw.githubusercontent.com/python-poetry/poetry/master/get-poetry.py | python
+    - export PATH="$PATH:$HOME/.poetry/bin/"
+    - source $HOME/.poetry/env
     - poetry install
+    - source `poetry env info --path`/bin/activate
 
 test-job1:
   stage: test
