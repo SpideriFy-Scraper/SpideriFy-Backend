@@ -8,6 +8,7 @@ build-job:
     - git clone --branch develope "https://Farid:farid1244@gitlab.homayoonsadeghi.com/spiderify/spiderify-backend.git"
     - cd spiderify-backend
     - python3 -m venv env
+    - ls
     - poetry install
     - source env/bin/activate
   artifacts:
