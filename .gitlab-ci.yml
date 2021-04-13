@@ -1,0 +1,34 @@
+build-job:
+  tags: 
+    - testing
+  stage: build
+  script:
+    - echo "Hello, $GITLAB_USER_LOGIN!"
+    - pwd
+    - git clone --branch develope "https://Farid:farid1244@gitlab.homayoonsadeghi.com/spiderify/spiderify-backend.git"
+    - cd spiderify-backend
+    
+
+
+test-job1:
+  stage: test
+  tags: 
+    - testing
+  script:
+    - echo "This job tests something"
+
+
+
+deploy-prod:
+  stage: deploy
+  tags: 
+    - testing
+  only:
+    - develope
+  script:
+    - pwd
+    - echo "This job deploys something from the $CI_COMMIT_BRANCH branch."
+    - ls
+    - poetry install
+    - cd crawler/
+    - python3 AmScrapper.py
