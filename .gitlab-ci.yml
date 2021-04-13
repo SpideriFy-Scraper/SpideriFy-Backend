@@ -29,4 +29,6 @@ deploy-prod:
     - pwd
     - echo "This job deploys something from the $CI_COMMIT_BRANCH branch."
     - ls
-    - python3 .\crawler\AmScrapper.py
+    - poetry install
+    - cd crawler/
+    - python3 AmScrapper.py
