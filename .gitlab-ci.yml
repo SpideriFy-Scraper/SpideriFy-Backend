@@ -7,7 +7,7 @@ build-job:
     - pwd
     - git clone --branch develope "https://Farid:farid1244@gitlab.homayoonsadeghi.com/spiderify/spiderify-backend.git"
     - cd spiderify-backend
-    - apt-get install python3.8-env
+    # - apt-get install python3.8-env
     - python3 -m venv env
     - poetry install
 
