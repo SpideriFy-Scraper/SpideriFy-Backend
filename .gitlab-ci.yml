@@ -9,6 +9,7 @@ build-job:
     - cd spiderify-backend
     - python3 -m venv env
     - poetry install
+    - source env/bin/activate
   artifacts:
     paths:
       - env/
