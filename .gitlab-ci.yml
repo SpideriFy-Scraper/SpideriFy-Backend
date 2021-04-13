@@ -23,6 +23,8 @@ deploy-prod:
   stage: deploy
   tags: 
     - testing
+  only:
+    - develope
   script:
     - pwd
     - echo "This job deploys something from the $CI_COMMIT_BRANCH branch."
