@@ -7,12 +7,12 @@ build-job:
     - pwd
     - git clone --branch develope "https://Farid:farid1244@gitlab.homayoonsadeghi.com/spiderify/spiderify-backend.git"
     - cd spiderify-backend
-    # - apt-get install python3.8-env
-    - curl -sSL https://raw.githubusercontent.com/python-poetry/poetry/master/get-poetry.py | python
-    - export PATH="$PATH:$HOME/.poetry/bin/"
-    - source $HOME/.poetry/env
+    - python3 -m venv env
     - poetry install
-    - source `poetry env info --path`/bin/activate
+  artifacts:
+    paths:
+      - env/
+    # - apt-get install python3.8-env
 
 test-job1:
   stage: test
@@ -20,6 +20,9 @@ test-job1:
     - testing
   script:
     - echo "This job tests something"
+  artifacts:
+    paths:
+      - env/
 
 deploy-prod:
   stage: deploy
@@ -31,5 +34,4 @@ deploy-prod:
     - pwd
     - echo "This job deploys something from the $CI_COMMIT_BRANCH branch."
     - ls
-
     - python3 crawler/AmScrapper.py
