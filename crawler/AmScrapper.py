@@ -75,11 +75,11 @@ class AmScrapper:
         self.extracted_data = self.extractor_obj.extract(data.text)
         self.normalized_data = {
             "product_title": self.extracted_data["product_title"]}
-        self.normalized_data["URL"] = self.url
+        self.normalized_data["Normalized_URL"] = self.url
         # log normalizing Data
         for reviews in self.extracted_data["reviews"]:
             self.review_counter += 1
-            self.normalized_data["review #{}".format(
+            self.normalized_data["review_#{}".format(
                 self.review_counter)] = reviews["content"]
         self.normalized_data["review_counts"] = self.review_counter
         return True
