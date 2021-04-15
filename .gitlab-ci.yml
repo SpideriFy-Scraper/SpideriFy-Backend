@@ -1,12 +1,9 @@
-dafault:
-  tags:
-    - testing
-  before_script:
-    - python3 -m venv ../env
-    - ls ../
-    - source ../env/bin/activate
-    - poetry config virtualenvs.create false
-    - poetry install
+before_script:
+  - python3 -m venv ../env
+  - ls ../
+  - source ../env/bin/activate
+  - poetry config virtualenvs.create false
+  - poetry install
 
 types:
   - build
