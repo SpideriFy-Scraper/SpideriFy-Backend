@@ -1,4 +1,6 @@
 dafault:
+  tags:
+    - testing
   before_script:
     - python3 -m venv ../env
     - ls ../
