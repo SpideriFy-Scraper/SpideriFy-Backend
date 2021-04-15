@@ -6,6 +6,18 @@ import csv
 
 
 class AmScrapper:
+    """
+    Scapper Class for Amazon WebSite
+    ================================
+    Attributes:
+    -----------
+    export_type
+    * extracted_data
+    * normalized_data
+    * review_counter
+    * extractor_obj
+    * headers
+    """
     export_type = {"json": 'json', "dict": 'dict', "csv_file": 'csv_file'}
     extracted_data = None
     normalized_data = None
@@ -31,6 +43,12 @@ class AmScrapper:
             self.headers = headers
 
     async def requester(self):
+        """
+        Return the response of GET request or in case of failur Retrun None
+        +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+        This func request the page using GET method with the help of httpx and asyncio
+        """
         # log : Downloading page
         async with httpx.AsyncClient() as requester:
             response = await requester.get(self.url, params=self.headers)
@@ -44,7 +62,12 @@ class AmScrapper:
         return response
 
     def extractor(self):
-
+        """
+            Return None if Data could not extracted Return True if Requiered Data has been extracted
+            +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+            This func calls the requester and receive the data, then normalize
+            the data and store it in self.normalize_data as a dict
+        """
         data = asyncio.run(self.requester())
         if data == None:
             return None
@@ -62,6 +85,13 @@ class AmScrapper:
         return True
 
     def scrap(self, export_type='json'):
+        """
+        Calls The extractor func and exprotert func
+        -------------------------------------------
+        Paramaters
+        ++++++++++
+        * export_type='json'
+        """
         # log scrapper has started
         result = self.extractor()
         if result:
@@ -70,10 +100,18 @@ class AmScrapper:
             return None
 
     def json(self):
+        """
+        Dumps the data and return a json object
+        +++++++++++++++++++++++++++++++++++++++
+        """
         # log dumping json
         return json.dumps(self.normalized_data)
 
     def csv_file(self):
+        """
+        Export the data to a csv file and return the path directed to it
+        ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+        """
         # log exporting csv file
         with open("/fixtures/Scraped-data.csv", 'w', newline='') as writfile:
             csvwriter = csv.writer(writfile, delimiter=',')
@@ -82,10 +120,18 @@ class AmScrapper:
         return "/fixtures/Scraped-data.csv"
 
     def dict(self):
+        """
+        Return the data itself
+        ++++++++++++++++++++++
+        """
         # log exporting dictionary obj
         return self.normalized_data
 
     def json_file(self):
+        """
+        Export the data to a json file and return the path directed to it
+        ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+        """
         # log exporting json file
         with open("/fixtures/Scraped-data.json", 'w') as writfile:
             json.dump(self.normalized_data, writfile)
