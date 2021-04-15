@@ -1,3 +1,16 @@
+dafault:
+  before_script:
+    - python3 -m venv ../env
+    - ls ../
+    - source ../env/bin/activate
+    - poetry config virtualenvs.create false
+    - poetry install
+
+types:
+  - build
+  - test
+  - deploy
+
 build-job:
   tags:
     - testing
@@ -7,12 +20,7 @@ build-job:
     - pwd
     - git clone --branch develope "https://Farid:farid1244@gitlab.homayoonsadeghi.com/spiderify/spiderify-backend.git"
     - cd spiderify-backend
-
     - ls
-
-  artifacts:
-    paths:
-      - env/
     # - apt-get install python3.8-env
 
 test-job1:
@@ -21,9 +29,6 @@ test-job1:
     - testing
   script:
     - echo "This job tests something"
-  artifacts:
-    paths:
-      - env/
 
 deploy-prod:
   stage: deploy
@@ -34,8 +39,4 @@ deploy-prod:
   script:
     - pwd
     - echo "This job deploys something from the $CI_COMMIT_BRANCH branch."
-    - python3 -m venv env
-    - ls
-    - source env/bin/activate
-    - poetry install
     - python3 crawler/AmScrapper.py
