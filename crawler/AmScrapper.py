@@ -7,7 +7,7 @@ import csv
 
 class AmScrapper:
     """
-    Scapper Class for Amazon WebSite
+    Scrapper Class for Amazon WebSite
     ================================
     Attributes:
     -----------
@@ -19,7 +19,7 @@ class AmScrapper:
     * headers
     """
     export_type = {"json": 'json', "dict": 'dict', "csv_file": 'csv_file'}
-    extracted_data = None
+    extracted_data: dict = None
     normalized_data = None
     review_counter = 0
     extractor_obj = Extractor.from_yaml_file('crawler/selectors.yml')
@@ -29,8 +29,10 @@ class AmScrapper:
         'cache-control': 'no-cache',
         'dnt': '1',
         'upgrade-insecure-requests': '1',
-        'user-agent': 'Mozilla/5.0 (X11; CrOS x86_64 8172.45.0) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/51.0.2704.64 Safari/537.36',
-        'accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9',
+        'user-agent': 'Mozilla/5.0 (X11; CrOS x86_64 8172.45.0) AppleWebKit/\
+        537.36 (KHTML, like Gecko) Chrome/51.0.2704.64 Safari/537.36',
+        'accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image\
+        /webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9',
         'sec-fetch-site': 'none',
         'sec-fetch-mode': 'navigate',
         'sec-fetch-dest': 'document',
@@ -39,14 +41,13 @@ class AmScrapper:
 
     def __init__(self, url, headers):
         self.url = url
-        if headers != None:
+        if headers is not None:
             self.headers = headers
 
     async def requester(self):
         """
-        Return the response of GET request or in case of failur Retrun None
+        Return the response of GET request or in case of failure return None
         +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-
         This func request the page using GET method with the help of httpx and asyncio
         """
         # log : Downloading page
@@ -56,25 +57,28 @@ class AmScrapper:
             # log failed to download the page
             if response.status_code >= 500:
                 pass
-                # log Page was blocked by Amazon. Please try using better proxies
+                # log Page was blocked by Amazon.
+                # Please try using better proxies.
             return None
 
         return response
 
     def extractor(self):
         """
-            Return None if Data could not extracted Return True if Requiered Data has been extracted
-            +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-            This func calls the requester and receive the data, then normalize
-            the data and store it in self.normalize_data as a dict
+        Return None if Data could not extracted Return True
+        if required Data has been extracted
+        +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+        This func calls the requester and receive the data, then normalize
+        the data and store it in self.normalize_data as a dict
         """
         data = asyncio.run(self.requester())
-        if data == None:
+        if data is None:
             return None
-        # log extracing data...
+        # log extracting data...
         self.extracted_data = self.extractor_obj.extract(data.text)
         self.normalized_data = {
-            "product_title": self.extracted_data["product_title"]}
+            "product_title": self.extracted_data["product_title"]
+        }
         self.normalized_data["Normalized_URL"] = self.url
         # log normalizing Data
         for reviews in self.extracted_data["reviews"]:
@@ -86,9 +90,9 @@ class AmScrapper:
 
     def scrap(self, export_type='json'):
         """
-        Calls The extractor func and exprotert func
+        Calls The extractor func and exporter func
         -------------------------------------------
-        Paramaters
+        Parameters
         ++++++++++
         * export_type='json'
         """
@@ -113,10 +117,10 @@ class AmScrapper:
         ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
         """
         # log exporting csv file
-        with open("/fixtures/Scraped-data.csv", 'w', newline='') as writfile:
-            csvwriter = csv.writer(writfile, delimiter=',')
+        with open("/fixtures/Scraped-data.csv", 'w', newline='') as writefile:
+            csv_writer = csv.writer(writefile, delimiter=',')
             for reviews in self.normalized_data.items():
-                csvwriter.writerow([reviews[0], reviews[1]])
+                csv_writer.writerow([reviews[0], reviews[1]])
         return "/fixtures/Scraped-data.csv"
 
     def dict(self):
