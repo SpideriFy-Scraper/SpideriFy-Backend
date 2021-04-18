@@ -6,14 +6,13 @@ class AmazonSpider:
     """
     Main Spider Class for Amazon WebSite
     ====================================
-    This class is resposible for calling Scraper, Sentiment Analyzer and Summarizer Components and URL validation Checking
-
-
+    This class is responsible for calling Scraper, Sentiment Analyzer,
+    Summarizer Components and URL validation Checking.
     """
 
     class AmSpiderConfig:
         """
-        This is the Confiuration Class of Amazon Spider
+        This is the Configuration Class of Amazon Spider
         +++++++++++++++++++++++++++++++++++++++++++++++
 
         Attributes
@@ -21,17 +20,19 @@ class AmazonSpider:
             * url
             * AmScrapper
             * SentimentAnalyzer
-            * Summerizer
+            * Summarizer
             * raw_data
             * AMAZON_DOMAINS
         """
 
         AM_SCRAPER = None
-        AMAZON_DOMAINS = ["amazon.com.br", "amazon.ca", "amazon.com.mx", "amazon.com",
-                          "amazon.cn", "amazon.in", "amazon.co.jp", "amazon.sg",
-                          "amazon.com.tr", "amazon.ae", "amazon.sa", "amazon.fr",
-                          "amazon.de", "amazon.it", "amazon.nl", "amazon.pl",
-                          "amazon.es", "amazon.se", "amazon.co.uk", "amazon.com.au"]
+        AMAZON_DOMAINS = [
+            "amazon.com.br", "amazon.ca", "amazon.com.mx", "amazon.com",
+            "amazon.cn", "amazon.in", "amazon.co.jp", "amazon.sg",
+            "amazon.com.tr", "amazon.ae", "amazon.sa", "amazon.fr",
+            "amazon.de", "amazon.it", "amazon.nl", "amazon.pl",
+            "amazon.es", "amazon.se", "amazon.co.uk", "amazon.com.au"
+        ]
         URL = str
         RAW_DATA = dict
 
@@ -42,28 +43,30 @@ class AmazonSpider:
         """
         Run the Spider by calling url checkers and the other main components
         ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-
         """
-        if self.url_validatior(url=None):
+        if self.url_validator(url=None):
             self.AmSpiderConfig.RAW_DATA = self.call_scraper(
-                self.url_normalizer(None))
-            if self.AmSpiderConfig.RAW_DATA == None:
+                self.url_normalizer(None)
+            )
+            if self.AmSpiderConfig.RAW_DATA is None:
                 # log stopping Amazon spider
                 return None
 
-    def url_validator(self, url=AmSpiderConfig.URL):
+    @staticmethod
+    def url_validator(url=AmSpiderConfig.URL):
         """
         Checks the URL to belong to Amazon
         ++++++++++++++++++++++++++++++++++
         """
         url_obj = urlparse(url)
         domain_name = str(url_obj.netloc)[4:]
-        if domain_name in self.AmSpiderConfig.AMAZON_DOMAINS:
+        if domain_name in AmazonSpider.AmSpiderConfig.AMAZON_DOMAINS:
             return True
         else:
             return False
 
-    def url_normalizer(self, url: str = AmSpiderConfig.URL):
+    @staticmethod
+    def url_normalizer(url: str = AmSpiderConfig.URL):
         """
         Generates the 'all review' URL of the entered link
         ++++++++++++++++++++++++++++++++++++++++++++++++++
