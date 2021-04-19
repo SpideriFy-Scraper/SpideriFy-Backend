@@ -29,6 +29,7 @@ media
 
 # Distribution / packaging
 .Python
+packages/
 build/
 develop-eggs/
 dist/
@@ -124,6 +125,7 @@ celerybeat.pid
 
 # Environments
 # .env
+.env
 .env/
 .venv/
 env/
@@ -165,7 +167,8 @@ Thumbs.db #thumbnail cache on Windows
 ### Flask ###
 instance/*
 !instance/.gitignore
-
+migrations/__pycache__/
+migrations/versions/__pycache__/
 ### Flask.Python Stack ###
 # Byte-compiled / optimized / DLL files
 
