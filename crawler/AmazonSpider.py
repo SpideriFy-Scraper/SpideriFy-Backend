@@ -34,9 +34,9 @@ class AmazonSpider:
             "amazon.es", "amazon.se", "amazon.co.uk", "amazon.com.au"
         ]
         URL = str
-        RAW_DATA = dict
+        RAW_DATA = None
 
-    def __init__(self, url):
+    def __init__(self, url: str):
         self.AmSpiderConfig.URL = url
 
     def run_spider(self):
@@ -44,16 +44,19 @@ class AmazonSpider:
         Run the Spider by calling url checkers and the other main components
         ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
         """
-        if self.url_validator(url=None):
+        if self.url_validator():
             self.AmSpiderConfig.RAW_DATA = self.call_scraper(
-                self.url_normalizer(None)
+                self.url_normalizer()
             )
             if self.AmSpiderConfig.RAW_DATA is None:
                 # log stopping Amazon spider
-                return None
+                pass
+        else:
+            # log URL is not valid
+            pass
+        return self.AmSpiderConfig.RAW_DATA
 
-    @staticmethod
-    def url_validator(url=AmSpiderConfig.URL):
+    def url_validator(self, url: str = AmSpiderConfig.URL) -> bool:
         """
         Checks the URL to belong to Amazon
         ++++++++++++++++++++++++++++++++++
@@ -65,8 +68,7 @@ class AmazonSpider:
         else:
             return False
 
-    @staticmethod
-    def url_normalizer(url: str = AmSpiderConfig.URL):
+    def url_normalizer(self, url: str = AmSpiderConfig.URL) -> str:
         """
         Generates the 'all review' URL of the entered link
         ++++++++++++++++++++++++++++++++++++++++++++++++++
