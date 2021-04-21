@@ -1,3 +1,5 @@
+from asyncio.events import get_event_loop
+from ssl import HAS_NEVER_CHECK_COMMON_NAME
 import httpx
 import asyncio
 from selectorlib import Extractor
@@ -19,9 +21,9 @@ class AmScrapper:
     * headers
     """
     export_type = {"json": 'json', "dict": 'dict', "csv_file": 'csv_file'}
-    extracted_data: dict = None
-    normalized_data = None
-    review_counter = 0
+    extracted_data: list = []
+    normalized_data: dict = {}
+    review_counter: int = 0
     extractor_obj = Extractor.from_yaml_file('crawler/selectors.yml')
     headers = {
         'authority': 'www.amazon.com',
@@ -44,7 +46,7 @@ class AmScrapper:
         if headers is not None:
             self.headers = headers
 
-    async def requester(self):
+    async def requester(self, url: str):
         """
         Return the response of GET request or in case of failure return None
         +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -52,7 +54,7 @@ class AmScrapper:
         """
         # log : Downloading page
         async with httpx.AsyncClient() as requester:
-            response = await requester.get(self.url, params=self.headers)
+            response = await requester.get(url, params=self.headers)
         if response.status_code != httpx.codes.OK:
             # log failed to download the page
             if response.status_code >= 500:
@@ -63,7 +65,7 @@ class AmScrapper:
 
         return response
 
-    def extractor(self):
+    async def extractor(self, max_reviews: int):
         """
         Return None if Data could not extracted Return True
         if required Data has been extracted
@@ -71,24 +73,46 @@ class AmScrapper:
         This func calls the requester and receive the data, then normalize
         the data and store it in self.normalize_data as a dict
         """
-        data = asyncio.run(self.requester())
+        # log creating all URLs
+        urls = [
+            self.url+f"&pageNumber={i}" for i in range(1, (max_reviews//10)+1)]
+        # log creating event loop
+        tasks = []
+        for link in urls:
+            tasks.append(self.requester(link))
+        # log waiting for loop to complete
+        data = await asyncio.gather(*tasks, return_exceptions=True)
+        # log  closing loop
+
         if data is None:
             return None
         # log extracting data...
-        self.extracted_data = self.extractor_obj.extract(data.text)
-        self.normalized_data = {
-            "product_title": self.extracted_data["product_title"]
-        }
-        self.normalized_data["Normalized_URL"] = self.url
-        # log normalizing Data
-        for reviews in self.extracted_data["reviews"]:
-            self.review_counter += 1
-            self.normalized_data["review_#{}".format(
-                self.review_counter)] = reviews["content"]
+        for review_page in data:
+            if review_page is None:
+                continue
+
+            extracted_page = self.extractor_obj.extract(review_page.text)
+            self.extracted_data.append(extracted_page)
+            if not "product_title" in self.normalized_data.keys():
+                self.normalized_data = {
+                    "product_title": extracted_page["product_title"],
+                    "Normalized_URL": self.url
+                }
+            for reviews in extracted_page["reviews"]:
+                self.review_counter += 1
+                self.normalized_data[f"review_#{self.review_counter}"] \
+                    = self.normalize_review(reviews)
         self.normalized_data["review_counts"] = self.review_counter
         return True
 
-    def scrap(self, export_type='json'):
+    def normalize_review(self, review: dict):
+        review["rating"] = float(review["rating"][:3])
+        del review["images"]
+        review["verified"] = True\
+            if review["verified"] == "Verified Purchase" else False
+        return review
+
+    def scrap(self, export_type='json', max_reviews: int = 30):
         """
         Calls The extractor func and exporter func
         -------------------------------------------
@@ -97,7 +121,7 @@ class AmScrapper:
         * export_type='json'
         """
         # log scrapper has started
-        result = self.extractor()
+        result = asyncio.run(self.extractor(max_reviews))
         if result:
             return getattr(self, export_type)()
         else:
@@ -137,12 +161,12 @@ class AmScrapper:
         ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
         """
         # log exporting json file
-        with open("/fixtures/Scraped-data.json", 'w') as writfile:
+        with open("crawler/fixtures/Scraped-data.json", 'w') as writfile:
             json.dump(self.normalized_data, writfile)
-        return "/fixtures/Scraped-data.json"
+        return "crawler/fixtures/Scraped-data.json"
 
 
 if __name__ == '__main__':
     testScraper = AmScrapper(
         url="https://www.amazon.com/HP-Business-Dual-core-Bluetooth-Legendary/product-reviews/B07VMDCLXV/ref=cm_cr_dp_d_show_all_btm?ie=UTF8&reviewerType=all_reviews", headers=None)
-    print(testScraper.scrap('dict'))
+    print(testScraper.scrap('json_file'))
