@@ -387,18 +387,6 @@ optional = false
 python-versions = ">=2.7,!=3.0.*,!=3.1.*,!=3.2.*,!=3.3.*"
 
 [[package]]
-name = "mysqlclient"
-version = "1.4.6"
-description = "Python interface to MySQL"
-category = "main"
-optional = false
-python-versions = "*"
-
-[package.source]
-type = "file"
-url = "wheels/mysqlclient-1.4.6-cp38-cp38-win32.whl"
-
-[[package]]
 name = "packaging"
 version = "20.9"
 description = "Core utilities for Python packages"
@@ -723,7 +711,7 @@ testing = ["pytest (>=4.6)", "pytest-checkdocs (>=1.2.3)", "pytest-flake8", "pyt
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.7"
-content-hash = "db911facc321851b535e63ad6ecb3600e95d9569fcace01b1a4680b66fb32f25"
+content-hash = "f56086a5e7c7671555474601f5ba6e8d2efb114f23a3b665ed3d6927a9c18b56"
 
 [metadata.files]
 alembic = [
@@ -1028,9 +1016,6 @@ markupsafe = [
     {file = "MarkupSafe-1.1.1-cp39-cp39-win32.whl", hash = "sha256:22c178a091fc6630d0d045bdb5992d2dfe14e3259760e713c490da5323866c39"},
     {file = "MarkupSafe-1.1.1-cp39-cp39-win_amd64.whl", hash = "sha256:b7d644ddb4dbd407d31ffb699f1d140bc35478da613b441c582aeb7c43838dd8"},
     {file = "MarkupSafe-1.1.1.tar.gz", hash = "sha256:29872e92839765e546828bb7754a68c418d927cd064fd4708fab9fe9c8bb116b"},
-]
-mysqlclient = [
-    {file = "mysqlclient-1.4.6-cp38-cp38-win32.whl", hash = "sha256:1f4d3c3fa7d7f1683071ad12096e5494179e7fa837c5210c3032c81d72f33e3a"},
 ]
 packaging = [
     {file = "packaging-20.9-py2.py3-none-any.whl", hash = "sha256:67714da7f7bc052e064859c05c595155bd1ee9f69f76557e21f051443c20947a"},
