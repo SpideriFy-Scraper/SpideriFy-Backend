@@ -9,7 +9,7 @@ class Config(object):
     SECRET_KEY = config["SECRET_KEY"]
     # Config Database
     SQLALCHEMY_DATABASE_URI = f'mysql+pymysql://{config["DB_USER"]}:{config["DB_PASSWORD"]}@localhost:3306/spiderify'
-    SQLALCHEMY_TRACK_MODIFICATIONs = False
+    SQLALCHEMY_TRACK_MODIFICATIONS = False
 
 class ProductionConfig(Config):
     DEBUG = False
