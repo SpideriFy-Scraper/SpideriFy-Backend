@@ -30,6 +30,7 @@ sql/
 # Distribution / packaging
 .Python
 packages/
+migrations/
 build/
 develop-eggs/
 dist/
