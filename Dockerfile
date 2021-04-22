@@ -1,7 +1,7 @@
-FROM 3.8-slim-buster
+FROM python:3.8-slim-buster
 
 LABEL Maintainer "Homayoon Sadeghi <homayoon.9171@gmail.com>"
-LABEL Vendor "Poetry.services"
+LABEL Vendor "SpideriFy"
 
 ARG FLASK_ENV
 
@@ -20,34 +20,45 @@ ENV FLASK_ENV=${FLASK_ENV} \
     # tini:
     TINI_VERSION=v0.19.0 \
     # poetry
+    POETRY_VERSION=1.1.6 \
     POETRY_CACHE_DIR='/var/cache/pypoetry' \
-    POETRY_VERSION=1.1.6
+    PATH="$PATH:/root/.poetry/bin"
 
-# System deps:
-RUN apt-get update && apt-get upgrade -y \
-  && apt-get install --no-install-recommends -y \
+# install Some SSL Deps For Poetry
+RUN pip3 install --upgrade pip && \
+    pip3 install certifi && \
+    pip3 install ndg-httpsclient && \
+    pip3 install pyopenssl && \
+    pip3 install pyasn1
+
+# System Deps:
+RUN chmod o+r /etc/resolv.conf && \
+    apt-get update -y && \
+    apt-get upgrade -y && \
+    apt-get install --no-install-recommends -y \
     bash \
     build-essential \
     curl \
     git \
     libpq-dev \
+    apt-transport-https \
+    ca-certificates \
+    software-properties-common \
+    default-libmysqlclient-dev \
     # Defining build-time-only dependencies:
     $BUILD_ONLY_PACKAGES \
     # Installing `tini` utility:
     # https://github.com/krallin/tini
     && wget -O /usr/local/bin/tini "https://github.com/krallin/tini/releases/download/${TINI_VERSION}/tini" \
     && chmod +x /usr/local/bin/tini && tini --version \
+    # Installing `poetry` package manager:
+    # https://github.com/python-poetry/poetry
+    pip3 install "poetry==$POETRY_VERSION" \
     # Removing build-time-only dependencies:
     && apt-get remove -y $BUILD_ONLY_PACKAGES \
     # Cleaning cache:
     && apt-get purge -y --auto-remove -o APT::AutoRemove::RecommendsImportant=false \
     && apt-get clean -y && rm -rf /var/lib/apt/lists/*
-
-# Installing `poetry` package manager:
-# https://github.com/python-poetry/poetry
-RUN pip3 install --upgrade pip && \
-    pip3 install "poetry==$POETRY_VERSION"
-
 
 WORKDIR /app
 
@@ -63,13 +74,13 @@ RUN echo "$FLASK_ENV" \
     $(if [ "$FLASK_ENV" = 'production' ]; then echo '--no-dev'; fi) \
     --no-interaction --no-ansi \
   # Cleaning poetry installation's cache for production:
-  && if [ "$FLASK_ENV" = 'production' ]; then rm -rf "$POETRY_CACHE_DIR"; fi
-RUN pip3 uninstall --yes poetry
+  && if [ "$FLASK_ENV" = 'production' ]; then rm -rf "$POETRY_CACHE_DIR" && pip3 uninstall --yes poetry; fi
+
 COPY . /app
 
 EXPOSE 8080
 
 # We customize how our app is loaded with the custom entrypoint:
-ENTRYPOINT ["/tini", "--"]
+ENTRYPOINT ["tini", "--"]
 # Run your program under Tini
 CMD [ "python3", "app.py" ]
