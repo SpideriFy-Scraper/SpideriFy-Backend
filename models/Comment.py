@@ -22,3 +22,13 @@ class CommentModel(db.Model):
     product_id = Column(BigInteger, db.ForeignKey('ProductModel.id'))
     created_at = Column(DateTime(timezone=True), default=db.func.now(), onupdate=db.func.now())
     updated_at = Column(DateTime(timezone=True), default=db.func.now(), onupdate=db.func.now())
+
+    def __init__(author, title, content, is_verified, variant, rating, date, product_id):
+        self.author = author
+        self.title = title
+        self.content = content
+        self.is_verified = is_verified
+        self.variant = rating
+        self.date = date
+        self.product_id = product_id
+
