@@ -1,0 +1,41 @@
+version: '3.7'
+
+services:
+  db:
+    restart: unless-stopped
+    image: mysql:latest
+    container_name: mysql
+    volumes:
+      - "database_volume:/var/lib/mysql"
+    networks:
+      - database-network
+    environment:
+      MYSQL_DATABASE: 'spiderify'
+      MYSQL_USER: 'spiderify'
+      MYSQL_PASSWORD: '1378yaser'
+      MYSQL_ROOT_PASSWORD: '1378yaser'
+  application:
+    restart: unless-stopped
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: spiderify-api:local
+    container_name: spiderify-api
+    ports:
+      - 8080:8080
+    depends_on:
+      - db
+    networks:
+      - database-network
+      - backend-network
+
+volumes:
+  database_volume:
+    name: database_volume
+    external: false
+
+networks:
+  database-network:
+    external: false
+  backend-network:
+    external: false
