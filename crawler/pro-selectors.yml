@@ -1,0 +1,12 @@
+name:
+  css: "#productTitle"
+  type: Text
+price:
+  css: "#price_inside_buybox"
+  type: Text
+rating:
+  css: "#reviewsMedley > div > div.a-fixed-left-grid-col.a-col-left > div.a-section.a-spacing-none.a-spacing-top-mini.cr-widget-ACR > div.a-fixed-left-grid.AverageCustomerReviews.a-spacing-small > div > div.a-fixed-left-grid-col.aok-align-center.a-col-right > div > span > span"
+  type: Text
+product_description:
+  css: "#productDescription > p"
+  type: Text
