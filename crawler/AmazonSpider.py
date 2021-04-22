@@ -90,7 +90,7 @@ class AmazonSpider:
         ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
         """
         self.AmSpiderConfig.AM_SCRAPER = AmScrapper(
-            all_review_url, product_url)
+            all_review_url, headers=None)
         return self.AmSpiderConfig.AM_SCRAPER.scrap('dict')
 
     def call_sentiment_analyzer(self):
