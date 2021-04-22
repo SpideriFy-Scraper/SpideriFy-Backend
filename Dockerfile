@@ -1,7 +1,7 @@
 FROM python:3.8-slim-buster
 
 LABEL Maintainer "Homayoon Sadeghi <homayoon.9171@gmail.com>"
-LABEL Vendor "Poetry.services"
+LABEL Vendor "SpideriFy"
 
 ARG FLASK_ENV
 
@@ -20,14 +20,22 @@ ENV FLASK_ENV=${FLASK_ENV} \
     # tini:
     TINI_VERSION=v0.19.0 \
     # poetry
+    POETRY_VERSION=1.1.6 \
     POETRY_CACHE_DIR='/var/cache/pypoetry' \
-    POETRY_VERSION=1.1.6
+    PATH="$PATH:/root/.poetry/bin"
 
-RUN chmod o+r /etc/resolv.conf
+# install Some SSL Deps For Poetry
+RUN pip3 install --upgrade pip && \
+    pip3 install certifi && \
+    pip3 install ndg-httpsclient && \
+    pip3 install pyopenssl && \
+    pip3 install pyasn1
 
-# System deps:
-RUN apt-get update -y && apt-get upgrade -y \
-  && apt-get install --no-install-recommends -y \
+# System Deps:
+RUN chmod o+r /etc/resolv.conf && \
+    apt-get update -y && \
+    apt-get upgrade -y && \
+    apt-get install --no-install-recommends -y \
     bash \
     build-essential \
     curl \
@@ -45,20 +53,12 @@ RUN apt-get update -y && apt-get upgrade -y \
     && chmod +x /usr/local/bin/tini && tini --version \
     # Installing `poetry` package manager:
     # https://github.com/python-poetry/poetry
-    pip3 install --upgrade pip && \
     pip3 install "poetry==$POETRY_VERSION" \
     # Removing build-time-only dependencies:
     && apt-get remove -y $BUILD_ONLY_PACKAGES \
     # Cleaning cache:
     && apt-get purge -y --auto-remove -o APT::AutoRemove::RecommendsImportant=false \
     && apt-get clean -y && rm -rf /var/lib/apt/lists/*
-
-# install Some SSL Dependencies
-RUN pip3 install certifi && \
-    pip3 install ndg-httpsclient && \
-    pip3 install pyopenssl && \
-    pip3 install pyasn1
-
 
 WORKDIR /app
 
@@ -74,8 +74,8 @@ RUN echo "$FLASK_ENV" \
     $(if [ "$FLASK_ENV" = 'production' ]; then echo '--no-dev'; fi) \
     --no-interaction --no-ansi \
   # Cleaning poetry installation's cache for production:
-  && if [ "$FLASK_ENV" = 'production' ]; then rm -rf "$POETRY_CACHE_DIR"; fi
-RUN pip3 uninstall --yes poetry
+  && if [ "$FLASK_ENV" = 'production' ]; then rm -rf "$POETRY_CACHE_DIR" && pip3 uninstall --yes poetry; fi
+
 COPY . /app
 
 EXPOSE 8080
