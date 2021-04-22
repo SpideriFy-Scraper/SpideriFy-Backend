@@ -17,7 +17,7 @@ class AmazonSpider:
 
         Attributes
         ++++++++++
-            * url
+            * PRODUCT_URL
             * AmScrapper
             * SentimentAnalyzer
             * Summarizer
@@ -33,11 +33,12 @@ class AmazonSpider:
             "amazon.de", "amazon.it", "amazon.nl", "amazon.pl",
             "amazon.es", "amazon.se", "amazon.co.uk", "amazon.com.au"
         ]
-        URL = str
+        PRODUCT_URL = str
+        ALL_REVIEW_URL = str
         RAW_DATA = None
 
     def __init__(self, url: str):
-        self.AmSpiderConfig.URL = url
+        self.AmSpiderConfig.PRODUCT_URL = url
 
     def run_spider(self):
         """
@@ -46,7 +47,7 @@ class AmazonSpider:
         """
         if self.url_validator():
             self.AmSpiderConfig.RAW_DATA = self.call_scraper(
-                self.url_normalizer()
+                self.url_normalizer(), self.AmSpiderConfig.PRODUCT_URL
             )
             if self.AmSpiderConfig.RAW_DATA is None:
                 # log stopping Amazon spider
@@ -56,7 +57,7 @@ class AmazonSpider:
             pass
         return self.AmSpiderConfig.RAW_DATA
 
-    def url_validator(self, url: str = AmSpiderConfig.URL) -> bool:
+    def url_validator(self, url: str = AmSpiderConfig.PRODUCT_URL) -> bool:
         """
         Checks the URL to belong to Amazon
         ++++++++++++++++++++++++++++++++++
@@ -68,7 +69,7 @@ class AmazonSpider:
         else:
             return False
 
-    def url_normalizer(self, url: str = AmSpiderConfig.URL) -> str:
+    def url_normalizer(self, url: str = AmSpiderConfig.PRODUCT_URL) -> str:
         """
         Generates the 'all review' URL of the entered link
         ++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -82,12 +83,14 @@ class AmazonSpider:
             "/ref=cm_cr_dp_d_show_all_btm?ie=UTF8&reviewerType=all_reviews"
         return review_url
 
-    def call_scraper(self, normalized_url: str):
+    def call_scraper(self, all_review_url: str = AmSpiderConfig.ALL_REVIEW_URL,
+                     product_url: str = AmSpiderConfig.PRODUCT_URL):
         """
         Creates a AmScrapper instance and calls the scrap function
         ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
         """
-        self.AmSpiderConfig.AM_SCRAPER = AmScrapper(normalized_url)
+        self.AmSpiderConfig.AM_SCRAPER = AmScrapper(
+            all_review_url, product_url)
         return self.AmSpiderConfig.AM_SCRAPER.scrap('dict')
 
     def call_sentiment_analyzer(self):
