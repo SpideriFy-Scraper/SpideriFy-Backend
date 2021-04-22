@@ -241,7 +241,7 @@ class AmScrapper:
         # log dumping json
         return json.dumps(self.NORMALIZED_DATA)
 
-    def csv_file(self):
+    def csv_file(self) -> str:
         """
         Export the data to a csv file and return the path directed to it
         ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -253,7 +253,7 @@ class AmScrapper:
                 csv_writer.writerow([reviews[0], reviews[1]])
         return "/fixtures/Scraped-data.csv"
 
-    def dict(self):
+    def dict(self) -> dict:
         """
         Return the data itself
         ++++++++++++++++++++++
@@ -261,7 +261,7 @@ class AmScrapper:
         # log exporting dictionary obj
         return self.NORMALIZED_DATA
 
-    def json_file(self):
+    def json_file(self) -> str:
         """
         Export the data to a json file and return the path directed to it
         ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
