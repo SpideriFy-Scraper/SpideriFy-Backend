@@ -2,7 +2,8 @@ from flask_restful import Resource, reqparse
 from models.Product import ProductModel
 from models.User import UserModel
 from commen.db import db
-
+from crawler.SpiderifyWrapper import SpiderifyWrapper
+from flask import jsonify
 
 
 class Product(Resource):
@@ -11,17 +12,15 @@ class Product(Resource):
         # product = ProductModel.query.filter_by(asin=asin)
         # return
         pass
+
     def post(self):
         pass
-
 
     def put(self):
         pass
 
-
     def delete(self):
         pass
-
 
 
 class ProductList(Resource):
@@ -31,9 +30,12 @@ class ProductList(Resource):
 
 class FakeProduct(Resource):
     parser = reqparse.RequestParser()
-    parser.add_argument('url',type=str, required=True, help="This Is The Base Product URL")
-    def post(self):
-        data = FakeProduct.parser.parse_args()
-        print(data['url'])
-        return {'message': "Hi"}, 200
+    parser.add_argument('url', type=str, required=True,
+                        help="This Is The Base Product URL")
 
+    def post(self):
+
+        data = FakeProduct.parser.parse_args()
+        spider_data = SpiderifyWrapper(data['url'])
+
+        return jsonify(spider_data), 200
