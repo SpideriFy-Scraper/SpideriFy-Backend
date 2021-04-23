@@ -24,6 +24,9 @@ cryptography = "^3.4.7"
 python-dotenv = "^0.17.0"
 mysqlclient = "^2.0.3"
 user_agent = "^0.1.9"
+tensorflow = "^2.4.1"
+tf-models-official = "^2.4.0"
+tensorflow-text = "^2.4.3"
 
 [tool.poetry.dev-dependencies]
 autopep8 = "^1.5.6"
