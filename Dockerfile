@@ -25,15 +25,15 @@ ENV FLASK_ENV=${FLASK_ENV} \
     PATH="$PATH:/root/.poetry/bin"
 
 # install Some SSL Deps For Poetry
-RUN pip3 install --upgrade pip && \
-    pip3 install certifi && \
-    pip3 install ndg-httpsclient && \
-    pip3 install pyopenssl && \
-    pip3 install pyasn1
+RUN pip3 install --upgrade pip \
+    && pip3 install certifi \
+    && pip3 install ndg-httpsclient \
+    && pip3 install pyopenssl \
+    && pip3 install pyasn1
 
 # System Deps:
-RUN chmod o+r /etc/resolv.conf && \
-    apt-get update -y && \
+RUN chmod o+r /etc/resolv.conf
+RUN apt-get update -y && \
     apt-get upgrade -y && \
     apt-get install --no-install-recommends -y \
     bash \
@@ -50,10 +50,11 @@ RUN chmod o+r /etc/resolv.conf && \
     # Installing `tini` utility:
     # https://github.com/krallin/tini
     && wget -O /usr/local/bin/tini "https://github.com/krallin/tini/releases/download/${TINI_VERSION}/tini" \
-    && chmod +x /usr/local/bin/tini && tini --version \
+    && chmod +x /usr/local/bin/tini \
+    && tini --version \
     # Installing `poetry` package manager:
     # https://github.com/python-poetry/poetry
-    pip3 install "poetry==$POETRY_VERSION" \
+    && pip3 install "poetry==$POETRY_VERSION" \
     # Removing build-time-only dependencies:
     && apt-get remove -y $BUILD_ONLY_PACKAGES \
     # Cleaning cache:
