@@ -1,5 +1,8 @@
-from app import app, db
+from app import app
+from commen.db import db
 from models.User import UserModel
+from models.Product import ProductModel
+from models.Comment import CommentModel
 from flask_script import Manager
 from flask_migrate import Migrate, MigrateCommand
 

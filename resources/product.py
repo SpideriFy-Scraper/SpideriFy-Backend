@@ -1,7 +1,7 @@
 from flask_restful import Resource, reqparse
 from models.Product import ProductModel
 from models.User import UserModel
-from app import db
+from commen.db import db
 
 
 
@@ -31,8 +31,9 @@ class ProductList(Resource):
 
 class FakeProduct(Resource):
     parser = reqparse.RequestParser()
-    parser.add_argument('url',type=str, required=true, help="This Is The Base Product URL")
+    parser.add_argument('url',type=str, required=True, help="This Is The Base Product URL")
     def post(self):
         data = FakeProduct.parser.parse_args()
-        print(dat['url'])
+        print(data['url'])
+        return {'message': "Hi"}, 200
 
