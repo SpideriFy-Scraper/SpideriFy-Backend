@@ -27,6 +27,7 @@ user_agent = "^0.1.9"
 tensorflow = "^2.4.1"
 tf-models-official = "^2.4.0"
 tensorflow-text = "^2.4.3"
+memory-profiler = "^0.58.0"
 
 [tool.poetry.dev-dependencies]
 autopep8 = "^1.5.6"
