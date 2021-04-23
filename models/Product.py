@@ -11,7 +11,7 @@ class ProductModel(db.Model):
     __tablename__ = 'products'
 
     id = Column(BigInteger, primary_key=True, autoincrement=True)
-    asin = Column(String(10), nullable=False, index=True)
+    asin = Column(String(10), nullable=False)
     name = Column(Text, nullable=False)
     price = Column(String(50), nullable=True)
     rating = Column(Float, nullable=True)
