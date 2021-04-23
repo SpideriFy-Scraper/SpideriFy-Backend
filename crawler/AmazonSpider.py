@@ -1,6 +1,6 @@
 from crawler.AmScrapper import AmScrapper
 from urllib.parse import urlparse
-
+from crawler.AmSentimentAnalyzer import AmSentiment
 
 class AmazonSpider:
     """
@@ -9,7 +9,7 @@ class AmazonSpider:
     This class is responsible for calling Scraper, Sentiment Analyzer,
     Summarizer Components and URL validation Checking.
     """
-
+    CUSTOM_SORT : list = list
     class AmSpiderConfig:
         """
         This is the Configuration Class of Amazon Spider
@@ -24,7 +24,7 @@ class AmazonSpider:
             * raw_data
             * AMAZON_DOMAINS
         """
-
+        AM_SENT =
         AM_SCRAPER = None
         AMAZON_DOMAINS = [
             "amazon.com.br", "amazon.ca", "amazon.com.mx", "amazon.com",
@@ -35,7 +35,9 @@ class AmazonSpider:
         ]
         PRODUCT_URL = str
         ALL_REVIEW_URL = str
-        RAW_DATA = None
+        SCRAPED_DATA = None
+        ANALYZED_DATA = None
+        FINAL_DATA = None
 
     def __init__(self, url: str):
         self.AmSpiderConfig.PRODUCT_URL = url
@@ -46,16 +48,42 @@ class AmazonSpider:
         ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
         """
         if self.url_validator():
-            self.AmSpiderConfig.RAW_DATA = self.call_scraper(
+            self.AmSpiderConfig.SCRAPED_DATA = self.call_scraper(
                 self.url_normalizer(), self.AmSpiderConfig.PRODUCT_URL
             )
-            if self.AmSpiderConfig.RAW_DATA is None:
+            if self.AmSpiderConfig.SCRAPED_DATA is None:
                 # log stopping Amazon spider
                 pass
         else:
             # log URL is not valid
-            pass
-        return self.AmSpiderConfig.RAW_DATA
+            return None
+
+        self.AmSpiderConfig.ANALYZED_DATA = self.call_sentiment_analyzer(\
+            self.dict_to_list_reviews(self.AmSpiderConfig.SCRAPED_DATA)
+            )
+
+        self.merge_analyzed_scraped_data()
+
+        return self.AmSpiderConfig.FINAL_DATA
+
+    def dict_to_list_reviews(self,data : dict):
+
+        reviews_list = []
+
+        for key in data.keys():
+            if str(key).startswith("REVIEW"):
+                reviews_list.append(data[key]["content"])
+                self.CUSTOM_SORT.append(key)
+
+        return reviews_list
+
+    def merge_analyzed_scraped_data(self):
+
+        self.AmSpiderConfig.FINAL_DATA = self.AmSpiderConfig.SCRAPED_DATA.copy()
+
+        for i in range(len(self.CUSTOM_SORT)):
+            self.AmSpiderConfig.FINAL_DATA[self.CUSTOM_SORT[i]]["sentiment"] = \
+                self.AmSpiderConfig.ANALYZED_DATA[i][0]
 
     def url_validator(self, url: str = AmSpiderConfig.PRODUCT_URL) -> bool:
         """
@@ -93,8 +121,12 @@ class AmazonSpider:
             all_review_url, headers=None)
         return self.AmSpiderConfig.AM_SCRAPER.scrap('dict')
 
-    def call_sentiment_analyzer(self):
-        pass
+    def call_sentiment_analyzer(self,review_list : list):
+
+        self.AmSpiderConfig.AM_SENT = AmSentiment(None)
+
+        return self.AmSpiderConfig.AM_SENT.sent_analyz(review_list)
+
 
     def call_summarizer(self):
         pass
