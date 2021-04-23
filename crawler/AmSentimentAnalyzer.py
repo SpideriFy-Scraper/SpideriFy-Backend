@@ -8,7 +8,7 @@ from official.nlp import optimization  # to create AdamW optmizer
 
 
 class AmSentiment:
-    # saved_model_path
+    saved_model_path = "/home/tesla/Project/SpideriFy/spiderify-backend/commen/ML-Model"
     reloaded_model = tf.saved_model.load(saved_model_path)
 
     def __init__(self, saved_model_path):
@@ -17,12 +17,4 @@ class AmSentiment:
 
     def sent_analyz(self, reviews: list):
         reloaded_results = tf.sigmoid(reloaded_model(tf.constant(reviews)))
-        return reloaded_results.tolist()
-
-
-# def print_my_examples(inputs, results):
-#   result_for_printing = \
-#     [f'inut: p{inputs[i]:<30} : score: {results[i][0]:.6f}'
-#                          for i in range(len(inputs))]
-#   print(*result_for_printing, sep='\n')
-#   print()
+        return reloaded_results.numpy().tolist()

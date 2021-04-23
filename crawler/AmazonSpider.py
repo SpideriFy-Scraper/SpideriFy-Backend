@@ -24,7 +24,7 @@ class AmazonSpider:
             * raw_data
             * AMAZON_DOMAINS
         """
-        AM_SENT =
+        AM_SENT = None
         AM_SCRAPER = None
         AMAZON_DOMAINS = [
             "amazon.com.br", "amazon.ca", "amazon.com.mx", "amazon.com",
@@ -83,7 +83,7 @@ class AmazonSpider:
 
         for i in range(len(self.CUSTOM_SORT)):
             self.AmSpiderConfig.FINAL_DATA[self.CUSTOM_SORT[i]]["sentiment"] = \
-                self.AmSpiderConfig.ANALYZED_DATA[i][0]
+                str(self.AmSpiderConfig.ANALYZED_DATA[i][0])
 
     def url_validator(self, url: str = AmSpiderConfig.PRODUCT_URL) -> bool:
         """
@@ -121,10 +121,9 @@ class AmazonSpider:
             all_review_url, headers=None)
         return self.AmSpiderConfig.AM_SCRAPER.scrap('dict')
 
-    def call_sentiment_analyzer(self,review_list : list):
+    def call_sentiment_analyzer(self,review_list: list):
 
         self.AmSpiderConfig.AM_SENT = AmSentiment(None)
-
         return self.AmSpiderConfig.AM_SENT.sent_analyz(review_list)
 
 
