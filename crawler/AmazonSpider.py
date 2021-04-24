@@ -13,7 +13,7 @@ class AmazonSpider:
     This class is responsible for calling Scraper, Sentiment Analyzer,
     Summarizer Components and URL validation Checking.
     """
-    CUSTOM_SORT: list = list
+    CUSTOM_SORT: list = None
 
     class AmSpiderConfig:
         """
@@ -29,6 +29,7 @@ class AmazonSpider:
             * raw_data
             * AMAZON_DOMAINS
         """
+
         AM_SENT = None
         AM_SCRAPER = None
         AMAZON_DOMAINS = [
@@ -38,23 +39,26 @@ class AmazonSpider:
             "amazon.de", "amazon.it", "amazon.nl", "amazon.pl",
             "amazon.es", "amazon.se", "amazon.co.uk", "amazon.com.au"
         ]
-        PRODUCT_URL = str
-        ALL_REVIEW_URL = str
+        PRODUCT_URL: str = None
+        ALL_REVIEW_URL: str = None
         SCRAPED_DATA = None
         ANALYZED_DATA = None
         FINAL_DATA = None
 
     def __init__(self, url: str):
-        self.AmSpiderConfig.PRODUCT_URL = url
+        am_spi_conf = self.AmSpiderConfig()
+        am_spi_conf.PRODUCT_URL = url
 
     def run_spider(self, sentiment=True):
         """
         Run the Spider by calling url checkers and the other main components
         ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
         """
-        if self.url_validator():
+        if self.url_validator(url=self.AmSpiderConfig.PRODUCT_URL):
             self.AmSpiderConfig.SCRAPED_DATA = self.call_scraper(
-                self.url_normalizer(), self.AmSpiderConfig.PRODUCT_URL
+                all_review_url=self.url_normalizer(
+                    url=self.AmSpiderConfig.PRODUCT_URL),
+                product_url=self.AmSpiderConfig.PRODUCT_URL
             )
             if self.AmSpiderConfig.SCRAPED_DATA is None:
                 # log stopping Amazon spider
@@ -115,11 +119,12 @@ class AmazonSpider:
             self.AmSpiderConfig.FINAL_DATA[self.CUSTOM_SORT[i]]["sentiment"] = \
                 str(self.AmSpiderConfig.ANALYZED_DATA[i][0])
 
-    def url_validator(self, url: str = AmSpiderConfig.PRODUCT_URL) -> bool:
+    def url_validator(self, url: str) -> bool:
         """
         Checks the URL to belong to Amazon
         ++++++++++++++++++++++++++++++++++
         """
+
         url_obj = urlparse(url)
         domain_name = str(url_obj.netloc)[4:]
         if domain_name in AmazonSpider.AmSpiderConfig.AMAZON_DOMAINS:
@@ -127,7 +132,7 @@ class AmazonSpider:
         else:
             return False
 
-    def url_normalizer(self, url: str = AmSpiderConfig.PRODUCT_URL) -> str:
+    def url_normalizer(self, url: str) -> str:
         """
         Generates the 'all review' URL of the entered link
         ++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -141,8 +146,7 @@ class AmazonSpider:
             "/ref=cm_cr_dp_d_show_all_btm?ie=UTF8&reviewerType=all_reviews"
         return review_url
 
-    def call_scraper(self, all_review_url: str = AmSpiderConfig.ALL_REVIEW_URL,
-                     product_url: str = AmSpiderConfig.PRODUCT_URL):
+    def call_scraper(self, all_review_url: str, product_url: str):
         """
         Creates a AmScrapper instance and calls the scrap function
         ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
