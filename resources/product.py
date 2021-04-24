@@ -32,8 +32,10 @@ class FakeProduct(Resource):
     parser = reqparse.RequestParser()
     parser.add_argument('url', type=str, required=True,
                         help="This Is The Base Product URL")
+
     def post(self):
         data = FakeProduct.parser.parse_args()
-        spider_data = SpiderifyWrapper(str(data["url"])).start_amazon_spider()
-        #print(spider_data)
+        spider = SpiderifyWrapper(str(data["url"]))
+        spider_data = spider.start_amazon_spider()
+        # print(spider_data)
         return jsonify(spider_data), 200
