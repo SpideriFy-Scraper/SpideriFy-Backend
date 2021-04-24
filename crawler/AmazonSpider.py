@@ -47,7 +47,7 @@ class AmazonSpider:
     def __init__(self, url: str):
         self.AmSpiderConfig.PRODUCT_URL = url
 
-    def run_spider(self):
+    def run_spider(self, sentiment=True):
         """
         Run the Spider by calling url checkers and the other main components
         ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -71,9 +71,10 @@ class AmazonSpider:
             logger.log_error("URL is not valid")
             return None
 
-        self.AmSpiderConfig.ANALYZED_DATA = self.call_sentiment_analyzer(
-            self.dict_to_list_reviews(self.AmSpiderConfig.SCRAPED_DATA)
-        )
+        if sentiment:
+            self.AmSpiderConfig.ANALYZED_DATA = self.call_sentiment_analyzer(
+                self.dict_to_list_reviews(self.AmSpiderConfig.SCRAPED_DATA)
+            )
 
         self.merge_analyzed_scraped_data()
 
@@ -91,8 +92,24 @@ class AmazonSpider:
         return reviews_list
 
     def merge_analyzed_scraped_data(self):
+        """
+        Merge Two ANALYZED_DATA and SCRAPED_DATA and filling FINAL_DATA
+        +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+        """
+        script_name = os.path.basename(__file__)
+        line_no = currentframe().f_lineno + 2
+        logger = Logger(script_name, line_no)
+        logger.log_info("Merging Scraped and Analyzed Data...")
 
         self.AmSpiderConfig.FINAL_DATA = self.AmSpiderConfig.SCRAPED_DATA.copy()
+
+        if self.AmSpiderConfig.ANALYZED_DATA is None:
+            script_name = os.path.basename(__file__)
+            line_no = currentframe().f_lineno + 2
+            logger = Logger(script_name, line_no)
+            logger.log_info("Skipping Merging... ")
+
+            return
 
         for i in range(len(self.CUSTOM_SORT)):
             self.AmSpiderConfig.FINAL_DATA[self.CUSTOM_SORT[i]]["sentiment"] = \
