@@ -62,7 +62,7 @@ class AmazonSpider:
                 line_no = currentframe().f_lineno + 2
                 logger = Logger(script_name, line_no)
                 logger.log_warning("Stopping Amazon spider")
-                pass
+                return None
         else:
             # log URL is not valid
             script_name = os.path.basename(__file__)
@@ -71,7 +71,7 @@ class AmazonSpider:
             logger.log_error("URL is not valid")
             return None
 
-        self.AmSpiderConfig.ANALYZED_DATA = self.call_sentiment_analyzer( \
+        self.AmSpiderConfig.ANALYZED_DATA = self.call_sentiment_analyzer(
             self.dict_to_list_reviews(self.AmSpiderConfig.SCRAPED_DATA)
         )
 
@@ -120,8 +120,8 @@ class AmazonSpider:
         obj = urlparse(url)
         parts = obj.path.split('/')
         review_url = obj.scheme + "://" + obj.netloc + "/" + \
-                     parts[1] + "/product-reviews/" + parts[3] + \
-                     "/ref=cm_cr_dp_d_show_all_btm?ie=UTF8&reviewerType=all_reviews"
+            parts[1] + "/product-reviews/" + parts[3] + \
+            "/ref=cm_cr_dp_d_show_all_btm?ie=UTF8&reviewerType=all_reviews"
         return review_url
 
     def call_scraper(self, all_review_url: str = AmSpiderConfig.ALL_REVIEW_URL,
@@ -131,7 +131,8 @@ class AmazonSpider:
         ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
         """
         self.AmSpiderConfig.AM_SCRAPER = AmScrapper(
-            all_review_url, headers=None)
+            all_review_url, product_url=product_url, headers=None)
+
         return self.AmSpiderConfig.AM_SCRAPER.scrap('dict')
 
     def call_sentiment_analyzer(self, review_list: list):
