@@ -46,8 +46,7 @@ class AmazonSpider:
         FINAL_DATA = None
 
     def __init__(self, url: str):
-        am_spi_conf = self.AmSpiderConfig()
-        am_spi_conf.PRODUCT_URL = url
+        self.AmSpiderConfig.PRODUCT_URL = url
 
     def run_spider(self, sentiment=True):
         """
@@ -85,7 +84,9 @@ class AmazonSpider:
         return self.AmSpiderConfig.FINAL_DATA
 
     def dict_to_list_reviews(self, data: dict):
-
+        """
+        Create a list of reviews from scraped data
+        """
         reviews_list = []
 
         for key in data.keys():
@@ -157,7 +158,9 @@ class AmazonSpider:
         return self.AmSpiderConfig.AM_SCRAPER.scrap('dict')
 
     def call_sentiment_analyzer(self, review_list: list):
-
+        """
+        Create the AmSentiment Object and call the sent_analyz func
+        """
         self.AmSpiderConfig.AM_SENT = AmSentiment(None)
         return self.AmSpiderConfig.AM_SENT.sent_analyz(review_list)
 
