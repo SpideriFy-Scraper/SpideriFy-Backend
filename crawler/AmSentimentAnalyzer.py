@@ -1,18 +1,21 @@
 import os
 import shutil
 
-import tensorflow as tf
-import tensorflow_hub as hub
-import tensorflow_text as text
-from official.nlp import optimization  # to create AdamW optmizer
-
 load_model = True
+
+
+def manual_import():
+    import tensorflow as tf
+    import tensorflow_hub as hub
+    import tensorflow_text as text
+    from official.nlp import optimization  # to create AdamW optmizer
 
 
 class AmSentiment:
     def __init__(self, saved_model_path):
         if saved_model_path is not None:
             self.saved_model_path = saved_model_path
+        manual_import()
         initialize_sentiment()
 
     def sent_analyz(self, reviews: list):
