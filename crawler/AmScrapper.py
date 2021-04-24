@@ -37,7 +37,7 @@ class AmScrapper:
         'sec-fetch-dest': 'document',
         'accept-language': 'en-GB,en-US;q=0.9,en;q=0.8',
     }
-    NORMALIZED_DATA: dict = dict
+    NORMALIZED_DATA: dict = None
 
     class Product:
         """
@@ -49,7 +49,7 @@ class AmScrapper:
         * PRODUCT_EXTRACTOR_OBJ
         * NORMALIZED_PRODUCT_DATA
         """
-        URL: str = str
+        URL: str = None
         PRODUCT_EXTRACTOR_OBJ = Extractor.from_yaml_file(
             'crawler/pro-selectors.yml')
         NORMALIZED_PRODUCT_DATA: dict = {}
@@ -66,7 +66,7 @@ class AmScrapper:
         * REVIEW_EXTRACTOR_OBJ
 
         """
-        URL: str = str
+        URL: str = None
         NORMALIZED_REVIEW_DATA: dict = {}
         REVIEW_COUNTS: int = 0
         REVIEW_EXTRACTOR_OBJ = Extractor.from_yaml_file(
@@ -121,7 +121,8 @@ class AmScrapper:
                 script_name = os.path.basename(__file__)
                 line_no = currentframe().f_lineno + 2
                 logger = Logger(script_name, line_no)
-                logger.log_error('Page was blocked by Amazon! Please try using better proxies!')
+                logger.log_error(
+                    'Page was blocked by Amazon! Please try using better proxies!')
                 # log Page was blocked by Amazon.
                 # Please try using better proxies.
             return None
@@ -272,7 +273,8 @@ class AmScrapper:
         script_name = os.path.basename(__file__)
         line_no = currentframe().f_lineno + 2
         logger = Logger(script_name, line_no)
-        logger.log_info('starting event loop of Product and Review extraction  (extraction_wrapper)')
+        logger.log_info(
+            'starting event loop of Product and Review extraction  (extraction_wrapper)')
         results = await asyncio.gather(
             self.extract_review(max_reviews), self.extract_product())
         # log checking the extraction results
