@@ -3,7 +3,7 @@ from models.Product import ProductModel
 from models.User import UserModel
 from commen.db import db
 from crawler.SpiderifyWrapper import SpiderifyWrapper
-from flask import jsonify
+from flask import jsonify, Response, json
 
 
 class Product(Resource):
@@ -37,5 +37,6 @@ class FakeProduct(Resource):
         data = FakeProduct.parser.parse_args()
         spider = SpiderifyWrapper(str(data["url"]))
         spider_data = spider.start_amazon_spider()
-        # print(spider_data)
-        return jsonify(spider_data), 200
+        message = json.dumps(spider_data)
+        resp = Response(message, status=200, mimetype='application/json')
+        return resp
