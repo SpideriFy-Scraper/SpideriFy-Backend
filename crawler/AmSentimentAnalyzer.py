@@ -1,11 +1,15 @@
 import os
 import shutil
-import tensorflow as tf
-import tensorflow_hub as hub
-import tensorflow_text as text
 
 
 load_model = True
+
+
+def import_tens():
+    global tf, hub, text
+    tf = __import__('tensorflow')
+    hub = __import__('tensorflow_hub')
+    text = __import__('tensorflow_text')
 
 
 def initialize_sentiment():
@@ -17,10 +21,12 @@ def initialize_sentiment():
         reloaded_model = tf.saved_model.load(saved_model_path)
     return
 
+
 class AmSentiment:
     def __init__(self, saved_model_path):
         if saved_model_path is not None:
             self.saved_model_path = saved_model_path
+        import_tens()
         initialize_sentiment()
 
     def sent_analyz(self, reviews: list):
