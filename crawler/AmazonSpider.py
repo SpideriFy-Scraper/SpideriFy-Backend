@@ -13,7 +13,7 @@ class AmazonSpider:
     This class is responsible for calling Scraper, Sentiment Analyzer,
     Summarizer Components and URL validation Checking.
     """
-    CUSTOM_SORT: list = None
+    CUSTOM_SORT: list = []
 
     class AmSpiderConfig:
         """
@@ -76,7 +76,7 @@ class AmazonSpider:
 
         if sentiment:
             self.AmSpiderConfig.ANALYZED_DATA = self.call_sentiment_analyzer(
-                self.dict_to_list_reviews(self.AmSpiderConfig.SCRAPED_DATA)
+                self.dict_to_list_reviews(data=self.AmSpiderConfig.SCRAPED_DATA)
             )
 
         self.merge_analyzed_scraped_data()
@@ -90,7 +90,7 @@ class AmazonSpider:
         reviews_list = []
 
         for key in data.keys():
-            if str(key).startswith("REVIEW"):
+            if key.startswith("REVIEW #"):
                 reviews_list.append(data[key]["content"])
                 self.CUSTOM_SORT.append(key)
 
