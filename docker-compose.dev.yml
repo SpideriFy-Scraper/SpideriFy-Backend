@@ -23,6 +23,8 @@ services:
     container_name: spiderify-api
     ports:
       - 8080:8080
+    volumes:
+      - "./commen/sentiment_model:/app/commen/sentiment_model"
     depends_on:
       - db
     networks:

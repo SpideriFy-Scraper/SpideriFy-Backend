@@ -13,13 +13,11 @@ def import_tens():
 
 
 def initialize_sentiment():
-
     global load_model, reloaded_model, saved_model_path
     if load_model:
         load_model = False
-        saved_model_path = "/home/tesla/Project/SpideriFy/spiderify-backend/commen/ML-Model"
+        saved_model_path = "/home/tesla/Project/SpideriFy/spiderify-backend/commen/sentiment_model"
         reloaded_model = tf.saved_model.load(saved_model_path)
-    return
 
 
 class AmSentiment:
