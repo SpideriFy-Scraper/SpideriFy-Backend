@@ -9,6 +9,7 @@ import csv
 from logger.Logger import Logger
 from inspect import currentframe, getframeinfo
 import os.path
+from textblob import TextBlob
 
 
 class AmScrapper:
@@ -203,11 +204,17 @@ class AmScrapper:
                 }
             # loop over all reviews in each page
             for reviews in extracted_page["reviews"]:
+                if self.check_language_content(reviews):
+                    continue
                 self.Review.REVIEW_COUNTS += 1
                 self.Review.NORMALIZED_REVIEW_DATA[f"REVIEW #{self.Review.REVIEW_COUNTS}"] \
                     = await self.normalize_review(reviews)
         self.Review.NORMALIZED_REVIEW_DATA["REVIEW_COUNTS"] = self.Review.REVIEW_COUNTS
         return True
+
+    def check_language_content(self, reviews: dict):
+        content = TextBlob(reviews["content"])
+        return content.detect_language() != 'en'
 
     async def extract_product(self) -> bool:
         """
