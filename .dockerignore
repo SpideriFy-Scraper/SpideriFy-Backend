@@ -100,3 +100,6 @@ venv/
 */*.swp
 */*/*.swp
 */*/*/*.swp
+
+# Ignore Sentiment Model
+commen/sentiment_model/

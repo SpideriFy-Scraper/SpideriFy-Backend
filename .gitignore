@@ -130,6 +130,7 @@ celerybeat.pid
 
 # .env
 .env
+.spiderify.env
 .env/
 .venv/
 env/
