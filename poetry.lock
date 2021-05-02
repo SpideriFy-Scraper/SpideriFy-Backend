@@ -818,17 +818,6 @@ pyparsing = ">=2.2.1"
 python-dateutil = ">=2.7"
 
 [[package]]
-name = "memory-profiler"
-version = "0.58.0"
-description = "A module for monitoring memory usage of a python program"
-category = "main"
-optional = false
-python-versions = ">=3.4"
-
-[package.dependencies]
-psutil = "*"
-
-[[package]]
 name = "mysqlclient"
 version = "2.0.3"
 description = "Python interface to MySQL"
@@ -1787,7 +1776,7 @@ testing = ["pytest (>=4.6)", "pytest-checkdocs (>=1.2.3)", "pytest-flake8", "pyt
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.7"
-content-hash = "56e4af3db9246952a2882104a6dd4782a1d3bb75dba943bae04849d5610cd1fb"
+content-hash = "f0052d23368a7272b56a57e084222fcdc0c13be12313c66a1d2c6680fc476d6d"
 
 [metadata.files]
 absl-py = [
@@ -2410,9 +2399,6 @@ matplotlib = [
     {file = "matplotlib-3.4.1-cp39-cp39-win32.whl", hash = "sha256:9f374961a3996c2d1b41ba3145462c3708a89759e604112073ed6c8bdf9f622f"},
     {file = "matplotlib-3.4.1-cp39-cp39-win_amd64.whl", hash = "sha256:53ceb12ef44f8982b45adc7a0889a7e2df1d758e8b360f460e435abe8a8cd658"},
     {file = "matplotlib-3.4.1.tar.gz", hash = "sha256:84d4c4f650f356678a5d658a43ca21a41fca13f9b8b00169c0b76e6a6a948908"},
-]
-memory-profiler = [
-    {file = "memory_profiler-0.58.0.tar.gz", hash = "sha256:01385ac0fec944fcf7969814ec4406c6d8a9c66c079d09276723c5a7680f44e5"},
 ]
 mysqlclient = [
     {file = "mysqlclient-2.0.3-cp36-cp36m-win_amd64.whl", hash = "sha256:3381ca1a4f37ff1155fcfde20836b46416d66531add8843f6aa6d968982731c3"},
