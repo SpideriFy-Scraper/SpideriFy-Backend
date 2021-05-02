@@ -1,5 +1,5 @@
 from dotenv import dotenv_values
-config = dotenv_values(".env")
+config = dotenv_values(".spiderify.env")
 
 class Config(object):
     """Base config, uses staging Database Server."""
