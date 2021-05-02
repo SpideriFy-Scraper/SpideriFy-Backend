@@ -144,7 +144,7 @@ class AmazonSpider:
         parts = obj.path.split('/')
         review_url = obj.scheme + "://" + obj.netloc + "/" + \
             parts[1] + "/product-reviews/" + parts[3] + \
-            "/ref=cm_cr_dp_d_show_all_btm?ie=UTF8&reviewerType=all_reviews"
+            "/ie=UTF8&reviewerType=all_reviews"
         return review_url
 
     def call_scraper(self, all_review_url: str, product_url: str):
