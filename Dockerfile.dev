@@ -5,6 +5,7 @@ LABEL Vendor "SpideriFy"
 
 ARG FLASK_ENV
 
+    # Set Flask Env For Development Porpuses
 ENV FLASK_ENV=${FLASK_ENV} \
     # build:
     BUILD_ONLY_PACKAGES='wget' \
