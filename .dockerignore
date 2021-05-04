@@ -1,6 +1,8 @@
 # Git
 .git
 .gitignore
+.editorconfig
+,mailmap
 # ignore all markdown files (md) beside all README*.md other than README-secret.md
 README.md
 
@@ -13,7 +15,10 @@ README.md
 
 # Docker
 Dockerfile
+Dockerfile.env
 docker-compose.yml
+docker-compose.dev.yml
+docker-compose.prod.yml
 .docker
 
 # Byte-compiled / optimized / DLL files
