@@ -6,6 +6,8 @@ LABEL Vendor "SpideriFy"
 
     # python
 ENV PYTHONUNBUFFERED=1 \
+    PYTHONFAULTHANDLER=1 \
+    PYTHONHASHSEED=random \
     # prevents python creating .pyc files
     PYTHONDONTWRITEBYTECODE=1 \
     # pip
@@ -34,12 +36,18 @@ ENV PATH="$POETRY_HOME/bin:$VENV_PATH/bin:$PATH"
 
 # `builder-base` stage is used to build deps + create our virtual environment
 FROM python-base as builder-base
-RUN apt-get update \
-    && apt-get install --no-install-recommends -y \
-        # deps for installing poetry
-        curl \
-        # deps for building python deps
-        build-essential
+RUN apt-get update -y && \
+    apt-get upgrade -y && \
+    apt-get install --no-install-recommends -y \
+    bash \
+    build-essential \
+    curl \
+    git \
+    libpq-dev \
+    apt-transport-https \
+    ca-certificates \
+    software-properties-common \
+    default-libmysqlclient-dev
 
 # install poetry - respects $POETRY_VERSION & $POETRY_HOME
 RUN curl -sSL https://raw.githubusercontent.com/sdispater/poetry/master/get-poetry.py | python
@@ -54,7 +62,7 @@ RUN poetry install --no-dev
 
 # `development` image is used during development / testing
 FROM python-base as development
-ENV FASTAPI_ENV=development
+ENV FLASK_ENV=development
 WORKDIR $PYSETUP_PATH
 
 # copy in our built poetry + venv
@@ -65,16 +73,32 @@ COPY --from=builder-base $PYSETUP_PATH $PYSETUP_PATH
 RUN poetry install
 
 # will become mountpoint of our code
+COPY . /app
 WORKDIR /app
 
-EXPOSE 8000
-CMD ["uvicorn", "--reload", "main:app"]
+EXPOSE 8080
+CMD [ "python3", "app.py" ]
 
 
 # `production` image used for runtime
 FROM python-base as production
-ENV FASTAPI_ENV=production
+ENV FLASK_ENV=production
 COPY --from=builder-base $PYSETUP_PATH $PYSETUP_PATH
-COPY ./app /app/
+
+# will become mountpoint of our code
+COPY . /app
 WORKDIR /app
-CMD ["gunicorn", "-k", "uvicorn.workers.UvicornWorker", "main:app"]
+
+
+# Installing `tini` utility:
+# https://github.com/krallin/tini
+RUN wget -O /usr/local/bin/tini "https://github.com/krallin/tini/releases/download/${TINI_VERSION}/tini" \
+    && chmod +x /usr/local/bin/tini \
+    && tini --version
+
+EXPOSE 8080
+
+# We customize how our app is loaded with the custom entrypoint:
+ENTRYPOINT ["tini", "--"]
+# Run your program under Tini
+CMD [ "python3", "app.py" ]
