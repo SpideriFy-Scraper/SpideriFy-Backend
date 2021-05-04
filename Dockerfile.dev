@@ -1,3 +1,9 @@
+# docker build -t spiderify-api:local --build-arg FLASK_ENV=development --network host . -f Dockerfile.dev
+# docker run -d --name api -v <Path-to>/commen/sentiment_model:/app/commen/sentiment_model -p 8080:8080 spiderify-api:local
+# docker system df -v
+# docker stats <container name>
+# docker logs <container name>
+
 FROM python:3.8-slim-buster
 
 LABEL Maintainer "Homayoon Sadeghi <homayoon.9171@gmail.com>"
