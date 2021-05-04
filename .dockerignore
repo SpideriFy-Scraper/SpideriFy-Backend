@@ -2,7 +2,7 @@
 .git
 .gitignore
 .editorconfig
-,mailmap
+.mailmap
 # ignore all markdown files (md) beside all README*.md other than README-secret.md
 README.md
 
