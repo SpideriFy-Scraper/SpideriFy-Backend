@@ -31,7 +31,6 @@ sql/
 .Python
 mysql/
 packages/
-migrations/
 build/
 develop-eggs/
 dist/
