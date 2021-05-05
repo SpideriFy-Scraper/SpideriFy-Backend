@@ -1,5 +1,5 @@
 # docker build -t spiderify-api:prod --network host . -f Dockerfile
-# docker run -d --name api-prod -v <Path-to>/commen/sentiment_model:/app/commen/sentiment_model -p 8000:8080 spiderify-api:prod
+# docker run -d --name api-prod -v <Path-to>/common/sentiment_model:/app/common/sentiment_model -p 8000:8080 spiderify-api:prod
 # docker system df -v
 # docker stats <container name>
 # docker logs <container name>
