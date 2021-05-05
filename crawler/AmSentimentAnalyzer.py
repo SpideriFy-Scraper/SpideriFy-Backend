@@ -37,9 +37,13 @@ class AmSentiment:
     async def request_tf_serve(self, reviews: list):
 
         async with httpx.AsyncClient() as requester:
+            content = {}
+            content["signature_name"] = "serving_default"
+            content["instances"] = reviews
+            r_content = json.dumps(content)
             response = await requester.post(
                 url="http://sentiment:8501/v1/models/sentiment:predict",
-                content={"signature_name": "serving_default", "instances": reviews})
+                content=r_content)
 
             result = json.load(response)
             return result["predictions"]
