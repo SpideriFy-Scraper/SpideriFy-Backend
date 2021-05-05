@@ -18,7 +18,7 @@ def initialize_sentiment():
     global load_model, reloaded_model, saved_model_path
     if load_model:
         load_model = False
-        saved_model_path = "./commen/sentiment_model"
+        saved_model_path = "./common/sentiment_model/1"
         reloaded_model = tf.saved_model.load(saved_model_path)
 
 
