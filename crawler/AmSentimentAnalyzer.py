@@ -1,6 +1,8 @@
 import os
 import shutil
-
+import httpx
+import asyncio
+import json
 
 load_model = True
 
@@ -28,5 +30,16 @@ class AmSentiment:
         initialize_sentiment()
 
     def sent_analyz(self, reviews: list):
-        reloaded_results = tf.sigmoid(reloaded_model(tf.constant(reviews)))
-        return reloaded_results.numpy().tolist()
+        # reloaded_results = tf.sigmoid(reloaded_model(tf.constant(reviews)))
+        reloaded_results = asyncio.run(self.request_tf_serve(reviews=reviews))
+        return reloaded_results
+
+    async def request_tf_serve(self, reviews: list):
+
+        async with httpx.AsyncClient() as requester:
+            response = await requester.post(
+                url="http://localhost:8501/v1/models/sentiment:predict",
+                content={"signature_name": "serving_default", "instances": reviews})
+
+            result = json.load(response)
+            return result["predictions"]
