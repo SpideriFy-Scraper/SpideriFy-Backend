@@ -47,6 +47,7 @@ RUN apt-get update -y && \
     build-essential \
     curl \
     git \
+    iputils-ping \
     libpq-dev \
     apt-transport-https \
     ca-certificates \
@@ -90,6 +91,6 @@ EXPOSE 8080
 
 RUN chmod +x ./docker-entrypoint.sh
 # We customize how our app is loaded with the custom entrypoint:
-ENTRYPOINT ["/tini", "--", "./docker-entrypoint.sh"]
+ENTRYPOINT ["tini", "--" , "./docker-entrypoint.sh"]
 # # Run your program under Tini
 # CMD [ "python3", "app.py" ]

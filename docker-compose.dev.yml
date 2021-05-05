@@ -4,11 +4,14 @@ services:
   db:
     restart: on-failure
     image: mysql:8.0
-    container_name: mysql
-    ports:
-      - "127.0.0.1:3306:3306"
+    container_name: db
+    # command: --default-authentication-plugin=mysql_native_password
+    # ports:
+    #   - "127.0.0.1:3306:3306"
     volumes:
       - "db-data:/var/lib/mysql"
+      - "./mysql/scripts:/docker-entrypoint-initdb.d/:ro"
+      - "./mysql/conf.d:/etc/mysql/conf.d"
     env_file:
       - .env
     environment:
@@ -16,13 +19,14 @@ services:
       MYSQL_USER: ${DB_USER}
       MYSQL_PASSWORD: ${DB_PASSWORD}
       MYSQL_ROOT_PASSWORD: ${DB_PASSWORD}
+      # MYSQL_ROOT_HOST: "%"
   api:
     restart: unless-stopped
     build:
       context: .
       dockerfile: Dockerfile.dev
       args:
-        FLASK_ENV: development
+        FLASK_ENV: production
     image: spiderify-api:local
     container_name: spiderify-api
     tty: true
@@ -38,15 +42,17 @@ services:
     restart: unless-stopped
     image: tensorflow/serving:latest
     container_name: sentiment
-    ports:
-      - "127.0.0.1:8501:8501"
+    # ports:
+    #   - "127.0.0.1:8501:8501"
     volumes:
       - "./common/sentiment_model:/models/sentiment:ro"
     env_file:
       - .env
     environment:
       MODEL_NAME: ${MODEL_NAME}
-
+    depends_on:
+      - api
+      - db
 
 volumes:
   db-data:

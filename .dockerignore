@@ -108,3 +108,4 @@ venv/
 
 # Ignore Sentiment Model
 common/sentiment_model/1
+mysql/

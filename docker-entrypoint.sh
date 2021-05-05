@@ -7,9 +7,7 @@ readonly cmd="$*"
 
 
 # Evaluating Database Initiation Commnads
-exec python manage.py db init
-exec python manage.py db migrate
-exec python manage.py db upgrade
+python3 manage.py db upgrade
 
 
 # Evaluating passed command (do not touch):
