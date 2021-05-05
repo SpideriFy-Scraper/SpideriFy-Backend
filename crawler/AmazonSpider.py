@@ -4,6 +4,7 @@ from crawler.AmSentimentAnalyzer import AmSentiment
 from logger.Logger import Logger
 from inspect import currentframe, getframeinfo
 import os.path
+import math
 
 
 class AmazonSpider:
@@ -76,7 +77,8 @@ class AmazonSpider:
 
         if sentiment:
             self.AmSpiderConfig.ANALYZED_DATA = self.call_sentiment_analyzer(
-                self.dict_to_list_reviews(data=self.AmSpiderConfig.SCRAPED_DATA)
+                self.dict_to_list_reviews(
+                    data=self.AmSpiderConfig.SCRAPED_DATA)
             )
 
         self.merge_analyzed_scraped_data()
@@ -118,7 +120,10 @@ class AmazonSpider:
 
         for i in range(len(self.CUSTOM_SORT)):
             self.AmSpiderConfig.FINAL_DATA[self.CUSTOM_SORT[i]]["sentiment"] = \
-                str(self.AmSpiderConfig.ANALYZED_DATA[i][0])
+                str(self.sigmoid(self.AmSpiderConfig.ANALYZED_DATA[i][0]))
+
+    def sigmoid(self, grade):
+        return 1 / (1 + math.exp(-grade))
 
     def url_validator(self, url: str) -> bool:
         """
