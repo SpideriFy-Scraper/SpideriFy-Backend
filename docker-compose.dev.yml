@@ -34,8 +34,8 @@ services:
     command: ["python3", "app.py"]
     ports:
       - "8080:8080"
-    volumes:
-      - "./common/sentiment_model/1:/app/common/sentiment_model/1:ro"
+    # volumes:
+    #   - "./common/sentiment_model/1:/app/common/sentiment_model/1:ro"
     depends_on:
       - db
   sentiment:
