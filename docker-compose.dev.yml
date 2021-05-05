@@ -24,7 +24,7 @@ services:
     ports:
       - 8080:8080
     volumes:
-      - "./common/sentiment_model:/app/common/sentiment_model"
+      - "./common/sentiment_model/1:/app/common/sentiment_model/1"
     depends_on:
       - db
     networks:

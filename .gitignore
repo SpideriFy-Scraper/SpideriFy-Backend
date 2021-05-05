@@ -40,7 +40,7 @@ eggs/
 .idea/
 parts/
 sdist/
-common/sentiment_model
+common/sentiment_model/1
 var/
 wheels/
 pip-wheel-metadata/

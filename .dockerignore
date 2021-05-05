@@ -107,4 +107,4 @@ venv/
 */*/*/*.swp
 
 # Ignore Sentiment Model
-common/sentiment_model/
+common/sentiment_model/1
