@@ -26,8 +26,8 @@ class AmSentiment:
     def __init__(self, saved_model_path):
         if saved_model_path is not None:
             self.saved_model_path = saved_model_path
-        import_tens()
-        initialize_sentiment()
+        # import_tens()
+        # initialize_sentiment()
 
     def sent_analyz(self, reviews: list):
         # reloaded_results = tf.sigmoid(reloaded_model(tf.constant(reviews)))
@@ -38,7 +38,7 @@ class AmSentiment:
 
         async with httpx.AsyncClient() as requester:
             response = await requester.post(
-                url="http://localhost:8501/v1/models/sentiment:predict",
+                url="http://sentiment:8501/v1/models/sentiment:predict",
                 content={"signature_name": "serving_default", "instances": reviews})
 
             result = json.load(response)

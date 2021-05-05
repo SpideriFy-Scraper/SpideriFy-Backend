@@ -1,5 +1,5 @@
 from app import app
-from commen.db import db
+from common.db import db
 from models.User import UserModel
 from models.Product import ProductModel
 from models.Comment import CommentModel

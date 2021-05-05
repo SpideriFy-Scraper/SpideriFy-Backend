@@ -1,4 +1,4 @@
-from commen.db import db
+from common.db import db
 from sqlalchemy import String, Integer, Column, DateTime, BigInteger,Float, ForeignKey, Text
 from models import User
 

@@ -29,6 +29,7 @@ sql/
 
 # Distribution / packaging
 .Python
+mysql/
 packages/
 migrations/
 build/

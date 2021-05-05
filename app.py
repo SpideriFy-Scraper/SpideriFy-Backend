@@ -2,7 +2,7 @@ from flask import Flask
 from flask_restful import Api
 from flask_sqlalchemy import SQLAlchemy
 from resources.product import FakeProduct
-from commen.db import db
+from common.db import db
 
 
 app = Flask(__name__)
