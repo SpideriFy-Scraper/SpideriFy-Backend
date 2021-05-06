@@ -23,3 +23,7 @@ class SpiderifyWrapper:
             else:
                 organized_data[key] = data[key]
         return organized_data
+
+    def clean_attributes(self):
+        self.DATA = None
+        self.AMAZONSPIDER.clean_attributes()

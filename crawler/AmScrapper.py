@@ -55,6 +55,12 @@ class AmScrapper:
             'crawler/pro-selectors.yml')
         NORMALIZED_PRODUCT_DATA: dict = {}
 
+        def clean_attributes(self):
+            self.URL = None
+            self.PRODUCT_EXTRACTOR_OBJ = Extractor.from_yaml_file(
+                'crawler/pro-selectors.yml')
+            self.NORMALIZED_PRODUCT_DATA = {}
+
     class Review:
         """
         Configuration class for Review data
@@ -72,6 +78,13 @@ class AmScrapper:
         REVIEW_COUNTS: int = 0
         REVIEW_EXTRACTOR_OBJ = Extractor.from_yaml_file(
             'crawler/rev-selectors.yml')
+
+        def clean_attributes(self):
+            self.URL = None
+            self.NORMALIZED_REVIEW_DATA = {}
+            self.REVIEW_COUNTS = 0
+            self.REVIEW_EXTRACTOR_OBJ = Extractor.from_yaml_file(
+                'crawler/rev-selectors.yml')
 
     def __init__(self, all_review_url, product_url, headers):
         self.Review.URL = all_review_url
@@ -370,6 +383,25 @@ class AmScrapper:
         with open("crawler\\fixtures\\Scraped-data2.json", 'w') as writfile:
             json.dump(self.NORMALIZED_DATA, writfile)
         return "crawler\\fixtures\\Scraped-data.json"
+
+    def clean_attributes(self):
+
+        self.NORMALIZED_DATA = None
+        self.Product.clean_attributes()
+        self.Review.clean_attributes()
+        self.BASE_HEADER = {
+            'authority': 'www.amazon.com',
+            'pragma': 'no-cache',
+            'cache-control': 'no-cache',
+            'dnt': '1',
+            'upgrade-insecure-requests': '1',
+            'accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image\
+            /webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9',
+            'sec-fetch-site': 'none',
+            'sec-fetch-mode': 'navigate',
+            'sec-fetch-dest': 'document',
+            'accept-language': 'en-GB,en-US;q=0.9,en;q=0.8',
+        }
 
 
 if __name__ == '__main__':
