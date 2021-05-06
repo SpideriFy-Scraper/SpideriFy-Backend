@@ -11,7 +11,7 @@ class SpiderifyWrapper:
 
     def start_amazon_spider(self):
         self.DATA = self.AMAZONSPIDER.run_spider()
-
+        self.clean_attributes()
         return self.organize_reviews(self.DATA)
 
     def organize_reviews(self, data: dict):
@@ -25,5 +25,4 @@ class SpiderifyWrapper:
         return organized_data
 
     def clean_attributes(self):
-        self.DATA = None
         self.AMAZONSPIDER.clean_attributes()
