@@ -1,5 +1,4 @@
 from asyncio.events import get_event_loop
-from resources.product import Product
 from ssl import HAS_NEVER_CHECK_COMMON_NAME
 import user_agent
 import httpx
