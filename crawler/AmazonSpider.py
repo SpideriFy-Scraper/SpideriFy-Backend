@@ -188,7 +188,7 @@ class AmazonSpider:
 
     def clean_attributes(self):
         self.AmSpiderConfig.AM_SCRAPER.clean_attributes()
-        self.CUSTOM_SORT = []
+        self.CUSTOM_SORT.clear()
         self.AmSpiderConfig.clean_attributes()
 
     def call_summarizer(self):
