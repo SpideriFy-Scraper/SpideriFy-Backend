@@ -1,4 +1,5 @@
 from asyncio.events import get_event_loop
+from resources.product import Product
 from ssl import HAS_NEVER_CHECK_COMMON_NAME
 import user_agent
 import httpx
@@ -55,11 +56,12 @@ class AmScrapper:
             'crawler/pro-selectors.yml')
         NORMALIZED_PRODUCT_DATA: dict = {}
 
-        def clean_attributes(self):
-            self.URL = None
-            self.PRODUCT_EXTRACTOR_OBJ = Extractor.from_yaml_file(
+        @classmethod
+        def clean_attributes(cls):
+            cls.URL = None
+            cls.PRODUCT_EXTRACTOR_OBJ = Extractor.from_yaml_file(
                 'crawler/pro-selectors.yml')
-            self.NORMALIZED_PRODUCT_DATA = {}
+            cls.NORMALIZED_PRODUCT_DATA = {}
 
     class Review:
         """
@@ -79,11 +81,12 @@ class AmScrapper:
         REVIEW_EXTRACTOR_OBJ = Extractor.from_yaml_file(
             'crawler/rev-selectors.yml')
 
-        def clean_attributes(self):
-            self.URL = None
-            self.NORMALIZED_REVIEW_DATA = {}
-            self.REVIEW_COUNTS = 0
-            self.REVIEW_EXTRACTOR_OBJ = Extractor.from_yaml_file(
+        @classmethod
+        def clean_attributes(cls):
+            cls.URL = None
+            cls.NORMALIZED_REVIEW_DATA = {}
+            cls.REVIEW_COUNTS = 0
+            cls.REVIEW_EXTRACTOR_OBJ = Extractor.from_yaml_file(
                 'crawler/rev-selectors.yml')
 
     def __init__(self, all_review_url, product_url, headers):

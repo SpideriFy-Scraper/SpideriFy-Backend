@@ -46,21 +46,22 @@ class AmazonSpider:
         ANALYZED_DATA = None
         FINAL_DATA = None
 
-        def clean_attributes(self):
-            self.AM_SENT = None
-            self.AM_SCRAPER = None
-            self.AMAZON_DOMAINS = [
+        @classmethod
+        def clean_attributes(cls):
+            cls.AM_SENT = None
+            cls.AM_SCRAPER = None
+            cls.AMAZON_DOMAINS = [
                 "amazon.com.br", "amazon.ca", "amazon.com.mx", "amazon.com",
                 "amazon.cn", "amazon.in", "amazon.co.jp", "amazon.sg",
                 "amazon.com.tr", "amazon.ae", "amazon.sa", "amazon.fr",
                 "amazon.de", "amazon.it", "amazon.nl", "amazon.pl",
                 "amazon.es", "amazon.se", "amazon.co.uk", "amazon.com.au"
             ]
-            self.PRODUCT_URL = None
-            self.ALL_REVIEW_URL = None
-            self.SCRAPED_DATA = None
-            self.ANALYZED_DATA = None
-            self.FINAL_DATA = None
+            cls.PRODUCT_URL = None
+            cls.ALL_REVIEW_URL = None
+            cls.SCRAPED_DATA = None
+            cls.ANALYZED_DATA = None
+            cls.FINAL_DATA = None
 
     def __init__(self, url: str):
         self.AmSpiderConfig.PRODUCT_URL = url
