@@ -126,7 +126,7 @@ class AmScrapper:
         logger = Logger(script_name, line_no)
         logger.log_info('Downloading page URL : {}'.format(url))
         async with httpx.AsyncClient() as requester:
-            response = await requester.get(url, params=self.generate_header())
+            response = await requester.get(url, params=self.generate_header(), timeout=None)
         if response.status_code != httpx.codes.OK:
             # log failed to download the page(url)
             script_name = os.path.basename(__file__)
