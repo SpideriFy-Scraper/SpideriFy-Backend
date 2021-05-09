@@ -3,9 +3,11 @@ from flask_restful import Api
 from flask_sqlalchemy import SQLAlchemy
 from resources.product import FakeProduct
 from common.db import db
+from flask_cors import CORS
 
 
 app = Flask(__name__)
+cors = CORS(app, resources={r"/api/*": {"origins": "*"}})
 
 if app.config['ENV'] == 'production':
     app.config.from_object('config.ProductionConfig')
