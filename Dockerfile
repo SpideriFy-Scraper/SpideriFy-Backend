@@ -1,50 +1,38 @@
-# docker build -t spiderify-api:prod --network host . -f Dockerfile
-# docker run -d --name api-prod -v <Path-to>/common/sentiment_model/1:/app/common/sentiment_model/1 -p 8000:8080 spiderify-api:prod
-# docker system df -v
-# docker stats <container name>
-# docker logs <container name>
-
-# `python-base` sets up all our shared environment variables
-FROM python:3.8-slim-buster AS python-base
+FROM python:3.8-slim-buster
 
 LABEL Maintainer "Homayoon Sadeghi <homayoon.9171@gmail.com>"
 LABEL Vendor "SpideriFy"
 
-    # python
-ENV PYTHONUNBUFFERED=1 \
+ARG FLASK_ENV
+
+ENV FLASK_ENV=${FLASK_ENV} \
+    # build:
+    BUILD_ONLY_PACKAGES='wget' \
+    # python:
     PYTHONFAULTHANDLER=1 \
     PYTHONHASHSEED=random \
-    # prevents python creating .pyc files
+    PYTHONUNBUFFERED=1 \
     PYTHONDONTWRITEBYTECODE=1 \
-    # pip
-    PIP_NO_CACHE_DIR=off \
-    PIP_DISABLE_PIP_VERSION_CHECK=on \
+    # pip:
     PIP_DEFAULT_TIMEOUT=100 \
-    # poetry
-    # https://python-poetry.org/docs/configuration/#using-environment-variables
-    POETRY_VERSION=1.1.6 \
-    # make poetry install to this location
-    POETRY_HOME="/opt/poetry" \
-    # make poetry create the virtual environment in the project's root
-    # it gets named `.venv`
-    POETRY_VIRTUALENVS_IN_PROJECT=true \
-    # do not ask any interactive question
-    POETRY_NO_INTERACTION=1 \
-    # paths
-    # this is where our requirements + virtual environment will live
-    PYSETUP_PATH="/opt/pysetup" \
-    VENV_PATH="/opt/pysetup/.venv" \
+    PIP_DISABLE_PIP_VERSION_CHECK=1 \
+    PIP_NO_CACHE_DIR=1 \
     # tini:
     TINI_VERSION=v0.19.0 \
-    TINI_PATH="/usr/local/bin/tini"
+    # poetry
+    POETRY_VERSION=1.1.6 \
+    POETRY_CACHE_DIR='/var/cache/pypoetry' \
+    PATH="$PATH:/root/.poetry/bin"
 
+# install Some SSL Deps For Poetry
+RUN pip3 install --upgrade pip \
+    && pip3 install certifi \
+    && pip3 install ndg-httpsclient \
+    && pip3 install pyopenssl \
+    && pip3 install pyasn1
 
-# prepend poetry and venv to path
-ENV PATH="$POETRY_HOME/bin:$VENV_PATH/bin:$PATH"
-
-
-# `builder-base` stage is used to build deps + create our virtual environment
-FROM python-base as builder-base
+# System Deps:
+RUN chmod o+r /etc/resolv.conf
 RUN apt-get update -y && \
     apt-get upgrade -y && \
     apt-get install --no-install-recommends -y \
@@ -52,60 +40,46 @@ RUN apt-get update -y && \
     build-essential \
     curl \
     git \
-    wget \
     libpq-dev \
     apt-transport-https \
     ca-certificates \
     software-properties-common \
-    default-libmysqlclient-dev
-
-# install poetry - respects $POETRY_VERSION & $POETRY_HOME
-RUN curl -sSL https://raw.githubusercontent.com/sdispater/poetry/master/get-poetry.py | python
-
-# Installing `tini` utility:
-# https://github.com/krallin/tini
-RUN wget -O /usr/local/bin/tini "https://github.com/krallin/tini/releases/download/${TINI_VERSION}/tini" \
+    default-libmysqlclient-dev \
+    # Defining build-time-only dependencies:
+    $BUILD_ONLY_PACKAGES \
+    # Installing `tini` utility:
+    # https://github.com/krallin/tini
+    && wget -O /usr/local/bin/tini "https://github.com/krallin/tini/releases/download/${TINI_VERSION}/tini" \
     && chmod +x /usr/local/bin/tini \
-    && tini --version
+    && tini --version \
+    # Installing `poetry` package manager:
+    # https://github.com/python-poetry/poetry
+    && pip3 install "poetry==$POETRY_VERSION" \
+    # Removing build-time-only dependencies:
+    && apt-get remove -y $BUILD_ONLY_PACKAGES \
+    # Cleaning cache:
+    && apt-get purge -y --auto-remove -o APT::AutoRemove::RecommendsImportant=false \
+    && apt-get clean -y && rm -rf /var/lib/apt/lists/*
 
-# copy project requirement files here to ensure they will be cached.
-WORKDIR ${PYSETUP_PATH}
-COPY poetry.lock pyproject.toml ./
-
-# install runtime deps - uses $POETRY_VIRTUALENVS_IN_PROJECT internally
-RUN poetry install --no-dev
-
-
-# `development` image is used during development / testing
-FROM python-base as development
-ENV FLASK_ENV=development
-WORKDIR ${PYSETUP_PATH}
-
-# copy in our built poetry + venv
-COPY --from=builder-base ${POETRY_HOME} ${POETRY_HOME}
-COPY --from=builder-base ${PYSETUP_PATH} ${PYSETUP_PATH}
-
-# quicker install as runtime deps are already installed
-RUN poetry install
-
-# will become mountpoint of our code
-COPY . /app
 WORKDIR /app
+
+# Copy only requirements, to cache them in docker layer
+COPY poetry.lock pyproject.toml /app/
+ENV PYTHONPATH=${PYTHONPATH}:${PWD}
+
+
+# Project initialization:
+RUN poetry config virtualenvs.create false
+RUN echo "$FLASK_ENV" \
+  && poetry install \
+    $(if [ "$FLASK_ENV" = 'production' ]; then echo '--no-dev'; fi) \
+    --no-interaction --no-ansi \
+  # Cleaning poetry installation's cache for production:
+  && if [ "$FLASK_ENV" = 'production' ]; then rm -rf "$POETRY_CACHE_DIR" && pip3 uninstall --yes poetry; fi
+
+COPY . /app
+
 EXPOSE 8080
-
-CMD [ "python3", "app.py" ]
-
-
-# `production` image used for runtime
-FROM python-base as production
-ENV FLASK_ENV=production
-COPY --from=builder-base ${PYSETUP_PATH} ${PYSETUP_PATH}
-COPY --from=builder-base ${TINI_PATH} ${TINI_PATH}
-
-# will become mountpoint of our code
-COPY . /app
-WORKDIR /app
-EXPOSE 8000
 
 # We customize how our app is loaded with the custom entrypoint:
 ENTRYPOINT ["tini", "--"]

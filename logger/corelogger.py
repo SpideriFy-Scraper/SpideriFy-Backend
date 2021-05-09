@@ -1,14 +1,42 @@
 import logging
 
+log_type = {'warn': 'log_warning',
+            'info': 'log_info',
+            'debug': 'log_debug',
+            'error': 'log_error',
+            'critical': 'log_critical'
+            }
+
+
+# def log(script_name, line_no, message, type):
+#     logger = Logger(script_name, line_no)
+#     log_func = getattr(logger, log_type[type])
+#     log_func(message)
+
 
 class Logger:
-    def __init__(self, file, line_no):
-        self.logger = logging.getLogger(file)
-        self.file_name = file
+    def __init__(self, script_name, line_no, message, msg_type):
+        self.logger = logging.getLogger(script_name)
+        self.script_name = script_name
         self.line_no = line_no
         # Create handlers
         self.stream_handler = logging.StreamHandler()
         self.file_handler = logging.FileHandler('file.log')
+
+        if msg_type == 'warning':
+            self.log_warning(message)
+
+        if msg_type == 'info':
+            self.log_info(message)
+
+        if msg_type == 'debug':
+            self.log_debug(message)
+
+        if msg_type == 'error':
+            self.log_error(message)
+
+        if msg_type == 'critical':
+            self.log_critical(message)
 
     def log_warning(self, message):
         # Configure level and formatter and add it to handlers

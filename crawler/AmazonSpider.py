@@ -85,10 +85,7 @@ class AmazonSpider:
                 return None
         else:
             # log URL is not valid
-            script_name = os.path.basename(__file__)
-            line_no = currentframe().f_lineno + 2
-            logger = Logger(script_name, line_no)
-            logger.log_error("URL is not valid")
+            logger = Logger(os.path.basename(__file__), currentframe().f_lineno, 'URL is not valid', 'error')
             return None
 
         if sentiment:

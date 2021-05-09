@@ -6,7 +6,7 @@ import asyncio
 from selectorlib import Extractor
 import json
 import csv
-from logger.Logger import Logger
+from logger.corelogger import Logger
 from inspect import currentframe, getframeinfo
 import os.path
 from textblob import TextBlob
@@ -99,10 +99,8 @@ class AmScrapper:
         Return dict
         """
         # log generating random header user-agent
-        script_name = os.path.basename(__file__)
-        line_no = currentframe().f_lineno + 2
-        logger = Logger(script_name, line_no)
-        logger.log_info('Generating random header user-agent')
+        logger = Logger(os.path.basename(__file__), currentframe().f_lineno, 'Generating random header user-agent',
+                        'info')
 
         n_header = self.BASE_HEADER.copy()
         n_header['user-agent'] = user_agent.generate_user_agent()
@@ -119,26 +117,19 @@ class AmScrapper:
 
         """
         # log : Downloading page URL : url
-        script_name = os.path.basename(__file__)
-        line_no = currentframe().f_lineno + 2
-        logger = Logger(script_name, line_no)
-        logger.log_info('Downloading page URL : {}'.format(url))
+        logger = Logger(os.path.basename(__file__), currentframe().f_lineno, 'Downloading page URL : {}'.format(url),
+                        'info')
         async with httpx.AsyncClient() as requester:
             response = await requester.get(url, params=self.generate_header())
         if response.status_code != httpx.codes.OK:
             # log failed to download the page(url)
-            script_name = os.path.basename(__file__)
-            line_no = currentframe().f_lineno + 2
-            logger = Logger(script_name, line_no)
-            logger.log_error('Failed to download the page({})'.format(url))
+            logger = Logger(os.path.basename(__file__), currentframe().f_lineno,
+                            'Failed to download the page({})'.format(url), 'error')
             if response.status_code >= 500:
-                script_name = os.path.basename(__file__)
-                line_no = currentframe().f_lineno + 2
-                logger = Logger(script_name, line_no)
-                logger.log_error(
-                    'Page was blocked by Amazon! Please try using better proxies!')
                 # log Page was blocked by Amazon.
                 # Please try using better proxies.
+                logger = Logger(os.path.basename(__file__), currentframe().f_lineno,
+                                'Page was blocked by Amazon! Please try using better proxies!', 'error')
             return None
 
         return response
@@ -156,54 +147,36 @@ class AmScrapper:
 
         """
         # log starting review extraction
-        script_name = os.path.basename(__file__)
-        line_no = currentframe().f_lineno + 2
-        logger = Logger(script_name, line_no)
-        logger.log_info('Starting review extraction.')
+        logger = Logger(os.path.basename(__file__), currentframe().f_lineno, 'Starting review extraction.', 'info')
 
         # log creating all URLs (Reviews)
-        script_name = os.path.basename(__file__)
-        line_no = currentframe().f_lineno + 2
-        logger = Logger(script_name, line_no)
-        logger.log_info('Creating all URLs (Reviews)')
+        logger = Logger(os.path.basename(__file__), currentframe().f_lineno, 'Creating all URLs (Reviews)', 'info')
 
         urls = [
             self.Review.URL + f"&pageNumber={i}" for i in range(1, (max_reviews // 10) + 1)]
         # log creating event loop (Reviews)
-        script_name = os.path.basename(__file__)
-        line_no = currentframe().f_lineno + 2
-        logger = Logger(script_name, line_no)
-        logger.log_info('creating event loop (Reviews)')
+        logger = Logger(os.path.basename(__file__), currentframe().f_lineno, 'creating event loop (Reviews)', 'info')
 
         tasks = []
         for link in urls:
             tasks.append(self.requester(link))
         # log waiting for loop to complete (Reviews)
-        script_name = os.path.basename(__file__)
-        line_no = currentframe().f_lineno + 2
-        logger = Logger(script_name, line_no)
-        logger.log_info('waiting for loop to complete (Reviews)')
+        logger = Logger(os.path.basename(__file__), currentframe().f_lineno, 'waiting for loop to complete (Reviews)',
+                        'info')
 
         data = await asyncio.gather(*tasks, return_exceptions=True)
         # log  closing loop (Reviews)
-        script_name = os.path.basename(__file__)
-        line_no = currentframe().f_lineno + 2
-        logger = Logger(script_name, line_no)
-        logger.log_info('closing loop (Reviews)')
+        logger = Logger(os.path.basename(__file__), currentframe().f_lineno, 'closing loop (Reviews)', 'info')
 
         if data is None:
             # log stoping review extractor
-            script_name = os.path.basename(__file__)
-            line_no = currentframe().f_lineno + 2
-            logger = Logger(script_name, line_no)
-            logger.log_info('stoping review extractor')
+            logger = Logger(os.path.basename(__file__), currentframe().f_lineno, 'stoping review extractor', 'info')
+
             return False
         # log extracting data... (Reviews)
         # loop over all scaped pages
-        script_name = os.path.basename(__file__)
-        line_no = currentframe().f_lineno + 2
-        logger = Logger(script_name, line_no)
-        logger.log_info('extracting data... (Reviews). ')
+        logger = Logger(os.path.basename(__file__), currentframe().f_lineno, 'extracting data... (Reviews).', 'info')
+
         for review_page in data:
             if review_page is None:
                 continue
@@ -238,23 +211,17 @@ class AmScrapper:
         the data and store it in Product class
         """
         # log start product extraction
-        script_name = os.path.basename(__file__)
-        line_no = currentframe().f_lineno + 2
-        logger = Logger(script_name, line_no)
-        logger.log_info('start product extraction')
+        logger = Logger(os.path.basename(__file__), currentframe().f_lineno, 'start product extraction', 'info')
+
         data = await self.requester(self.Product.URL)
         if data is None:
             # Log stoping product extractor
-            script_name = os.path.basename(__file__)
-            line_no = currentframe().f_lineno + 2
-            logger = Logger(script_name, line_no)
-            logger.log_info('stopping product extractor')
+            logger = Logger(os.path.basename(__file__), currentframe().f_lineno, 'stopping product extractor', 'info')
+
             return False
         # log extracting data ...(product)
-        script_name = os.path.basename(__file__)
-        line_no = currentframe().f_lineno + 2
-        logger = Logger(script_name, line_no)
-        logger.log_info('extracting data ...(product)')
+        logger = Logger(os.path.basename(__file__), currentframe().f_lineno, 'extracting data ...(product)', 'info')
+
         extracted_page = self.Product.PRODUCT_EXTRACTOR_OBJ.extract(data.text)
         self.Product.NORMALIZED_PRODUCT_DATA["PRICE"] = extracted_page["price"]
         self.Product.NORMALIZED_PRODUCT_DATA["PRODUCT_URL"] = self.Product.URL
@@ -290,18 +257,14 @@ class AmScrapper:
         max_reviews : int
         """
         # log starting event loop of Product and Review extraction  (extraction_wrapper)
-        script_name = os.path.basename(__file__)
-        line_no = currentframe().f_lineno + 2
-        logger = Logger(script_name, line_no)
-        logger.log_info(
-            'starting event loop of Product and Review extraction  (extraction_wrapper)')
+        logger = Logger(os.path.basename(__file__), currentframe().f_lineno,
+                        'starting event loop of Product and Review extraction  (extraction_wrapper)', 'info')
+
         results = await asyncio.gather(
             self.extract_review(max_reviews), self.extract_product())
         # log checking the extraction results
-        script_name = os.path.basename(__file__)
-        line_no = currentframe().f_lineno + 2
-        logger = Logger(script_name, line_no)
-        logger.log_info('checking the extraction results')
+        logger = Logger(os.path.basename(__file__), currentframe().f_lineno, 'checking the extraction results', 'info')
+
         # this part check for result of each extractor func, if all returned True the
         # NORMALIZED_DATA will be created of merging two gathered data.
         if results[0] and results[1]:
@@ -320,10 +283,8 @@ class AmScrapper:
         * max_reviews : int = 30
         """
         # log scrapper has started
-        script_name = os.path.basename(__file__)
-        line_no = currentframe().f_lineno + 2
-        logger = Logger(script_name, line_no)
-        logger.log_info('scrapper has started')
+        logger = Logger(os.path.basename(__file__), currentframe().f_lineno, 'scrapper has started', 'info')
+
         result = asyncio.run(self.extraction_wrapper(max_reviews))
         if result:
             return getattr(self, export_type)()
@@ -340,6 +301,7 @@ class AmScrapper:
         line_no = currentframe().f_lineno + 2
         logger = Logger(script_name, line_no)
         logger.log_info('dumping json')
+
         return json.dumps(self.NORMALIZED_DATA)
 
     def csv_file(self) -> str:
@@ -348,10 +310,8 @@ class AmScrapper:
         ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
         """
         # log exporting csv file
-        script_name = os.path.basename(__file__)
-        line_no = currentframe().f_lineno + 2
-        logger = Logger(script_name, line_no)
-        logger.log_info('exporting csv file')
+        logger = Logger(os.path.basename(__file__), currentframe().f_lineno, 'exporting csv file', 'info')
+
         with open("/fixtures/Scraped-data.csv", 'w', newline='') as writefile:
             csv_writer = csv.writer(writefile, delimiter=',')
             for reviews in self.NORMALIZED_DATA.items():
@@ -364,10 +324,8 @@ class AmScrapper:
         ++++++++++++++++++++++
         """
         # log exporting dictionary obj
-        script_name = os.path.basename(__file__)
-        line_no = currentframe().f_lineno + 2
-        logger = Logger(script_name, line_no)
-        logger.log_info('exporting dictionary obj')
+        logger = Logger(os.path.basename(__file__), currentframe().f_lineno, 'exporting dictionary obj', 'info')
+
         return self.NORMALIZED_DATA
 
     def json_file(self) -> str:
@@ -376,10 +334,8 @@ class AmScrapper:
         ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
         """
         # log exporting json file
-        script_name = os.path.basename(__file__)
-        line_no = currentframe().f_lineno + 2
-        logger = Logger(script_name, line_no)
-        logger.log_info('exporting json file')
+        logger = Logger(os.path.basename(__file__), currentframe().f_lineno, 'exporting json file', 'info')
+
         with open("crawler\\fixtures\\Scraped-data2.json", 'w') as writfile:
             json.dump(self.NORMALIZED_DATA, writfile)
         return "crawler\\fixtures\\Scraped-data.json"
