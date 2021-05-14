@@ -1,7 +1,8 @@
 from flask import Flask
 from flask_restful import Api
 from flask_sqlalchemy import SQLAlchemy
-from resources.product import FakeProduct
+from resources.product import *
+from resources.user import *
 from common.db import db
 from flask_cors import CORS
 
@@ -24,7 +25,12 @@ api = Api(app)
 # api.add_resource(ProductList, '/api/v1/<string:username>/product')
 # api.add_resource(CommentList, '/api/v1/<string:username>/<string:asin>/comment')
 
-api.add_resource(FakeProduct, '/api/v1/product')
+api.add_resource(NewProduct, '/new-product')
+api.add_resource(Login, '/user/login')
+api.add_resource(ProductList, '/products')
+api.add_resource(Product, '/product/<string:asin>')
+api.add_resource(CommentsList, '/product/<string:asin>/comments')
+api.add_resource(LastProducts, '/last-products')
 
 
 if __name__ == '__main__':
