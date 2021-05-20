@@ -4,6 +4,10 @@ from flask_sqlalchemy import SQLAlchemy
 from resources.product import FakeProduct
 from common.db import db
 from flask_cors import CORS
+from flask_jwt_extended import JWTManager
+from controllers.LogIn import LogIn
+from controllers.SignIn import SignIn
+
 
 
 app = Flask(__name__)
@@ -18,8 +22,10 @@ else:
 
 
 api = Api(app)
+jwt = JWTManager(app)
 
-
+api.add_resource(LogIn, '/login')
+api.add_resource(SignIn, '/SignIn')
 # api.add_resource(Product, '/api/v1/<string:username>/product/<string:asin>')
 # api.add_resource(ProductList, '/api/v1/<string:username>/product')
 # api.add_resource(CommentList, '/api/v1/<string:username>/<string:asin>/comment')

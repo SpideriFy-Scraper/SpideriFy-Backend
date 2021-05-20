@@ -7,6 +7,7 @@ class Config(object):
     TESTING = False
     CSRF_ENABLED = True
     SECRET_KEY = config["SECRET_KEY"]
+    JWT_SECRET_KEY = "Spiderify_Defender"
     # Config Database
     SQLALCHEMY_DATABASE_URI = f'mysql+pymysql://{config["DB_USER"]}:{config["DB_PASSWORD"]}@localhost:3306/{config["DB_NAME"]}'
     SQLALCHEMY_TRACK_MODIFICATIONS = False
