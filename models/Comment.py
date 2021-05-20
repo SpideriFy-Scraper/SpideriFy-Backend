@@ -1,7 +1,6 @@
 from common.db import db
-from sqlalchemy import String, Integer, Boolean, Column, DateTime, Date, BigInteger,Text, ForeignKey ,Float
+from sqlalchemy import String, Integer, Boolean, Column, DateTime, Date, BigInteger, Text, ForeignKey, Float
 from datetime import datetime
-
 
 
 class CommentModel(db.Model):
@@ -21,10 +20,12 @@ class CommentModel(db.Model):
     date = Column(Date, nullable=False)
     sentiment = Column(String(32), nullable=True)
     product_id = Column(BigInteger, db.ForeignKey('products.id'))
-    created_at = Column(DateTime(timezone=True), default=db.func.now(), onupdate=db.func.now())
-    updated_at = Column(DateTime(timezone=True), default=db.func.now(), onupdate=db.func.now())
+    created_at = Column(DateTime(timezone=True),
+                        default=db.func.now(), onupdate=db.func.now())
+    updated_at = Column(DateTime(timezone=True),
+                        default=db.func.now(), onupdate=db.func.now())
 
-    def __init__(author, title, content, is_verified, variant, rating, date, product_id):
+    def __init__(self, author, title, content, is_verified, variant, rating, date, product_id):
         self.author = author
         self.title = title
         self.content = content
@@ -32,4 +33,3 @@ class CommentModel(db.Model):
         self.variant = rating
         self.date = date
         self.product_id = product_id
-
