@@ -19,6 +19,7 @@ class CommentModel(db.Model):
     rating = Column(Float, nullable=True)
     date = Column(Date, nullable=False)
     sentiment = Column(String(32), nullable=True)
+    summerized_content = Column(Text, nullable=True)
     product_id = Column(BigInteger, db.ForeignKey('products.id'))
     created_at = Column(DateTime(timezone=True),
                         default=db.func.now(), onupdate=db.func.now())
