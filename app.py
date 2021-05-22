@@ -1,15 +1,15 @@
 from flask import Flask
 from flask_restful import Api
-from flask_sqlalchemy import SQLAlchemy
-from resources.product import *
-from resources.user import *
+from resources.product import Product, ProductsList, NewProduct, LastProducts
+from resources.comment import CommentsList
+from resources.user import Login, Register
 from common.db import db
 from flask_cors import CORS
 from flask_jwt_extended import JWTManager
 
 
-
 app = Flask(__name__)
+jwt = JWTManager(app)
 cors = CORS(app, resources={r"/api/*": {"origins": "*"}})
 
 if app.config['ENV'] == 'production':
@@ -19,23 +19,15 @@ elif app.config['ENV'] == 'development':
 else:
     app.config.from_object('config.TestingConfig')
 
-
 api = Api(app)
-jwt = JWTManager(app)
 
-
-# api.add_resource(Product, '/api/v1/<string:username>/product/<string:asin>')
-# api.add_resource(ProductList, '/api/v1/<string:username>/product')
-# api.add_resource(CommentList, '/api/v1/<string:username>/<string:asin>/comment')
-
-api.add_resource(NewProduct, '/new-product')
-api.add_resource(SignUp, '/sign-up')
-api.add_resource(LogIn, '/user/login')
-api.add_resource(ProductList, '/products')
-api.add_resource(Product, '/product/<string:asin>')
-api.add_resource(CommentsList, '/product/<string:asin>/comments')
-api.add_resource(LastProducts, '/last-products')
-
+api.add_resource(NewProduct, '/api/v1/new-product')
+api.add_resource(Register, '/api/v1/user/register')
+api.add_resource(Login, '/api/v1/user/login')
+api.add_resource(ProductsList, '/api/v1/products')
+api.add_resource(Product, '/api/v1/product/<string:asin>')
+api.add_resource(CommentsList, '/api/v1/product/<string:asin>/comments')
+api.add_resource(LastProducts, '/api/v1/last-products')
 
 if __name__ == '__main__':
     db.init_app(app)
