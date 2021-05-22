@@ -1,6 +1,7 @@
 from common.db import db
 from sqlalchemy import String, Integer, Boolean, Column, DateTime, BigInteger
 from werkzeug.security import generate_password_hash, check_password_hash
+from app import jwt
 
 
 class UserModel(db.Model):
@@ -19,8 +20,10 @@ class UserModel(db.Model):
     phone_number = Column(String(10), nullable=True)
     is_active = Column(Boolean, default=True)
     is_admin = Column(Boolean, default=False)
-    created_at = Column(DateTime(timezone=True), default=db.func.now(), onupdate=db.func.now())
-    updated_at = Column(DateTime(timezone=True), default=db.func.now(), onupdate=db.func.now())
+    created_at = Column(DateTime(timezone=True),
+                        default=db.func.now(), onupdate=db.func.now())
+    updated_at = Column(DateTime(timezone=True),
+                        default=db.func.now(), onupdate=db.func.now())
 
     def __init__(self, username, first_name, last_name, email, password, phone_number, is_active, is_admin):
         self.username = username
@@ -32,7 +35,6 @@ class UserModel(db.Model):
         self.is_active = is_active
         self.is_admin = is_admin
 
-
     def set_password(self, password):
         return generate_password_hash(password)
 
@@ -43,3 +45,13 @@ class UserModel(db.Model):
         """Represent instance as a unique string."""
         return '<User({username!r})>'.format(username=self.username)
 
+
+@jwt.user_identity_loader
+def user_identity_lookup(user):
+    return user.id
+
+
+@jwt.user_lookup_loader
+def user_lookup_callback(_jwt_header, jwt_data):
+    identity = jwt_data["sub"]
+    return UserModel.query.filter_by(id=identity).one_or_none()

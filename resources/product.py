@@ -4,9 +4,19 @@ from models.User import UserModel
 from common.db import db
 from crawler.SpiderifyWrapper import SpiderifyWrapper
 from flask import jsonify, Response, json
+from flask_jwt_extended import jwt_required
+from models.User import db
 
+
+# @jwt_required()
+
+# @jwt.user_identity_loader
+# def user_identity_lookup(user):
+#     return user.id
 
 # ("/product/<string:asin>") - -> class Product - -> GET, POST, DELETE, PUT
+
+
 class Product(Resource):
     def get(self, asin):
         """
@@ -28,9 +38,10 @@ class Product(Resource):
 
 
 # ("/products") - -> class ProductList - -> only GET
+@jwt_required()
 class ProductList(Resource):
     def get(self):
-        pass
+        user_product = ProductModel.query
 
 
 # ("/product/<string:asin>/comments")--> class CommentsList - -> GET
