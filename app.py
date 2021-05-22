@@ -29,7 +29,7 @@ jwt = JWTManager(app)
 # api.add_resource(CommentList, '/api/v1/<string:username>/<string:asin>/comment')
 
 api.add_resource(NewProduct, '/new-product')
-api.add_resource(SignIn, '/SignIn')
+api.add_resource(SignUp, '/sign-up')
 api.add_resource(LogIn, '/user/login')
 api.add_resource(ProductList, '/products')
 api.add_resource(Product, '/product/<string:asin>')
