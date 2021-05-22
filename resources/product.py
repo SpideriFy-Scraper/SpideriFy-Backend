@@ -4,8 +4,8 @@ from models.User import UserModel
 from common.db import db
 from crawler.SpiderifyWrapper import SpiderifyWrapper
 from flask import jsonify, Response, json
-from flask_jwt_extended import jwt_required
-from models.User import db
+from flask_jwt_extended import jwt_required, current_user
+
 
 
 # @jwt_required()
@@ -39,15 +39,25 @@ class Product(Resource):
 
 # ("/products") - -> class ProductList - -> only GET
 @jwt_required()
-class ProductList(Resource):
+class ProductsList(Resource):
     def get(self):
-        user_product = ProductModel.query
+        user_products = ProductModel.query.join(UserModel, ProductModel.user_id == UserModel.id) \
+            .filter(ProductModel.user_id == current_user.id).all()
+        list_product = []
+        for product in user_products:
+            data = {
+                'asin': product.asin,
+                'name': product.name,
+                'price': product.price,
+                'rating': product.rating,
+                'description': product.description,
+            }
+            list_product.append(data)
+        return jsonify({'products': list_product}), 200
 
 
-# ("/product/<string:asin>/comments")--> class CommentsList - -> GET
-class CommentsList(Resource):
-    def get(self):
-        pass
+
+
 
 # ("/new-product") -> body -> url: str = URL // / JWT = ?
 
