@@ -130,6 +130,7 @@ celerybeat.pid
 
 # .env
 .env
+.docker-compose.env
 .spiderify.env
 .env/
 .venv/
