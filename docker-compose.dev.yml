@@ -1,55 +1,56 @@
-version: '3.7'
+version: '3.9'
 
 services:
-  db:
+  mysql:
+    image: mysql:latest
+    container_name: mysql
     restart: on-failure
-    image: mysql:8.0
-    container_name: db
     # command: --default-authentication-plugin=mysql_native_password
-    # ports:
-    #   - "127.0.0.1:3306:3306"
-    volumes:
-      - "db-data:/var/lib/mysql"
-      - "./mysql/scripts:/docker-entrypoint-initdb.d/:ro"
-      - "./mysql/conf.d:/etc/mysql/conf.d:ro"
     env_file:
-      - .env
+      - .docker-compose.env
     environment:
       MYSQL_DATABASE: ${DB_NAME}
       MYSQL_USER: ${DB_USER}
       MYSQL_PASSWORD: ${DB_PASSWORD}
       MYSQL_ROOT_PASSWORD: ${DB_PASSWORD}
       # MYSQL_ROOT_HOST: "%"
-  api:
-    restart: unless-stopped
+    volumes:
+      - "db-data:/var/lib/mysql"
+      - "./mysql/scripts:/docker-entrypoint-initdb.d/:ro"
+      - "./mysql/conf.d:/etc/mysql/conf.d:ro"
+    # ports:
+    #   - "127.0.0.1:3306:3306"
+  spiderify-api:
     build:
       context: .
       dockerfile: Dockerfile.dev
       args:
         FLASK_ENV: production
-    image: spiderify-api:local
+    image: spiderify-api:${TAG:-local}
     container_name: spiderify-api
+    restart: unless-stopped
     tty: true
     stdin_open: true
     command: ["python3", "app.py"]
-    ports:
-      - "8080:8080"
+    # if You Want To Serve Your Model Embedded In Your API Backend UnCommnet These Configs
     # volumes:
     #   - "./common/sentiment_model/1:/app/common/sentiment_model/1:ro"
+    ports:
+      - "8080:8080"
     depends_on:
       - db
   sentiment:
-    restart: unless-stopped
     image: tensorflow/serving:latest
     container_name: sentiment
-    # ports:
-    #   - "127.0.0.1:8501:8501"
-    volumes:
-      - "./common/sentiment_model:/models/sentiment:ro"
+    restart: unless-stopped
     env_file:
-      - .env
+      - .docker-compose.env
     environment:
       MODEL_NAME: ${MODEL_NAME}
+    volumes:
+      - "./common/sentiment_model:/models/sentiment:ro"
+    # ports:
+    #   - "127.0.0.1:8501:8501"
     depends_on:
       - api
       - db
