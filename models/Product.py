@@ -16,7 +16,6 @@ class ProductModel(db.Model):
     price = Column(String(50), nullable=True)
     rating = Column(Float, nullable=True)
     description = Column(Text, nullable=True)
-    summerized_reviews = Column(Text, nullable=True)
     user_id = Column(BigInteger, db.ForeignKey('users.id'))
     created_at = Column(DateTime(timezone=True),
                         default=db.func.now(), onupdate=db.func.now())

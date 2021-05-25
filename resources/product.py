@@ -4,9 +4,19 @@ from models.User import UserModel
 from common.db import db
 from crawler.SpiderifyWrapper import SpiderifyWrapper
 from flask import jsonify, Response, json
+from flask_jwt_extended import jwt_required, current_user
 
+
+
+# @jwt_required()
+
+# @jwt.user_identity_loader
+# def user_identity_lookup(user):
+#     return user.id
 
 # ("/product/<string:asin>") - -> class Product - -> GET, POST, DELETE, PUT
+
+
 class Product(Resource):
     def get(self, asin):
         """
@@ -28,15 +38,26 @@ class Product(Resource):
 
 
 # ("/products") - -> class ProductList - -> only GET
-class ProductList(Resource):
+@jwt_required()
+class ProductsList(Resource):
     def get(self):
-        pass
+        user_products = ProductModel.query.join(UserModel, ProductModel.user_id == UserModel.id) \
+            .filter(ProductModel.user_id == current_user.id).all()
+        list_product = []
+        for product in user_products:
+            data = {
+                'asin': product.asin,
+                'name': product.name,
+                'price': product.price,
+                'rating': product.rating,
+                'description': product.description,
+            }
+            list_product.append(data)
+        return jsonify({'products': list_product}), 200
 
 
-# ("/product/<string:asin>/comments")--> class CommentsList - -> GET
-class CommentsList(Resource):
-    def get(self):
-        pass
+
+
 
 # ("/new-product") -> body -> url: str = URL // / JWT = ?
 

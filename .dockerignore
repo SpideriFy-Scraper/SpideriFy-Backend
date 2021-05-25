@@ -5,6 +5,7 @@
 .mailmap
 # ignore all markdown files (md) beside all README*.md other than README-secret.md
 README.md
+LICENSE
 
 # CI
 .codeclimate.yml
@@ -16,6 +17,7 @@ README.md
 # Docker
 Dockerfile
 Dockerfile.env
+Dockerfile.dev
 docker-compose.yml
 docker-compose.dev.yml
 docker-compose.prod.yml
@@ -106,6 +108,6 @@ venv/
 */*/*.swp
 */*/*/*.swp
 
-# Ignore Sentiment Model
+# Ignore Sentiment Model & MYSQL Configurations
 common/sentiment_model/1
 mysql/
