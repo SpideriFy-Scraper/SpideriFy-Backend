@@ -1,10 +1,11 @@
-from crawler.AmScrapper import AmScrapper
-from urllib.parse import urlparse
-from crawler.AmSentimentAnalyzer import AmSentiment
-from logger.Logger import Logger
-from inspect import currentframe, getframeinfo
-import os.path
 import math
+import os.path
+from inspect import currentframe
+from urllib.parse import urlparse
+
+from crawler.AmScrapper import AmScrapper
+from crawler.AmSentimentAnalyzer import AmSentiment
+from logger.corelogger import Logger
 
 
 class AmazonSpider:
@@ -117,18 +118,14 @@ class AmazonSpider:
         Merge Two ANALYZED_DATA and SCRAPED_DATA and filling FINAL_DATA
         +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
         """
-        script_name = os.path.basename(__file__)
-        line_no = currentframe().f_lineno + 2
-        logger = Logger(script_name, line_no)
-        logger.log_info("Merging Scraped and Analyzed Data...")
+        logger = Logger(os.path.basename(__file__), currentframe().f_lineno, 'Merging Scraped and Analyzed Data...',
+                        'info')
 
         self.AmSpiderConfig.FINAL_DATA = self.AmSpiderConfig.SCRAPED_DATA.copy()
 
         if self.AmSpiderConfig.ANALYZED_DATA is None:
             script_name = os.path.basename(__file__)
-            line_no = currentframe().f_lineno + 2
-            logger = Logger(script_name, line_no)
-            logger.log_info("Skipping Merging... ")
+            logger = Logger(os.path.basename(__file__), currentframe().f_lineno, 'Skipping Merging...', 'info')
 
             return
 
@@ -162,8 +159,8 @@ class AmazonSpider:
         obj = urlparse(url)
         parts = obj.path.split('/')
         review_url = obj.scheme + "://" + obj.netloc + "/" + \
-            parts[1] + "/product-reviews/" + parts[3] + \
-            "/ie=UTF8&reviewerType=all_reviews"
+                     parts[1] + "/product-reviews/" + parts[3] + \
+                     "/ie=UTF8&reviewerType=all_reviews"
         return review_url
 
     def call_scraper(self, all_review_url: str, product_url: str):
@@ -190,3 +187,12 @@ class AmazonSpider:
 
     def call_summarizer(self):
         pass
+
+    def tester_test(self):
+        return 4
+
+
+if __name__ == "__main__":
+    spider = AmazonSpider(
+        url="https://www.amazon.com/HP-Business-Dual-core-Bluetooth-Legendary/product-reviews/B07VMDCLXV/ref=cm_cr_dp_d_show_all_btm?ie=UTF8&reviewerType=all_reviews")
+    spider.run_spider()

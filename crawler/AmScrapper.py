@@ -1,15 +1,15 @@
-from asyncio.events import get_event_loop
-from ssl import HAS_NEVER_CHECK_COMMON_NAME
-import user_agent
-import httpx
 import asyncio
-from selectorlib import Extractor
-import json
 import csv
-from logger.corelogger import Logger
-from inspect import currentframe, getframeinfo
+import json
 import os.path
+from inspect import currentframe
+
+import httpx
+import user_agent
+from selectorlib import Extractor
 from textblob import TextBlob
+
+from logger.corelogger import Logger
 
 
 class AmScrapper:
@@ -51,15 +51,13 @@ class AmScrapper:
         * NORMALIZED_PRODUCT_DATA
         """
         URL: str = None
-        PRODUCT_EXTRACTOR_OBJ = Extractor.from_yaml_file(
-            'crawler/pro-selectors.yml')
+        PRODUCT_EXTRACTOR_OBJ = Extractor.from_yaml_file('crawler/pro-selectors.yml')
         NORMALIZED_PRODUCT_DATA: dict = {}
 
         @classmethod
         def clean_attributes(cls):
             cls.URL = None
-            cls.PRODUCT_EXTRACTOR_OBJ = Extractor.from_yaml_file(
-                'crawler/pro-selectors.yml')
+            cls.PRODUCT_EXTRACTOR_OBJ = Extractor.from_yaml_file('crawler/pro-selectors.yml')
             cls.NORMALIZED_PRODUCT_DATA = {}
 
     class Review:
@@ -299,10 +297,7 @@ class AmScrapper:
         +++++++++++++++++++++++++++++++++++++++
         """
         # log dumping json
-        script_name = os.path.basename(__file__)
-        line_no = currentframe().f_lineno + 2
-        logger = Logger(script_name, line_no)
-        logger.log_info('dumping json')
+        logger = Logger(os.path.basename(__file__), currentframe().f_lineno, 'dumping json', 'info')
 
         return json.dumps(self.NORMALIZED_DATA)
 

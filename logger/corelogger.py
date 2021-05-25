@@ -21,7 +21,7 @@ class Logger:
         self.line_no = line_no
         # Create handlers
         self.stream_handler = logging.StreamHandler()
-        self.file_handler = logging.FileHandler('file.log')
+        self.file_handler = logging.FileHandler('logger\\file.log')
 
         if msg_type == 'warning':
             self.log_warning(message)
