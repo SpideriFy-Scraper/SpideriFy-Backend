@@ -5,6 +5,7 @@ from urllib.parse import urlparse
 
 from crawler.AmScrapper import AmScrapper
 from crawler.AmSentimentAnalyzer import AmSentiment
+from crawler.Summarization import Summarization
 from logger.corelogger import Logger
 
 
@@ -35,6 +36,7 @@ class AmazonSpider:
 
         AM_SENT = None
         AM_SCRAPER = None
+        AM_SUMMARIZER = None
         AMAZON_DOMAINS = [
             "amazon.com.br",
             "amazon.ca",
@@ -62,6 +64,7 @@ class AmazonSpider:
         SCRAPED_DATA = None
         ANALYZED_DATA = None
         FINAL_DATA = None
+        SUMMARIZED_DATA = None
 
         @classmethod
         def clean_attributes(cls):
@@ -94,11 +97,12 @@ class AmazonSpider:
             cls.SCRAPED_DATA = None
             cls.ANALYZED_DATA = None
             cls.FINAL_DATA = None
+            cls.SUMMARIZED_DATA = None
 
     def __init__(self, url: str):
         self.AmSpiderConfig.PRODUCT_URL = url
 
-    def run_spider(self, sentiment=True):
+    def run_spider(self, sentiment=True, summarize=True):
         """
         Run the Spider by calling url checkers and the other main components
         ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -111,10 +115,12 @@ class AmazonSpider:
             )
             if self.AmSpiderConfig.SCRAPED_DATA is None:
                 # log stopping Amazon spider
-                script_name = os.path.basename(__file__)
-                line_no = currentframe().f_lineno + 2
-                logger = Logger(script_name, line_no)
-                logger.log_warning("Stopping Amazon spider")
+                logger = Logger(
+                    os.path.basename(__file__),
+                    currentframe().f_lineno,
+                    "stopping Amazon spider",
+                    "warn",
+                )
                 return None
         else:
             # log URL is not valid
@@ -132,9 +138,25 @@ class AmazonSpider:
                     data=self.AmSpiderConfig.SCRAPED_DATA)
             )
 
+        if summarize:
+            self.AmSpiderConfig.SUMMARIZED_DATA = self.call_summarizer(
+                reviews=self.separate_reviews(
+                    data=self.AmSpiderConfig.SCRAPED_DATA)
+            )
+
         self.merge_analyzed_scraped_data()
 
         return self.AmSpiderConfig.FINAL_DATA
+
+    def separate_reviews(self, data: dict):
+        """
+        Create a dict of reviews from scrapped data
+        """
+        reviews = {}
+        for key in data.keys():
+            if key.startswith("REVIEW #"):
+                reviews[key] = data[key]["content"]
+        return reviews
 
     def dict_to_list_reviews(self, data: dict):
         """
@@ -163,19 +185,41 @@ class AmazonSpider:
 
         self.AmSpiderConfig.FINAL_DATA = self.AmSpiderConfig.SCRAPED_DATA.copy()
 
-        if self.AmSpiderConfig.ANALYZED_DATA is None:
+        if not self.AmSpiderConfig.SUMMARIZED_DATA is None:
             logger = Logger(
                 os.path.basename(__file__),
                 currentframe().f_lineno,
-                "Skipping Merging...",
+                "Merging Summarized Data with Scrapped Data...",
+                "info",
+            )
+            for key in self.AmSpiderConfig.SUMMARIZED_DATA.keys():
+                self.AmSpiderConfig.FINAL_DATA[key]["Summary"] = self.AmSpiderConfig.SUMMARIZED_DATA[key]
+
+        else:
+            logger = Logger(
+                os.path.basename(__file__),
+                currentframe().f_lineno,
+                "Skipping Merging Summarized Data with Scrapped Data...",
                 "info",
             )
 
-            return
-
-        for i in range(len(self.CUSTOM_SORT)):
-            self.AmSpiderConfig.FINAL_DATA[self.CUSTOM_SORT[i]]["sentiment"] = str(
-                self.sigmoid(self.AmSpiderConfig.ANALYZED_DATA[i][0])
+        if not self.AmSpiderConfig.ANALYZED_DATA is None:
+            logger = Logger(
+                os.path.basename(__file__),
+                currentframe().f_lineno,
+                "Merging Analyzed data with Scrapped Data...",
+                "info",
+            )
+            for i in range(len(self.CUSTOM_SORT)):
+                self.AmSpiderConfig.FINAL_DATA[self.CUSTOM_SORT[i]]["sentiment"] = str(
+                    self.sigmoid(self.AmSpiderConfig.ANALYZED_DATA[i][0])
+                )
+        else:
+            logger = Logger(
+                os.path.basename(__file__),
+                currentframe().f_lineno,
+                "Skipping Merging Analyzed Data with Scrapped Data...",
+                "info",
             )
 
     def sigmoid(self, grade):
@@ -233,13 +277,19 @@ class AmazonSpider:
         self.AmSpiderConfig.AM_SENT = AmSentiment(None)
         return self.AmSpiderConfig.AM_SENT.sent_analyz(review_list)
 
+    def call_summarizer(self, reviews):
+        """
+        Create the Summarization Object and call the call_summarization_service func
+        """
+        self.AmSpiderConfig.AM_SUMMARIZER = Summarization(reviews)
+        return self.AmSpiderConfig.AM_SUMMARIZER.call_summarization_service(
+            reviews)
+
     def clean_attributes(self):
         self.AmSpiderConfig.AM_SCRAPER.clean_attributes()
+        self.AmSpiderConfig.AM_SUMMARIZER.clean_attributes()
         self.CUSTOM_SORT.clear()
         self.AmSpiderConfig.clean_attributes()
-
-    def call_summarizer(self):
-        pass
 
     def tester_test(self):
         return 4
