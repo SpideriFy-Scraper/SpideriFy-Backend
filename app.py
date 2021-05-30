@@ -1,12 +1,12 @@
 from flask import Flask
-from flask_restful import Api
-from resources.product import Product, ProductsList, NewProduct, LastProducts
-from resources.comment import CommentsList
-from resources.user import Login, Register
-from common.db import db
 from flask_cors import CORS
 from flask_jwt_extended import JWTManager
+from flask_restful import Api
 
+from common.db import db
+from resources.comment import CommentsList
+from resources.product import LastProducts, NewProduct, Product, ProductsList
+from resources.user import Login, Register
 
 app = Flask(__name__)
 jwt = JWTManager(app)

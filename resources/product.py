@@ -1,11 +1,11 @@
+from flask import Response, json, jsonify
+from flask_jwt_extended import current_user, jwt_required
 from flask_restful import Resource, reqparse
-from models.Product import ProductModel
-from models.User import UserModel
+
 from common.db import db
 from crawler.SpiderifyWrapper import SpiderifyWrapper
-from flask import jsonify, Response, json
-from flask_jwt_extended import jwt_required, current_user
-
+from models.Product import ProductModel
+from models.User import UserModel
 
 # @jwt_required()
 

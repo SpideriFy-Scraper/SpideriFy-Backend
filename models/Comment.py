@@ -1,6 +1,8 @@
-from common.db import db
-from sqlalchemy import String, Integer, Boolean, Column, DateTime, Date, BigInteger, Text, ForeignKey, Float
 from datetime import datetime
+
+from sqlalchemy import BigInteger, Boolean, Column, Date, DateTime, Float, ForeignKey, Integer, String, Text
+
+from common.db import db
 
 
 class CommentModel(db.Model):

@@ -1,4 +1,5 @@
-from unittest import TestCase, IsolatedAsyncioTestCase
+from unittest import IsolatedAsyncioTestCase, TestCase
+
 from crawler.AmScrapper import AmScrapper
 
 

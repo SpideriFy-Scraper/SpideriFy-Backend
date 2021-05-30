@@ -1,7 +1,8 @@
-from common.db import db
-from sqlalchemy import String, Integer, Boolean, Column, DateTime, BigInteger
-from werkzeug.security import generate_password_hash, check_password_hash
+from sqlalchemy import BigInteger, Boolean, Column, DateTime, Integer, String
+from werkzeug.security import check_password_hash, generate_password_hash
+
 from app import jwt
+from common.db import db
 
 
 class UserModel(db.Model):

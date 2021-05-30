@@ -1,5 +1,6 @@
+from sqlalchemy import BigInteger, Column, DateTime, Float, ForeignKey, Integer, String, Text
+
 from common.db import db
-from sqlalchemy import String, Integer, Column, DateTime, BigInteger, Float, ForeignKey, Text
 from models import User
 
 

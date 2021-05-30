@@ -1,5 +1,6 @@
 import math
 from unittest import TestCase
+
 from crawler.AmazonSpider import AmazonSpider
 
 
