@@ -15,6 +15,7 @@ class AmazonSpider:
     This class is responsible for calling Scraper, Sentiment Analyzer,
     Summarizer Components and URL validation Checking.
     """
+
     CUSTOM_SORT: list = []
 
     class AmSpiderConfig:
@@ -35,11 +36,26 @@ class AmazonSpider:
         AM_SENT = None
         AM_SCRAPER = None
         AMAZON_DOMAINS = [
-            "amazon.com.br", "amazon.ca", "amazon.com.mx", "amazon.com",
-            "amazon.cn", "amazon.in", "amazon.co.jp", "amazon.sg",
-            "amazon.com.tr", "amazon.ae", "amazon.sa", "amazon.fr",
-            "amazon.de", "amazon.it", "amazon.nl", "amazon.pl",
-            "amazon.es", "amazon.se", "amazon.co.uk", "amazon.com.au"
+            "amazon.com.br",
+            "amazon.ca",
+            "amazon.com.mx",
+            "amazon.com",
+            "amazon.cn",
+            "amazon.in",
+            "amazon.co.jp",
+            "amazon.sg",
+            "amazon.com.tr",
+            "amazon.ae",
+            "amazon.sa",
+            "amazon.fr",
+            "amazon.de",
+            "amazon.it",
+            "amazon.nl",
+            "amazon.pl",
+            "amazon.es",
+            "amazon.se",
+            "amazon.co.uk",
+            "amazon.com.au",
         ]
         PRODUCT_URL: str = None
         ALL_REVIEW_URL: str = None
@@ -52,11 +68,26 @@ class AmazonSpider:
             cls.AM_SENT = None
             cls.AM_SCRAPER = None
             cls.AMAZON_DOMAINS = [
-                "amazon.com.br", "amazon.ca", "amazon.com.mx", "amazon.com",
-                "amazon.cn", "amazon.in", "amazon.co.jp", "amazon.sg",
-                "amazon.com.tr", "amazon.ae", "amazon.sa", "amazon.fr",
-                "amazon.de", "amazon.it", "amazon.nl", "amazon.pl",
-                "amazon.es", "amazon.se", "amazon.co.uk", "amazon.com.au"
+                "amazon.com.br",
+                "amazon.ca",
+                "amazon.com.mx",
+                "amazon.com",
+                "amazon.cn",
+                "amazon.in",
+                "amazon.co.jp",
+                "amazon.sg",
+                "amazon.com.tr",
+                "amazon.ae",
+                "amazon.sa",
+                "amazon.fr",
+                "amazon.de",
+                "amazon.it",
+                "amazon.nl",
+                "amazon.pl",
+                "amazon.es",
+                "amazon.se",
+                "amazon.co.uk",
+                "amazon.com.au",
             ]
             cls.PRODUCT_URL = None
             cls.ALL_REVIEW_URL = None
@@ -76,7 +107,7 @@ class AmazonSpider:
             self.AmSpiderConfig.SCRAPED_DATA = self.call_scraper(
                 all_review_url=self.url_normalizer(
                     url=self.AmSpiderConfig.PRODUCT_URL),
-                product_url=self.AmSpiderConfig.PRODUCT_URL
+                product_url=self.AmSpiderConfig.PRODUCT_URL,
             )
             if self.AmSpiderConfig.SCRAPED_DATA is None:
                 # log stopping Amazon spider
@@ -87,7 +118,12 @@ class AmazonSpider:
                 return None
         else:
             # log URL is not valid
-            logger = Logger(os.path.basename(__file__), currentframe().f_lineno, 'URL is not valid', 'error')
+            logger = Logger(
+                os.path.basename(__file__),
+                currentframe().f_lineno,
+                "URL is not valid",
+                "error",
+            )
             return None
 
         if sentiment:
@@ -118,20 +154,29 @@ class AmazonSpider:
         Merge Two ANALYZED_DATA and SCRAPED_DATA and filling FINAL_DATA
         +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
         """
-        logger = Logger(os.path.basename(__file__), currentframe().f_lineno, 'Merging Scraped and Analyzed Data...',
-                        'info')
+        logger = Logger(
+            os.path.basename(__file__),
+            currentframe().f_lineno,
+            "Merging Scraped and Analyzed Data...",
+            "info",
+        )
 
         self.AmSpiderConfig.FINAL_DATA = self.AmSpiderConfig.SCRAPED_DATA.copy()
 
         if self.AmSpiderConfig.ANALYZED_DATA is None:
-            script_name = os.path.basename(__file__)
-            logger = Logger(os.path.basename(__file__), currentframe().f_lineno, 'Skipping Merging...', 'info')
+            logger = Logger(
+                os.path.basename(__file__),
+                currentframe().f_lineno,
+                "Skipping Merging...",
+                "info",
+            )
 
             return
 
         for i in range(len(self.CUSTOM_SORT)):
-            self.AmSpiderConfig.FINAL_DATA[self.CUSTOM_SORT[i]]["sentiment"] = \
-                str(self.sigmoid(self.AmSpiderConfig.ANALYZED_DATA[i][0]))
+            self.AmSpiderConfig.FINAL_DATA[self.CUSTOM_SORT[i]]["sentiment"] = str(
+                self.sigmoid(self.AmSpiderConfig.ANALYZED_DATA[i][0])
+            )
 
     def sigmoid(self, grade):
         return 1 / (1 + math.exp(-grade))
@@ -157,10 +202,17 @@ class AmazonSpider:
         if url.find("all_reviews") > 0:
             return url
         obj = urlparse(url)
-        parts = obj.path.split('/')
-        review_url = obj.scheme + "://" + obj.netloc + "/" + \
-                     parts[1] + "/product-reviews/" + parts[3] + \
-                     "/ie=UTF8&reviewerType=all_reviews"
+        parts = obj.path.split("/")
+        review_url = (
+            obj.scheme
+            + "://"
+            + obj.netloc
+            + "/"
+            + parts[1]
+            + "/product-reviews/"
+            + parts[3]
+            + "/ie=UTF8&reviewerType=all_reviews"
+        )
         return review_url
 
     def call_scraper(self, all_review_url: str, product_url: str):
@@ -169,9 +221,10 @@ class AmazonSpider:
         ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
         """
         self.AmSpiderConfig.AM_SCRAPER = AmScrapper(
-            all_review_url, product_url=product_url, headers=None)
+            all_review_url, product_url=product_url, headers=None
+        )
 
-        return self.AmSpiderConfig.AM_SCRAPER.scrap('dict')
+        return self.AmSpiderConfig.AM_SCRAPER.scrap("dict")
 
     def call_sentiment_analyzer(self, review_list: list):
         """
@@ -194,5 +247,6 @@ class AmazonSpider:
 
 if __name__ == "__main__":
     spider = AmazonSpider(
-        url="https://www.amazon.com/HP-Business-Dual-core-Bluetooth-Legendary/product-reviews/B07VMDCLXV/ref=cm_cr_dp_d_show_all_btm?ie=UTF8&reviewerType=all_reviews")
+        url="https://www.amazon.com/HP-Business-Dual-core-Bluetooth-Legendary/product-reviews/B07VMDCLXV/ref=cm_cr_dp_d_show_all_btm?ie=UTF8&reviewerType=all_reviews"
+    )
     spider.run_spider()
