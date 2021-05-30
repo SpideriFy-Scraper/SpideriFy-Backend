@@ -9,9 +9,9 @@ load_model = True
 
 def import_tens():
     global tf, hub, text
-    tf = __import__('tensorflow')
-    hub = __import__('tensorflow_hub')
-    text = __import__('tensorflow_text')
+    tf = __import__("tensorflow")
+    hub = __import__("tensorflow_hub")
+    text = __import__("tensorflow_text")
 
 
 def initialize_sentiment():
@@ -42,6 +42,7 @@ class AmSentiment:
             response = await requester.post(
                 url="http://sentiment:8501/v1/models/sentiment:predict",
                 data=json.dumps(content),
-                timeout=None)
+                timeout=None,
+            )
             result = json.loads(response.text)
             return result["predictions"]
