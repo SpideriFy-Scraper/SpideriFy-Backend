@@ -1,0 +1,64 @@
+version: '3.9'
+
+services:
+  mysql:
+    image: mysql:latest
+    container_name: mysql
+    restart: on-failure
+    env_file:
+      - .docker-compose.env
+    environment:
+      MYSQL_DATABASE: ${DB_NAME}
+      MYSQL_USER: ${DB_USER}
+      MYSQL_PASSWORD: ${DB_PASSWORD}
+      MYSQL_ROOT_PASSWORD: ${DB_PASSWORD}
+      MYSQL_ROOT_HOST: "%"
+    healthcheck:
+      test: ["CMD-SHELL", "mysqladmin -h 'localhost' -u root -p${ROOT_PASS} ping --silent"]
+      interval: 30s
+      timeout: 30s
+      retries: 3
+    volumes:
+      - "db-data:/var/lib/mysql"
+      - "./mysql/scripts:/docker-entrypoint-initdb.d/:ro"
+      - "./mysql/conf.d:/etc/mysql/conf.d:ro"
+    ports:
+      - "127.0.0.1:3306:3306"
+  spiderify-api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        FLASK_ENV: production
+    image: spiderify-api:${TAG:-local}
+    container_name: spiderify-api
+    restart: unless-stopped
+    tty: true
+    stdin_open: true
+    command: ["python3", "app.py"]
+    ports:
+      - "8080:8080"
+    depends_on:
+      - db
+  sentiment:
+    image: tensorflow/serving:latest
+    container_name: sentiment
+    restart: unless-stopped
+    env_file:
+      - .docker-compose.env
+    environment:
+      MODEL_NAME: ${MODEL_NAME}
+    volumes:
+      - "./common/sentiment_model:/models/sentiment:ro"
+    ports:
+      - "127.0.0.1:8501:8501"
+    depends_on:
+      - api
+      - db
+
+volumes:
+  db-data:
+    driver: local
+    name: db-data
+    external: false
+
