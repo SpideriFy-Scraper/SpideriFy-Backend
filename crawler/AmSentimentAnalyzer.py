@@ -41,7 +41,7 @@ class AmSentiment:
             content["signature_name"] = "serving_default"
             content["instances"] = reviews
             response = await requester.post(
-                url="http://sentiment:8501/v1/models/sentiment:predict",
+                url="http://sentiment-api:8501/v1/models/sentiment:predict",
                 data=json.dumps(content),
                 timeout=None,
             )

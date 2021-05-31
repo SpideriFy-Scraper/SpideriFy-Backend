@@ -25,13 +25,12 @@ class Summarization:
         return self.SUMMARIZED
 
     async def request_summarization_service(self):
-        url = ""  # fill here
         summarized_data = {}
         for review in self.REVIEWS.keys():
             async with httpx.AsyncClient() as requester:
                 response = await requester.post(
-                    url,
-                    data=json.dumps({"content": self.REVIEWS[review]}),
+                    url="http://summarization-api:8000/predict",
+                    data=json.dumps({"text": self.REVIEWS[review]}),
                     timeout=None
                 )
             if response.status_code != httpx.codes.OK:
