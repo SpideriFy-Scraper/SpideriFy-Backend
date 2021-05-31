@@ -1,12 +1,12 @@
 stages:
-  - venv_creation
+  - build
   - test
 
 variables:
   TARGET_BRANCH: develope
 
 build:
-  stage: venv_creation
+  stage: build
   script:
     - git checkout origin/${TARGET_BRANCH}
     - if ! [ -a $HOME/.poetry ]; then curl -sSL https://raw.githubusercontent.com/python-poetry/poetry/master/get-poetry.py | HOME=$PWD python -  ;  fi;
@@ -20,9 +20,9 @@ build:
       - .poetry
 
 format-code:
-  stage: test
+  stage: build
   image: python:3.8
-  before_scipt:
+  before_script:
     - echo "formatting code to comply PEP8 ............."
   rules:
     - if: '$CI_COMMIT_BRANCH == "develope"'
@@ -58,7 +58,7 @@ safety-check:
     - if: '$CI_COMMIT_BRANCH == "develope"'
   needs:
     - job: format-code
-  before_scipt:
+  before_script:
     - echo "Safety check for installed dependencies"
   script:
     - pip install safety
@@ -71,7 +71,7 @@ bandit-check:
     - if: '$CI_COMMIT_BRANCH == "develope"'
   needs:
     - job: format-code
-  before_scipt:
+  before_script:
     - echo "bandit check for finding security issues......."
   script:
     - pip install bandit
@@ -87,7 +87,7 @@ flake8-check:
     - if: '$CI_COMMIT_BRANCH == "develope"'
   needs:
     - job: format-code
-  before_scipt:
+  before_script:
     - echo "flake8 check for finding pep issues............."
   script:
     - pip install flake8
