@@ -4,6 +4,7 @@ from flask_jwt_extended import JWTManager
 from flask_restful import Api
 
 from common.db import db
+from models.User import UserModel
 from resources.comment import CommentsList
 from resources.product import LastProducts, NewProduct, Product, ProductsList
 from resources.user import Login, Register
@@ -11,6 +12,15 @@ from resources.user import Login, Register
 app = Flask(__name__)
 jwt = JWTManager(app)
 cors = CORS(app, resources={r"/api/*": {"origins": "*"}})
+
+@jwt.user_identity_loader
+def user_identity_lookup(user):
+    return user.id
+
+@jwt.user_lookup_loader
+def user_lookup_callback(_jwt_header, jwt_data):
+    identity = jwt_data["sub"]
+    return UserModel.query.filter_by(id=identity).one_or_none()
 
 if app.config['ENV'] == 'production':
     app.config.from_object('config.ProductionConfig')
