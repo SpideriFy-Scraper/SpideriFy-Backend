@@ -1,7 +1,5 @@
 from sqlalchemy import BigInteger, Boolean, Column, DateTime, Integer, String
 from werkzeug.security import check_password_hash, generate_password_hash
-
-from app import jwt
 from common.db import db
 
 
@@ -45,14 +43,3 @@ class UserModel(db.Model):
     def __repr__(self):
         """Represent instance as a unique string."""
         return '<User({username!r})>'.format(username=self.username)
-
-
-@jwt.user_identity_loader
-def user_identity_lookup(user):
-    return user.id
-
-
-@jwt.user_lookup_loader
-def user_lookup_callback(_jwt_header, jwt_data):
-    identity = jwt_data["sub"]
-    return UserModel.query.filter_by(id=identity).one_or_none()

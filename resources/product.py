@@ -7,15 +7,7 @@ from crawler.SpiderifyWrapper import SpiderifyWrapper
 from models.Product import ProductModel
 from models.User import UserModel
 
-# @jwt_required()
-
-# @jwt.user_identity_loader
-# def user_identity_lookup(user):
-#     return user.id
-
 # ("/product/<string:asin>") - -> class Product - -> GET, POST, DELETE, PUT
-
-
 class Product(Resource):
     def get(self, asin):
         """
@@ -37,8 +29,8 @@ class Product(Resource):
 
 
 # ("/products") - -> class ProductList - -> only GET
-@jwt_required()
 class ProductsList(Resource):
+    @jwt_required()
     def get(self):
         user_products = (
             ProductModel.query.join(UserModel, ProductModel.user_id == UserModel.id)

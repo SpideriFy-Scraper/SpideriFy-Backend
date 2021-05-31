@@ -3,9 +3,7 @@ from flask_jwt_extended import create_access_token, current_user
 from flask_restful import Resource, reqparse
 from pyisemail import is_email
 from sqlalchemy.sql.elements import Null
-
 from models.User import UserModel
-
 
 class Login(Resource):
     parser = reqparse.RequestParser()
