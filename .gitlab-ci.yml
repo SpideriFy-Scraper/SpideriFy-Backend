@@ -33,7 +33,7 @@ format-code:
     - if: '$CI_COMMIT_BRANCH == "develope"'
   script:
     - pip install black
-    - black $PWD/crawler/ $PWD/app.ppy $PWD/logger/ $PWD/resources/ $PWD/models/
+    - black $PWD/crawler/ $PWD/app.py $PWD/logger/ $PWD/resources/ $PWD/models/
 
 test-coverage-suit:
   stage: test
