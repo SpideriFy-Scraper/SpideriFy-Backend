@@ -6,14 +6,14 @@ services:
     container_name: mysql
     restart: on-failure
     env_file:
-      - .docker-compose.env
+      - .env
     environment:
       MYSQL_DATABASE: ${DB_NAME}
       MYSQL_USER: ${DB_USER}
       MYSQL_PASSWORD: ${DB_PASSWORD}
       MYSQL_ROOT_PASSWORD: ${DB_PASSWORD}
     healthcheck:
-      test: ["CMD-SHELL", "mysqladmin -h 'localhost' -u root -p${ROOT_PASS} ping --silent"]
+      test: ["CMD-SHELL", "mysqladmin -h 'localhost' -u root -p ${DB_PASSWORD} ping --silent"]
       interval: 30s
       timeout: 30s
       retries: 3
@@ -25,12 +25,13 @@ services:
   spiderify-api:
     build:
       context: .
-      dockerfile: Dockerfile.dev
-      args:
-        FLASK_ENV: production
+      dockerfile: Dockerfile
+      target: production
     image: spiderify-api:${TAG:-local}
     container_name: spiderify-api
     restart: unless-stopped
+    env_file:
+      - .env
     command: ["python3", "app.py"]
     ports:
       - "8080:8080"
@@ -45,7 +46,7 @@ services:
       MODEL_NAME: sentiment
     volumes:
       - "./common/sentiment_model:/models/sentiment:ro"
-    deends_on:
+    depends_on:
       - spiderify-api
       - mysql
 

@@ -4,8 +4,7 @@
 # docker stats <container name>
 # docker logs <container name>
 
-FROM python:3.8-slim-buster
-
+FROM python:3.8-slim
 LABEL Maintainer "Homayoon Sadeghi <homayoon.9171@gmail.com>"
 LABEL Vendor "SpideriFy"
 

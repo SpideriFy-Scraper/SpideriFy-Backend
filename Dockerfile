@@ -5,7 +5,7 @@
 # docker logs <container name>
 
 # `python-base` sets up all our shared environment variables
-FROM python:3.8-slim-buster AS python-base
+FROM python:3.8-slim AS python-base
 
 LABEL Maintainer "Homayoon Sadeghi <homayoon.9171@gmail.com>"
 LABEL Vendor "SpideriFy"
@@ -16,6 +16,8 @@ ENV PYTHONUNBUFFERED=1 \
     PYTHONHASHSEED=random \
     # prevents python creating .pyc files
     PYTHONDONTWRITEBYTECODE=1 \
+    # build:
+    PRODUCTION_ONLY_PACKAGES='iputils-ping default-libmysqlclient-dev' \
     # pip
     PIP_NO_CACHE_DIR=off \
     PIP_DISABLE_PIP_VERSION_CHECK=on \
@@ -57,7 +59,7 @@ RUN apt-get update -y && \
     apt-transport-https \
     ca-certificates \
     software-properties-common \
-    default-libmysqlclient-dev
+    ${PRODUCTION_ONLY_PACKAGES}
 
 # install poetry - respects $POETRY_VERSION & $POETRY_HOME
 RUN curl -sSL https://raw.githubusercontent.com/sdispater/poetry/master/get-poetry.py | python
@@ -99,15 +101,18 @@ CMD [ "python3", "app.py" ]
 # `production` image used for runtime
 FROM python-base as production
 ENV FLASK_ENV=production
+WORKDIR ${PYSETUP_PATH}
+
+# copy in our built poetry + venv
 COPY --from=builder-base ${PYSETUP_PATH} ${PYSETUP_PATH}
 COPY --from=builder-base ${TINI_PATH} ${TINI_PATH}
-
+# install Some Packages
+RUN apt -y update && apt install -y ${PRODUCTION_ONLY_PACKAGES} netcat
 # will become mountpoint of our code
 COPY . /app
 WORKDIR /app
 EXPOSE 8080
 
+RUN chmod +x ./docker-entrypoint.sh
 # We customize how our app is loaded with the custom entrypoint:
-ENTRYPOINT ["tini", "--"]
-# Run your program under Tini
-CMD [ "python3", "app.py" ]
+ENTRYPOINT ["tini", "--" , "./docker-entrypoint.sh"]
