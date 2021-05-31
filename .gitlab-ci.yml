@@ -1,41 +1,94 @@
-before_script:
-  - python3 -m venv ../env
-  - ls ../
-  - source ../env/bin/activate
-  - poetry config virtualenvs.create false
-  - poetry install
-
-types:
-  - build
+stages:
+  - venv_creation
   - test
-  - deploy
 
-build-job:
-  tags:
-    - testing
-  stage: build
+variables:
+  TARGET_BRANCH: develope
+
+build:
+  stage: venv_creation
   script:
-    - echo "Hello, $GITLAB_USER_LOGIN!"
-    - pwd
-    - git clone --branch develope "https://Farid:farid1244@gitlab.homayoonsadeghi.com/spiderify/spiderify-backend.git"
-    - cd spiderify-backend
-    - ls
-    # - apt-get install python3.8-env
+    - git checkout origin/${TARGET_BRANCH}
+    - if ! [ -a $HOME/.poetry ]; then curl -sSL https://raw.githubusercontent.com/python-poetry/poetry/master/get-poetry.py | HOME=$PWD python -  ;  fi;
+    - export PATH=$PWD/.poetry/bin:$PATH
+    - poetry config --local cache-dir $PWD/.poetry/cache
+    - poetry config --local virtualenvs.in-project true
+    - poetry install --no-dev -E insecure-package -E bandit
+  cache:
+    paths:
+      - .venv
+      - .poetry
 
-test-job1:
+format-code:
   stage: test
-  tags:
-    - testing
+  image: python:3.8
+  before_scipt:
+    - echo "formatting code to comply PEP8 ............."
+  rules:
+    - if: '$CI_COMMIT_BRANCH == "develope"'
   script:
-    - echo "This job tests something"
+    - pip install black
+    - black $PWD/crawler/ $PWD/app.ppy $PWD/logger/ $PWD/resources/ $PWD/models/
 
-deploy-prod:
-  stage: deploy
-  tags:
-    - testing
-  only:
-    - develope
+test-coverage-suit:
+  stage: test
+  image: python:3.8
+  rules:
+    - if: '$CI_COMMIT_BRANCH == "develope"'
+  needs:
+    - job: format-code
   script:
-    - pwd
-    - echo "This job deploys something from the $CI_COMMIT_BRANCH branch."
-    - python3 crawler/AmScrapper.py
+    # - if ! [ -a $HOME/.poetry ]; then curl -sSL https://raw.githubusercontent.com/python-poetry/poetry/master/get-poetry.py | HOME=$PWD python -  ;  fi;
+    # - export PATH=$PWD/.poetry/bin:$PATH
+    # - poetry config --local cache-dir $PWD/.poetry/cache
+    # - poetry config --local virtualenvs.in-project true
+    # - poetry install --no-dev
+    - ls -alh
+    - source .venv/bin/activate
+    - pip install coverage
+    - git checkout origin/${TARGET_BRANCH}
+    - python  test_suite.py
+    - coverage run test_suite.py
+    - coverage report -m
+
+safety-check:
+  stage: test
+  image: python:3.8
+  rules:
+    - if: '$CI_COMMIT_BRANCH == "develope"'
+  needs:
+    - job: format-code
+  before_scipt:
+    - echo "Safety check for installed dependencies"
+  script:
+    - pip install safety
+    - safety check -r requirements.txt
+
+bandit-check:
+  stage: test
+  image: python:3.8
+  rules:
+    - if: '$CI_COMMIT_BRANCH == "develope"'
+  needs:
+    - job: format-code
+  before_scipt:
+    - echo "bandit check for finding security issues......."
+  script:
+    - pip install bandit
+    - bandit -r $PWD/crawler
+    - bandit -r $PWD/resources
+    - bandit -r $PWD/logger
+    - bandit app.py
+
+flake8-check:
+  stage: test
+  image: python:3.8
+  rules:
+    - if: '$CI_COMMIT_BRANCH == "develope"'
+  needs:
+    - job: format-code
+  before_scipt:
+    - echo "flake8 check for finding pep issues............."
+  script:
+    - pip install flake8
+    - flake8 $PWD/crawler/ $PWD/app.ppy $PWD/logger/ $PWD/resources/ $PWD/models/
