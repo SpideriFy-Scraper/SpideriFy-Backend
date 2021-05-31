@@ -13,7 +13,7 @@ services:
       MYSQL_PASSWORD: ${DB_PASSWORD}
       MYSQL_ROOT_PASSWORD: ${DB_PASSWORD}
     healthcheck:
-      test: ["CMD-SHELL", "mysqladmin -h 'localhost' -u root -p ${DB_PASSWORD} ping --silent"]
+      test: ["CMD-SHELL", "mysqladmin -h 'localhost' -u root -p${DB_PASSWORD} ping --silent"]
       interval: 30s
       timeout: 30s
       retries: 3
@@ -42,6 +42,11 @@ services:
     image: tensorflow/serving:latest
     container_name: sentiment-api
     restart: unless-stopped
+    cpu_count: 3
+    mem_limit: 4G
+    memswap_limit: 4G
+    mem_reservation: 3G
+    mem_swappiness: 0
     environment:
       MODEL_NAME: sentiment
     volumes:
@@ -54,6 +59,11 @@ services:
     image: summarization:${TAG:-local}
     container_name: summarization-api
     restart: unless-stopped
+    cpu_count: 3
+    mem_limit: 6G
+    memswap_limit: 6G
+    mem_reservation: 4G
+    mem_swappiness: 0
     command: ["uvicorn", "api:app", "--workers", "2", "--host", "0.0.0.0", "--port", "8000"]
     volumes:
       - "/home/tesla/Project/SpideriFy/spiderify-summarization/model:/home/appuser/model:ro"
