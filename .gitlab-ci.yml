@@ -52,7 +52,7 @@ test-coverage-suit:
     # - poetry config --local virtualenvs.in-project true
     # - poetry install --no-dev
     - ls -alh
-    # - source .venv/bin/activate
+    - source .venv/bin/activate
     - pip install coverage
     - python  test_suite.py
     - coverage run test_suite.py
