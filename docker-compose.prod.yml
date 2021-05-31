@@ -12,7 +12,6 @@ services:
       MYSQL_USER: ${DB_USER}
       MYSQL_PASSWORD: ${DB_PASSWORD}
       MYSQL_ROOT_PASSWORD: ${DB_PASSWORD}
-      MYSQL_ROOT_HOST: "%"
     healthcheck:
       test: ["CMD-SHELL", "mysqladmin -h 'localhost' -u root -p${ROOT_PASS} ping --silent"]
       interval: 30s
@@ -22,43 +21,48 @@ services:
       - "db-data:/var/lib/mysql"
       - "./mysql/scripts:/docker-entrypoint-initdb.d/:ro"
       - "./mysql/conf.d:/etc/mysql/conf.d:ro"
-    ports:
-      - "127.0.0.1:3306:3306"
+
   spiderify-api:
     build:
       context: .
-      dockerfile: Dockerfile
+      dockerfile: Dockerfile.dev
       args:
         FLASK_ENV: production
     image: spiderify-api:${TAG:-local}
     container_name: spiderify-api
     restart: unless-stopped
-    tty: true
-    stdin_open: true
     command: ["python3", "app.py"]
     ports:
       - "8080:8080"
     depends_on:
-      - db
-  sentiment:
+      - mysql
+
+  sentiment-api:
     image: tensorflow/serving:latest
-    container_name: sentiment
+    container_name: sentiment-api
     restart: unless-stopped
-    env_file:
-      - .docker-compose.env
     environment:
-      MODEL_NAME: ${MODEL_NAME}
+      MODEL_NAME: sentiment
     volumes:
       - "./common/sentiment_model:/models/sentiment:ro"
-    ports:
-      - "127.0.0.1:8501:8501"
+    deends_on:
+      - spiderify-api
+      - mysql
+
+  summarization-api:
+    image: summarization:${TAG:-local}
+    container_name: summarization-api
+    restart: unless-stopped
+    command: ["uvicorn", "api:app", "--workers", "2", "--host", "0.0.0.0", "--port", "8000"]
+    volumes:
+      - "/home/tesla/Project/SpideriFy/spiderify-summarization/model:/home/appuser/model:ro"
     depends_on:
-      - api
-      - db
+      - spiderify-api
+      - mysql
 
 volumes:
   db-data:
-    driver: local
-    name: db-data
-    external: false
-
+    name: db_data
+    driver: local-persist
+    driver_opts:
+      mountpoint: "/var/spiderify-db/mysql/"
