@@ -17,10 +17,11 @@ build:
     - poetry config --local cache-dir $PWD/.poetry/cache
     - poetry config --local virtualenvs.in-project true
     - poetry install --no-dev
-  cache:
-    paths:
-      - .venv
-      - .poetry
+
+cache:
+  paths:
+    - .venv
+    - .poetry
 
 format-code:
   stage: build
@@ -53,7 +54,6 @@ test-coverage-suit:
     - ls -alh
     # - source .venv/bin/activate
     - pip install coverage
-    - git checkout origin/${TARGET_BRANCH}
     - python  test_suite.py
     - coverage run test_suite.py
     - coverage report -m
