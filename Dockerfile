@@ -17,7 +17,7 @@ ENV PYTHONUNBUFFERED=1 \
     # prevents python creating .pyc files
     PYTHONDONTWRITEBYTECODE=1 \
     # build:
-    PRODUCTION_ONLY_PACKAGES='iputils-ping default-libmysqlclient-dev' \
+    PRODUCTION_ONLY_PACKAGES='iputils-ping default-libmysqlclient-dev netcat' \
     # pip
     PIP_NO_CACHE_DIR=off \
     PIP_DISABLE_PIP_VERSION_CHECK=on \
@@ -107,7 +107,7 @@ WORKDIR ${PYSETUP_PATH}
 COPY --from=builder-base ${PYSETUP_PATH} ${PYSETUP_PATH}
 COPY --from=builder-base ${TINI_PATH} ${TINI_PATH}
 # install Some Packages
-RUN apt -y update && apt install -y ${PRODUCTION_ONLY_PACKAGES} netcat
+RUN apt -y update && apt install -y ${PRODUCTION_ONLY_PACKAGES}
 # will become mountpoint of our code
 COPY . /app
 WORKDIR /app
