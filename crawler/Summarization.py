@@ -31,7 +31,7 @@ class Summarization:
                 response = await requester.post(
                     url="http://summarization-api:8000/predict",
                     data=json.dumps({"text": self.REVIEWS[review]}),
-                    timeout=None
+                    timeout=None,
                 )
             if response.status_code != httpx.codes.OK:
                 logger = Logger(
@@ -43,7 +43,7 @@ class Summarization:
                 return None
             else:
                 summar = json.loads(response.text)
-                summarized_data[review] = summar[""]   # fill here
+                summarized_data[review] = summar[""]  # fill here
         return summarized_data
 
     def clean_attributes(self):

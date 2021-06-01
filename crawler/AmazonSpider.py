@@ -109,8 +109,7 @@ class AmazonSpider:
         """
         if self.url_validator(url=self.AmSpiderConfig.PRODUCT_URL):
             self.AmSpiderConfig.SCRAPED_DATA = self.call_scraper(
-                all_review_url=self.url_normalizer(
-                    url=self.AmSpiderConfig.PRODUCT_URL),
+                all_review_url=self.url_normalizer(url=self.AmSpiderConfig.PRODUCT_URL),
                 product_url=self.AmSpiderConfig.PRODUCT_URL,
             )
             if self.AmSpiderConfig.SCRAPED_DATA is None:
@@ -134,14 +133,12 @@ class AmazonSpider:
 
         if sentiment:
             self.AmSpiderConfig.ANALYZED_DATA = self.call_sentiment_analyzer(
-                self.dict_to_list_reviews(
-                    data=self.AmSpiderConfig.SCRAPED_DATA)
+                self.dict_to_list_reviews(data=self.AmSpiderConfig.SCRAPED_DATA)
             )
 
         if summarize:
             self.AmSpiderConfig.SUMMARIZED_DATA = self.call_summarizer(
-                reviews=self.separate_reviews(
-                    data=self.AmSpiderConfig.SCRAPED_DATA)
+                reviews=self.separate_reviews(data=self.AmSpiderConfig.SCRAPED_DATA)
             )
 
         self.merge_analyzed_scraped_data()
@@ -193,7 +190,9 @@ class AmazonSpider:
                 "info",
             )
             for key in self.AmSpiderConfig.SUMMARIZED_DATA.keys():
-                self.AmSpiderConfig.FINAL_DATA[key]["Summary"] = self.AmSpiderConfig.SUMMARIZED_DATA[key]
+                self.AmSpiderConfig.FINAL_DATA[key][
+                    "Summary"
+                ] = self.AmSpiderConfig.SUMMARIZED_DATA[key]
 
         else:
             logger = Logger(
@@ -282,8 +281,7 @@ class AmazonSpider:
         Create the Summarization Object and call the call_summarization_service func
         """
         self.AmSpiderConfig.AM_SUMMARIZER = Summarization(reviews)
-        return self.AmSpiderConfig.AM_SUMMARIZER.call_summarization_service(
-            reviews)
+        return self.AmSpiderConfig.AM_SUMMARIZER.call_summarization_service(reviews)
 
     def clean_attributes(self):
         self.AmSpiderConfig.AM_SCRAPER.clean_attributes()

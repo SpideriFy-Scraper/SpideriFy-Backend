@@ -5,10 +5,11 @@ from common.db import db
 
 class UserModel(db.Model):
     """
-     Model for user management
-     +++++++++++++++++++++++++
+    Model for user management
+    +++++++++++++++++++++++++
     """
-    __tablename__ = 'users'
+
+    __tablename__ = "users"
 
     id = Column(BigInteger, primary_key=True, autoincrement=True)
     username = Column(String(100), nullable=False, index=True, unique=True)
@@ -19,12 +20,24 @@ class UserModel(db.Model):
     phone_number = Column(String(10), nullable=True)
     is_active = Column(Boolean, default=True)
     is_admin = Column(Boolean, default=False)
-    created_at = Column(DateTime(timezone=True),
-                        default=db.func.now(), onupdate=db.func.now())
-    updated_at = Column(DateTime(timezone=True),
-                        default=db.func.now(), onupdate=db.func.now())
+    created_at = Column(
+        DateTime(timezone=True), default=db.func.now(), onupdate=db.func.now()
+    )
+    updated_at = Column(
+        DateTime(timezone=True), default=db.func.now(), onupdate=db.func.now()
+    )
 
-    def __init__(self, username, first_name, last_name, email, password, phone_number, is_active, is_admin):
+    def __init__(
+        self,
+        username,
+        first_name,
+        last_name,
+        email,
+        password,
+        phone_number,
+        is_active,
+        is_admin,
+    ):
         self.username = username
         self.first_name = first_name
         self.last_name = last_name
@@ -42,4 +55,4 @@ class UserModel(db.Model):
 
     def __repr__(self):
         """Represent instance as a unique string."""
-        return '<User({username!r})>'.format(username=self.username)
+        return "<User({username!r})>".format(username=self.username)

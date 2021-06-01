@@ -5,6 +5,7 @@ from pyisemail import is_email
 from sqlalchemy.sql.elements import Null
 from models.User import UserModel
 
+
 class Login(Resource):
     parser = reqparse.RequestParser()
     parser.add_argument("username", type=str, required=True)
@@ -14,7 +15,7 @@ class Login(Resource):
         data = Login.parser.parse_args()
         karsysbar = str(data["username"])
         ramsysz = str(data["password"])
-        if not(karsysbar or ramsysz):
+        if not (karsysbar or ramsysz):
             return jsonify({"message": "username and password can not be empty"}), 401
 
         user = UserModel.query.filter_by(username=karsysbar).one_or_none()
@@ -43,8 +44,7 @@ class Register(Resource):
         lastname = str(data["lastname"])
         passwoed = str(data["password"])
 
-        detailed_result_with_dns = is_email(
-            email, check_dns=True, diagnose=True)
+        detailed_result_with_dns = is_email(email, check_dns=True, diagnose=True)
         phone_number = None
         if "phone_number" in data:
             phone_number = str(data["phone_number"])
