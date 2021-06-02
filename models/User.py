@@ -47,11 +47,29 @@ class UserModel(db.Model):
         self.is_active = is_active
         self.is_admin = is_admin
 
+    def json(self):
+        return {
+            'username': self.username,
+            'first_name': self.first_name,
+            'last_name': self.last_name,
+            'email': self.email,
+            'phone_number': self.phone_number
+        }
+
+
     def set_password(self, password):
         return generate_password_hash(password)
 
     def check_password(self, password):
         return check_password_hash(self.password_hash, password)
+
+    def save_to_db(self):
+        db.session.add(self)
+        db.session.commit()
+
+    def delete_from_db(self):
+        db.session.delete(self)
+        db.session.commit()
 
     def __repr__(self):
         """Represent instance as a unique string."""

@@ -27,7 +27,7 @@ class ProductModel(db.Model):
     price = Column(String(50), nullable=True)
     rating = Column(Float, nullable=True)
     description = Column(Text, nullable=True)
-    user_id = Column(BigInteger, db.ForeignKey("users.id"))
+    user_id = Column(BigInteger, db.ForeignKey("users.id", ondelete="CASCADE"))
     created_at = Column(
         DateTime(timezone=True), default=db.func.now(), onupdate=db.func.now()
     )
