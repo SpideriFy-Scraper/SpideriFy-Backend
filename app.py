@@ -11,7 +11,7 @@ from resources.user import UserLoginAPI, UserRegisterAPI
 
 app = Flask(__name__)
 jwt = JWTManager(app)
-cors = CORS(app, resources={r"/api/v1/*": {"origins": "*"}})
+CORS(app, resources={r"/api/v1/*": {"origins": "*"}})
 
 @jwt.use_claims_loader
 def add_claims_to_jwt(identity):
