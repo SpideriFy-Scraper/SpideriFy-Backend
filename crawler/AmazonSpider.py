@@ -61,6 +61,7 @@ class AmazonSpider:
         ]
         PRODUCT_URL: str = None
         ALL_REVIEW_URL: str = None
+        ASIN: str = None
         SCRAPED_DATA = None
         ANALYZED_DATA = None
         FINAL_DATA = None
@@ -93,6 +94,7 @@ class AmazonSpider:
                 "amazon.com.au",
             ]
             cls.PRODUCT_URL = None
+            cls.ASIN = None
             cls.ALL_REVIEW_URL = None
             cls.SCRAPED_DATA = None
             cls.ANALYZED_DATA = None
@@ -142,7 +144,7 @@ class AmazonSpider:
             )
 
         self.merge_analyzed_scraped_data()
-
+        self.AmSpiderConfig.FINAL_DATA["ASIN"] = self.AmSpiderConfig.ASIN
         return self.AmSpiderConfig.FINAL_DATA
 
     def separate_reviews(self, data: dict):
@@ -242,9 +244,15 @@ class AmazonSpider:
         Generates the 'all review' URL of the entered link
         ++++++++++++++++++++++++++++++++++++++++++++++++++
         """
+        obj = urlparse(url)
+        patha = obj.path
+        if patha[-1] == "/":
+            patha = patha[:-1]
+        if patha[0] == "/":
+            patha = patha[1:]
+        self.AmSpiderConfig.ASIN = patha.split("/")[2]
         if url.find("all_reviews") > 0:
             return url
-        obj = urlparse(url)
         parts = obj.path.split("/")
         review_url = (
             obj.scheme
