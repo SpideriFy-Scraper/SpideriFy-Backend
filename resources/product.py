@@ -68,7 +68,7 @@ class Product(Resource):
 
 # ("/products") - -> class ProductList - -> only GET
 class ProductsList(Resource):
-    @jwt_required()
+    @jwt_required
     def get(self):
         user_products = (
             ProductModel.query.join(

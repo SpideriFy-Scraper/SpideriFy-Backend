@@ -7,17 +7,21 @@ from common.db import db
 from models.User import UserModel
 from resources.comment import CommentsList
 from resources.product import LastProducts, NewProduct, Product, ProductsList
-from resources.user import Login, Register
+from resources.user import UserLoginAPI, UserRegisterAPI
 
 app = Flask(__name__)
 jwt = JWTManager(app)
-cors = CORS(app, resources={r"/api/*": {"origins": "*"}})
+CORS(app, resources={r"/api/v1/*": {"origins": "*"}})
 
+@jwt.use_claims_loader
+def add_claims_to_jwt(identity):
+    if identity == 1:
+        return {'is_admin': True}
+    return {'is_admin': False}
 
 @jwt.user_identity_loader
 def user_identity_lookup(user):
     return user.id
-
 
 @jwt.user_lookup_loader
 def user_lookup_callback(_jwt_header, jwt_data):
@@ -35,8 +39,8 @@ else:
 api = Api(app)
 
 api.add_resource(NewProduct, "/api/v1/new-product")
-api.add_resource(Register, "/api/v1/user/register")
-api.add_resource(Login, "/api/v1/user/login")
+api.add_resource(UserRegisterAPI, "/api/v1/user/register")
+api.add_resource(UserLoginAPI, "/api/v1/user/login")
 api.add_resource(ProductsList, "/api/v1/products")
 api.add_resource(Product, "/api/v1/product/<string:asin>")
 api.add_resource(CommentsList, "/api/v1/product/<string:asin>/comments")
