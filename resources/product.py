@@ -13,12 +13,12 @@ from random import randint
 
 
 class Product(Resource):
-    @jwt_required()
+    @jwt_required
     def get(self, asin):
         """
         Return the product row in the Product table using asin
         """
-        product = ProductModel.query.filter(
+        product = ProductModel.query.filter_by(
             ProductModel.asin == asin
         )  # is it only one obj???????????
         return_product = {
@@ -28,7 +28,7 @@ class Product(Resource):
             "rating": product.rating,
             "description": product.description,
         }
-        reviews_list = CommentModel.query.filter(
+        reviews_list = CommentModel.query.filter_by(
             product.id == CommentModel.product_id)
         reviews = []
         for review in reviews_list:
@@ -56,10 +56,10 @@ class Product(Resource):
     def put(self):
         pass
 
-    @jwt_required()
+    @jwt_required
     def delete(self, asin):
-        product = ProductModel.query.filter(ProductModel.asin == asin)
-        reviews = CommentModel.query.filter(
+        product = ProductModel.query.filter_by(ProductModel.asin == asin)
+        reviews = CommentModel.query.filter_by(
             product.id == CommentModel.product_id
         )
         # session.delete(product)
@@ -73,7 +73,7 @@ class ProductsList(Resource):
         user_products = (
             ProductModel.query.join(
                 UserModel, ProductModel.user_id == UserModel.id)
-            .filter(ProductModel.user_id == current_user.id)
+            .filter_by(ProductModel.user_id == current_user.id)
             .all()
         )
         list_product = []
@@ -118,7 +118,7 @@ class NewProduct(Resource):
 
 class LastProducts(Resource):
     def get(self):
-        number_of_products = ProductModel.query.filter(ProductModel.id).count()
+        number_of_products = ProductModel.query.filter_by(ProductModel.id).count()
         products = []
         for _ in range(10):
             products.append(ProductModel.query.filter(
