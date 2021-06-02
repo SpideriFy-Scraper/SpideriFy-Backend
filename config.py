@@ -14,6 +14,8 @@ class Config(object):
     # Config Database
     SQLALCHEMY_DATABASE_URI = f'mysql+pymysql://{config["DB_USER"]}:{config["DB_PASSWORD"]}@localhost:3306/{config["DB_NAME"]}'
     SQLALCHEMY_TRACK_MODIFICATIONS = False
+    JWT_BLACKLIST_ENABLED = True
+    JWT_BLACKLIST_TOKEN_CHECKS = ['access']
 
 
 class ProductionConfig(Config):
