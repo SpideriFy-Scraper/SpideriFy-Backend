@@ -6,38 +6,38 @@ from sqlalchemy.sql.elements import Null
 from models.User import UserModel
 
 
-class Login(Resource):
+class UserLoginAPI(Resource):
     parser = reqparse.RequestParser()
-    parser.add_argument("username", type=str, required=True)
-    parser.add_argument("password", type=str, required=True)
+    parser.add_argument("username", type=str, required=True, help="This Field Is Username Of The User That Wants To Login")
+    parser.add_argument("password", type=str, required=True, help="This Field Is Password Of The User That Wants To Login")
 
-    def post(self):
-        data = Login.parser.parse_args()
-        karsysbar = str(data["username"])
-        ramsysz = str(data["password"])
-        if not (karsysbar or ramsysz):
-            return jsonify({"message": "username and password can not be empty"}), 401
+    @classmethod
+    def post(cls):
+        data = cls.parser.parse_args()
+        if not (data["username"] or data["password"]):
+            return jsonify({"message": "Username Or Password Can Not Be Empty"}), 401
 
-        user = UserModel.query.filter_by(username=karsysbar).one_or_none()
-        if not user or not user.check_password(ramsysz):
-            return jsonify({"message": "Wrong username or password"}), 401
+        user = UserModel.query.filter_by(username=data["username"]).one_or_none()
 
-        # Notice that we are passing in the actual sqlalchemy user object here
-        access_token = create_access_token(identity=user)
-        return jsonify(access_token=access_token)
+        if user and user.check_password(data["password"]):
+            access_token = create_access_token(identity=user.id)
+            return jsonify(access_token=access_token), 200
+
+        return jsonify({"message": "Invalid Credentials"}), 401
 
 
-class Register(Resource):
+
+class UserRegisterAPI(Resource):
     parser = reqparse.RequestParser()
-    parser.add_argument("username", type=str, required=True)
+    parser.add_argument("username", type=str, required=True, help="This Field Is Username Of The User That Wants To Register")
+    parser.add_argument("password", type=str, required=True, help="This Field Is Password Of The User That Wants To Register")
     parser.add_argument("firstname", type=str, required=True)
     parser.add_argument("lastname", type=str, required=True)
     parser.add_argument("email", type=str, required=True)
-    # Password Must Get Hashed
-    parser.add_argument("password", type=str, required=True)
 
-    def post(self):
-        data = Register.parser.parse_args()
+    @classmethod
+    def post(cls):
+        data = cls.parser.parse_args()
         username = str(data["username"])
         email = str(data["email"])
         firstname = str(data["firstname"])
