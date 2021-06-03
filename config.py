@@ -14,6 +14,7 @@ class Config(object):
     # Config Database
     SQLALCHEMY_DATABASE_URI = f'mysql+pymysql://{config["DB_USER"]}:{config["DB_PASSWORD"]}@localhost:3306/{config["DB_NAME"]}'
     SQLALCHEMY_TRACK_MODIFICATIONS = False
+    PROPAGATE_EXCEPTIONS = True
 
 
 
@@ -23,8 +24,8 @@ class ProductionConfig(Config):
     SQLALCHEMY_TRACK_MODIFICATIONS = False
 
 
+
 class DevelopmentConfig(Config):
-    PROPAGATE_EXCEPTIONS = True
     DEVELOPMENT = True
     DEBUG = True
 
@@ -32,4 +33,3 @@ class DevelopmentConfig(Config):
 class TestingConfig(Config):
     DEVELOPMENT = True
     TESTING = True
-    PROPAGATE_EXCEPTIONS = True
