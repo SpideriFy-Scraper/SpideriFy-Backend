@@ -40,7 +40,7 @@ class CommentModel(db.Model):
     )
 
     def __init__(
-        self, author, title, content, is_verified, variant, rating, date
+        self, author, title, content, is_verified, variant, rating, date, sentiment, summarized_content
     ):
         self.author = author
         self.title = title
@@ -49,6 +49,8 @@ class CommentModel(db.Model):
         self.variant = variant
         self.rating = rating
         self.date = date
+        self.sentiment = sentiment
+        self.summarized_content = summarized_content
 
     def save_to_db(self):
         db.session.add(self)
