@@ -289,7 +289,7 @@ class AmazonSpider:
         Create the Summarization Object and call the call_summarization_service func
         """
         self.AmSpiderConfig.AM_SUMMARIZER = Summarization(reviews)
-        return self.AmSpiderConfig.AM_SUMMARIZER.call_summarization_service(reviews)
+        return self.AmSpiderConfig.AM_SUMMARIZER.call_summarization_service()
 
     def clean_attributes(self):
         self.AmSpiderConfig.AM_SCRAPER.clean_attributes()

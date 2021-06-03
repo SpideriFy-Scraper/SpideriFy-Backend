@@ -43,7 +43,7 @@ class Summarization:
                 return None
             else:
                 summar = json.loads(response.text)
-                summarized_data[review] = summar[""]  # fill here
+                summarized_data[review] = summar["summarized_text"]
         return summarized_data
 
     def clean_attributes(self):
