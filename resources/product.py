@@ -19,7 +19,7 @@ class Product(Resource):
         Return the product row in the Product table using asin
         """
         product = ProductModel.query.filter_by(
-            asin=asin, user_id=current_user.id).one_or_none()  # is it only one obj???????????
+            asin=asin, user_id=current_user.id).one_or_none()
         if product:
             return_product = {
                 "asin": product.asin,
@@ -48,9 +48,7 @@ class Product(Resource):
             return jsonify(return_product), 200
         else:
             return jsonify({"message": "Failed To Find Such Product"}), 404
-        # db.session.query(UserModel).join(ProductModel).filter(username, asin)
-        # product = ProductModel.query.filter_by(asin=asin)
-        # return
+
 
     def post(self):
         pass
@@ -66,8 +64,6 @@ class Product(Resource):
             return jsonify({"message": "This Product is Already Deleted"}), 404
         product.delete_from_db()
         return jsonify({"message": "Product Has Been Deleted"}), 200
-        # session.delete(product)
-        # session.delete(reviews)
 
 
 # ("/products") - -> class ProductList - -> only GET
@@ -108,6 +104,8 @@ class NewProduct(Resource):
         data = NewProduct.parser.parse_args()
         spider = SpiderifyWrapper(str(data["url"]))
         spider_data = spider.start_amazon_spider()
+        if spider_data is None:
+            return jsonify({"message":"Failed to Scrap Data"})
         message = json.dumps(spider_data)
         resp = Response(message, status=200, mimetype="application/json")
         newproduct = ProductModel(
@@ -140,6 +138,9 @@ class LastProducts(Resource):
             ProductModel.id).count()
         products = []
         for _ in range(10):
-            products.append(ProductModel.query.filter(
-                ProductModel.id == randint(1, number_of_products)))
+            product_obj = ProductModel.query.filter_by(
+                id = randint(1, number_of_products))
+            if product_obj is None:
+                continue
+            products.append(product_obj)
         return jsonify({"products": products}), 200
