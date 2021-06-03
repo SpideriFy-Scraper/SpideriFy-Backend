@@ -27,9 +27,9 @@ class CommentModel(db.Model):
     is_verified = Column(Boolean, nullable=False, default=True)
     variant = Column(Text, nullable=True)
     rating = Column(Float, nullable=True)
-    date = Column(Date, nullable=False)
+    date = Column(String(256), nullable=False)
     sentiment = Column(String(32), nullable=True)
-    summerized_content = Column(Text, nullable=True)
+    summarized_content = Column(Text, nullable=True)
     product_id = Column(BigInteger, db.ForeignKey(
         "products.product_id", ondelete="CASCADE"), nullable=True)
     created_at = Column(
@@ -40,7 +40,7 @@ class CommentModel(db.Model):
     )
 
     def __init__(
-        self, author, title, content, is_verified, variant, rating, date, product_id
+        self, author, title, content, is_verified, variant, rating, date
     ):
         self.author = author
         self.title = title
@@ -49,7 +49,6 @@ class CommentModel(db.Model):
         self.variant = variant
         self.rating = rating
         self.date = date
-        self.product_id = product_id
 
     def save_to_db(self):
         db.session.add(self)
