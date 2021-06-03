@@ -3,6 +3,7 @@ from flask_jwt_extended import current_user, jwt_required
 from flask_restful import Resource, reqparse
 
 from crawler.SpiderifyWrapper import SpiderifyWrapper
+from common.db import db
 from models.Product import ProductModel
 from models.User import UserModel
 from models.Comment import CommentModel
@@ -114,8 +115,9 @@ class NewProduct(Resource):
             description=spider_data["PRODUCT_DESCRIPTION"],
             user_id=current_user.id,
         )
-        newproduct.save_to_db()
+
         for review in spider_data["REVIEWS"]:
+            list_review = []
             new_review = CommentModel(
                 author=review["author"],
                 title=review["title"],
@@ -126,7 +128,12 @@ class NewProduct(Resource):
                 date=review["data"],
                 product_id=newproduct.id
             )
-            new_review.save_to_db()
+            newproduct.comments.append(new_review)
+            list_review.append(new_review)
+
+        new_review.save_to_db()
+        db.session.add_all(list_review)
+        db.session.commit()
         return resp
 
 

@@ -3,8 +3,6 @@ from sqlalchemy import (
     Column,
     DateTime,
     Float,
-    ForeignKey,
-    Integer,
     String,
     Text,
 )
@@ -20,14 +18,14 @@ class ProductModel(db.Model):
 
     __tablename__ = "products"
 
-    id = Column(BigInteger, primary_key=True, autoincrement=True)
+    id = Column("product_id", BigInteger, primary_key=True, autoincrement=True)
     asin = Column(String(10), nullable=False)
     name = Column(Text, nullable=False)
     price = Column(String(50), nullable=True)
     rating = Column(Float, nullable=True)
     description = Column(Text, nullable=True)
-    user_id = Column(BigInteger, db.ForeignKey("users.id", ondelete="CASCADE"), nullable=False)
-    comments = db.relationship('comments', backref='product', lazy=True)
+    user_id = Column(BigInteger, db.ForeignKey("users.user_id", ondelete="CASCADE"), nullable=False)
+    comments = db.relationship('CommentModel', backref='product', lazy=True)
     created_at = Column(
         DateTime(timezone=True), default=db.func.now(), onupdate=db.func.now()
     )

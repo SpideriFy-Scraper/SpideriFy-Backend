@@ -11,7 +11,7 @@ class UserModel(db.Model):
 
     __tablename__ = "users"
 
-    id = Column(BigInteger, primary_key=True, autoincrement=True)
+    id = Column("user_id", BigInteger, primary_key=True, autoincrement=True)
     username = Column(String(100), nullable=False, index=True, unique=True)
     first_name = Column(String(32), nullable=False)
     last_name = Column(String(32), nullable=False)
@@ -20,7 +20,7 @@ class UserModel(db.Model):
     phone_number = Column(String(10), nullable=True)
     is_active = Column(Boolean, default=True)
     is_admin = Column(Boolean, default=False)
-    products = db.relationship('products', backref='user', lazy=True)
+    products = db.relationship('ProductModel', backref='user', lazy=True)
     created_at = Column(
         DateTime(timezone=True), default=db.func.now(), onupdate=db.func.now()
     )

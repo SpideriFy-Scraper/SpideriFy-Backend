@@ -20,7 +20,7 @@ class CommentModel(db.Model):
 
     __tablename__ = "comments"
 
-    id = Column(BigInteger, primary_key=True, autoincrement=True)
+    id = Column("comment_id", BigInteger, primary_key=True, autoincrement=True)
     author = Column(String(100), nullable=False)
     title = Column(Text, nullable=False)
     content = Column(Text, nullable=False)
@@ -31,7 +31,7 @@ class CommentModel(db.Model):
     sentiment = Column(String(32), nullable=True)
     summerized_content = Column(Text, nullable=True)
     product_id = Column(BigInteger, db.ForeignKey(
-        "products.id", ondelete="CASCADE"), nullable=True)
+        "products.product_id", ondelete="CASCADE"), nullable=True)
     created_at = Column(
         DateTime(timezone=True), default=db.func.now(), onupdate=db.func.now()
     )
