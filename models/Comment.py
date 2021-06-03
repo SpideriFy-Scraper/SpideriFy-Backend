@@ -1,5 +1,3 @@
-from datetime import datetime
-
 from sqlalchemy import (
     BigInteger,
     Boolean,
@@ -7,8 +5,6 @@ from sqlalchemy import (
     Date,
     DateTime,
     Float,
-    ForeignKey,
-    Integer,
     String,
     Text,
 )
@@ -35,7 +31,7 @@ class CommentModel(db.Model):
     sentiment = Column(String(32), nullable=True)
     summerized_content = Column(Text, nullable=True)
     product_id = Column(BigInteger, db.ForeignKey(
-        "products.id", ondelete="CASCADE"))
+        "products.id", ondelete="CASCADE"), nullable=True)
     created_at = Column(
         DateTime(timezone=True), default=db.func.now(), onupdate=db.func.now()
     )
@@ -50,7 +46,8 @@ class CommentModel(db.Model):
         self.title = title
         self.content = content
         self.is_verified = is_verified
-        self.variant = rating
+        self.variant = variant
+        self.rating = rating
         self.date = date
         self.product_id = product_id
 

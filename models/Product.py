@@ -10,7 +10,6 @@ from sqlalchemy import (
 )
 
 from common.db import db
-from models import User
 
 
 class ProductModel(db.Model):
@@ -27,7 +26,8 @@ class ProductModel(db.Model):
     price = Column(String(50), nullable=True)
     rating = Column(Float, nullable=True)
     description = Column(Text, nullable=True)
-    user_id = Column(BigInteger, db.ForeignKey("users.id", ondelete="CASCADE"))
+    user_id = Column(BigInteger, db.ForeignKey("users.id", ondelete="CASCADE"), nullable=False)
+    comments = db.relationship('comments', backref='product', lazy=True)
     created_at = Column(
         DateTime(timezone=True), default=db.func.now(), onupdate=db.func.now()
     )

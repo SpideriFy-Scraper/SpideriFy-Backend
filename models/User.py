@@ -20,6 +20,7 @@ class UserModel(db.Model):
     phone_number = Column(String(10), nullable=True)
     is_active = Column(Boolean, default=True)
     is_admin = Column(Boolean, default=False)
+    products = db.relationship('products', backref='user', lazy=True)
     created_at = Column(
         DateTime(timezone=True), default=db.func.now(), onupdate=db.func.now()
     )
