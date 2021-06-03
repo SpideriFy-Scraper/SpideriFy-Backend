@@ -34,7 +34,8 @@ class CommentModel(db.Model):
     date = Column(Date, nullable=False)
     sentiment = Column(String(32), nullable=True)
     summerized_content = Column(Text, nullable=True)
-    product_id = Column(BigInteger, db.ForeignKey("products.id", ondelete="CASCADE"))
+    product_id = Column(BigInteger, db.ForeignKey(
+        "products.id", ondelete="CASCADE"))
     created_at = Column(
         DateTime(timezone=True), default=db.func.now(), onupdate=db.func.now()
     )
@@ -52,3 +53,14 @@ class CommentModel(db.Model):
         self.variant = rating
         self.date = date
         self.product_id = product_id
+
+    def save_to_db(self):
+        db.session.add(self)
+        db.session.commit()
+
+    def delete_from_db(self):
+        db.session.delete(self)
+        db.session.commit()
+
+    def __repr__(self):
+        return "<Comment({id})".format(id=self.id)
