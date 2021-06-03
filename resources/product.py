@@ -13,8 +13,7 @@ from random import randint
 
 
 class Product(Resource):
-
-    @jwt_required
+    @jwt_required()
     def get(self, asin):
         """
         Return the product row in the Product table using asin
@@ -59,7 +58,7 @@ class Product(Resource):
     def put(self):
         pass
 
-    @jwt_required
+    @jwt_required()
     def delete(self, asin):
         product = ProductModel.query.filter_by(
             asin=asin, user_id=current_user.id).one_or_none()
@@ -73,7 +72,7 @@ class Product(Resource):
 
 # ("/products") - -> class ProductList - -> only GET
 class ProductsList(Resource):
-    @jwt_required
+    @jwt_required()
     def get(self):
         user_products = (
             ProductModel.query.join(

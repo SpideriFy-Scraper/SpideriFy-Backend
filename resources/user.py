@@ -89,8 +89,8 @@ class UserLoginAPI(Resource):
 
 
 class UserLogoutAPI(Resource):
-    @jwt_required
-    def post(self):
+    @jwt_required()
+    def delete(self):
         jti = get_jwt()["jti"]
         BLOCKLIST.add(jti)
         return jsonify({"message": "Successfully Logged Out"}), 200
