@@ -1,17 +1,15 @@
-from flask import Response, json, jsonify
+from flask import Response, json, jsonify, make_response
 from flask_jwt_extended import current_user, jwt_required
 from flask_restful import Resource, reqparse
 
-from common.db import db
 from crawler.SpiderifyWrapper import SpiderifyWrapper
 from models.Product import ProductModel
 from models.User import UserModel
 from models.Comment import CommentModel
 from random import randint
 
+
 # ("/product/<string:asin>") - -> class Product - -> GET, POST, DELETE, PUT
-
-
 class Product(Resource):
     @jwt_required()
     def get(self, asin):
@@ -45,9 +43,9 @@ class Product(Resource):
                 }
                 reviews.append(data)
             return_product["reviews"] = reviews
-            return jsonify(return_product), 200
+            return make_response(jsonify(return_product), 200)
         else:
-            return jsonify({"message": "Failed To Find Such Product"}), 404
+            return make_response(jsonify({"message": "Failed To Find Such Product"}), 404)
 
 
     def post(self):
@@ -61,9 +59,9 @@ class Product(Resource):
         product = ProductModel.query.filter_by(
             asin=asin, user_id=current_user.id).one_or_none()
         if product is None:
-            return jsonify({"message": "This Product is Already Deleted"}), 404
+            return make_response(jsonify({"message": "This Product is Already Deleted"}), 404)
         product.delete_from_db()
-        return jsonify({"message": "Product Has Been Deleted"}), 200
+        return make_response(jsonify({"message": "Product Has Been Deleted"}), 200)
 
 
 # ("/products") - -> class ProductList - -> only GET
@@ -77,7 +75,7 @@ class ProductsList(Resource):
             .all()
         )
         if user_products is None:
-            return jsonify({"message": "Product List is Empty"}), 204
+            return make_response(jsonify({"message": "Product List is Empty"}), 204)
         list_product = []
         for product in user_products:
             data = {
@@ -88,7 +86,7 @@ class ProductsList(Resource):
                 "description": product.description,
             }
             list_product.append(data)
-        return jsonify({"products": list_product}), 200
+        return make_response(jsonify({"products": list_product}), 200)
 
 
 # ("/new-product") -> body -> url: str = URL // / JWT = ?
@@ -105,7 +103,7 @@ class NewProduct(Resource):
         spider = SpiderifyWrapper(str(data["url"]))
         spider_data = spider.start_amazon_spider()
         if spider_data is None:
-            return jsonify({"message":"Failed to Scrap Data"})
+            return make_response(jsonify({"message":"Failed to Scrap Data"}))
         message = json.dumps(spider_data)
         resp = Response(message, status=200, mimetype="application/json")
         newproduct = ProductModel(
@@ -143,4 +141,4 @@ class LastProducts(Resource):
             if product_obj is None:
                 continue
             products.append(product_obj)
-        return jsonify({"products": products}), 200
+        return make_response(jsonify({"products": products}), 200)
