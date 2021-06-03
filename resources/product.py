@@ -97,7 +97,7 @@ class NewProduct(Resource):
     parser.add_argument(
         "url", type=str, required=True, help="This Is The Base Product URL"
     )
-
+    @jwt_required()
     def post(self):
         data = NewProduct.parser.parse_args()
         spider = SpiderifyWrapper(str(data["url"]))
