@@ -113,7 +113,7 @@ class NewProduct(Resource):
             price=spider_data["PRICE"],
             rating=spider_data["RATING"],
             description=spider_data["PRODUCT_DESCRIPTION"],
-            user_id=current_user.id,
+            user_id=current_user.id
         )
 
         for review in spider_data["REVIEWS"]:
@@ -125,13 +125,12 @@ class NewProduct(Resource):
                 is_verified=review["verified"],
                 variant=review["variant"],
                 rating=review["rating"],
-                date=review["data"],
-                product_id=newproduct.id
+                date=review["date"]
             )
             newproduct.comments.append(new_review)
             list_review.append(new_review)
 
-        new_review.save_to_db()
+        db.session.add(newproduct)
         db.session.add_all(list_review)
         db.session.commit()
         return resp
