@@ -4,7 +4,7 @@ from flask_jwt_extended import JWTManager
 from flask_restful import Api
 
 from common.db import db
-from common.blacklist import BLACKLIST
+from common.blocklist import BLOCKLIST
 from models.User import UserModel
 from resources.comment import CommentsList
 from resources.product import LastProducts, NewProduct, Product, ProductsList
@@ -14,15 +14,16 @@ app = Flask(__name__)
 jwt = JWTManager(app)
 CORS(app, resources={r"/api/v1/*": {"origins": "*"}})
 
-@jwt.use_claims_loader
-def add_claims_to_jwt(identity):
+@jwt.additional_claims_loader
+def add_claims_to_access_token(identity):
     if identity == 1:
         return {'is_admin': True}
     return {'is_admin': False}
 
-@jwt.token_in_blacklist_loader
-def check_if_token_in_blacklist(decrypted_token):
-    return decrypted_token['jti'] in BLACKLIST
+@jwt.token_in_blocklist_loader
+def check_if_token_is_revoked(jwt_header, jwt_payload):
+    jti = jwt_payload["jti"]
+    return jti in BLOCKLIST
 
 @jwt.user_identity_loader
 def user_identity_lookup(user):
