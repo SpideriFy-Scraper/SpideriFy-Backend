@@ -5,7 +5,6 @@ from flask_restful import Resource, reqparse
 from crawler.SpiderifyWrapper import SpiderifyWrapper
 from common.db import db
 from models.Product import ProductModel
-from models.User import UserModel
 from models.Comment import CommentModel
 from random import randint
 
@@ -27,8 +26,7 @@ class Product(Resource):
                 "rating": product.rating,
                 "description": product.description,
             }
-            reviews_list = CommentModel.query.filter_by(
-                product_id=product.id)
+            reviews_list = product.comments
             reviews = []
             for review in reviews_list:
                 data = {
@@ -40,7 +38,7 @@ class Product(Resource):
                     "rating": review.rating,
                     "date": review.date,
                     "sentiment": review.sentiment,
-                    "summarized content": review.summerized_content,
+                    "summarized content": review.summarized_content,
                 }
                 reviews.append(data)
             return_product["reviews"] = reviews
@@ -69,12 +67,7 @@ class Product(Resource):
 class ProductsList(Resource):
     @jwt_required()
     def get(self):
-        user_products = (
-            ProductModel.query.join(
-                UserModel, user_id=UserModel.id)
-            .filter_by(user_id=current_user.id)
-            .all()
-        )
+        user_products = current_user.products
         if user_products is None:
             return make_response(jsonify({"message": "Product List is Empty"}), 204)
         list_product = []
@@ -140,12 +133,11 @@ class NewProduct(Resource):
 
 class LastProducts(Resource):
     def get(self):
-        number_of_products = ProductModel.query.filter_by(
-            ProductModel.id).count()
+        number_of_products = ProductModel.query.count()
         products = []
         for _ in range(10):
             product_obj = ProductModel.query.filter_by(
-                id = randint(1, number_of_products))
+                id=randint(1, number_of_products))
             if product_obj is None:
                 continue
             products.append(product_obj)
