@@ -127,7 +127,7 @@ class NewProduct(Resource):
                 rating=review["rating"],
                 date=review["date"],
                 sentiment=review["sentiment"],
-                summerized_content=review["Summary"]
+                summarized_content=review["Summary"]
             )
             newproduct.comments.append(new_review)
             list_review.append(new_review)
