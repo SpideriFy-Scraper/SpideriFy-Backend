@@ -13,39 +13,42 @@ from random import randint
 
 
 class Product(Resource):
+
     @jwt_required
     def get(self, asin):
         """
         Return the product row in the Product table using asin
         """
         product = ProductModel.query.filter_by(
-            ProductModel.asin == asin
-        )  # is it only one obj???????????
-        return_product = {
-            "asin": product.asin,
-            "name": product.name,
-            "price": product.price,
-            "rating": product.rating,
-            "description": product.description,
-        }
-        reviews_list = CommentModel.query.filter_by(
-            product.id == CommentModel.product_id)
-        reviews = []
-        for review in reviews_list:
-            data = {
-                "author": review.author,
-                "title": review.title,
-                "content": review.content,
-                "verified": review.is_verified,
-                "variant": review.variant,
-                "rating": review.rating,
-                "date": review.date,
-                "sentiment": review.sentiment,
-                "summarized content": review.summerized_content,
+            asin=asin, user_id=current_user.id).one_or_none()  # is it only one obj???????????
+        if product:
+            return_product = {
+                "asin": product.asin,
+                "name": product.name,
+                "price": product.price,
+                "rating": product.rating,
+                "description": product.description,
             }
-            reviews.append(data)
-        return_product["reviews"] = reviews
-        return jsonify(return_product)
+            reviews_list = CommentModel.query.filter_by(
+                product_id=product.id)
+            reviews = []
+            for review in reviews_list:
+                data = {
+                    "author": review.author,
+                    "title": review.title,
+                    "content": review.content,
+                    "verified": review.is_verified,
+                    "variant": review.variant,
+                    "rating": review.rating,
+                    "date": review.date,
+                    "sentiment": review.sentiment,
+                    "summarized content": review.summerized_content,
+                }
+                reviews.append(data)
+            return_product["reviews"] = reviews
+            return jsonify(return_product), 200
+        else:
+            return jsonify({"message": "Failed To Find Such Product"}), 404
         # db.session.query(UserModel).join(ProductModel).filter(username, asin)
         # product = ProductModel.query.filter_by(asin=asin)
         # return
@@ -58,10 +61,12 @@ class Product(Resource):
 
     @jwt_required
     def delete(self, asin):
-        product = ProductModel.query.filter_by(ProductModel.asin == asin)
-        reviews = CommentModel.query.filter_by(
-            product.id == CommentModel.product_id
-        )
+        product = ProductModel.query.filter_by(
+            asin=asin, user_id=current_user.id).one_or_none()
+        if product is None:
+            return jsonify({"message": "This Product is Already Deleted"}), 404
+        product.delete_from_db()
+        return jsonify({"message": "Product Has Been Deleted"}), 200
         # session.delete(product)
         # session.delete(reviews)
 
@@ -72,10 +77,12 @@ class ProductsList(Resource):
     def get(self):
         user_products = (
             ProductModel.query.join(
-                UserModel, ProductModel.user_id == UserModel.id)
-            .filter_by(ProductModel.user_id == current_user.id)
+                UserModel, user_id=UserModel.id)
+            .filter_by(user_id=current_user.id)
             .all()
         )
+        if user_products is None:
+            return jsonify({"message": "Product List is Empty"}), 204
         list_product = []
         for product in user_products:
             data = {
@@ -112,15 +119,28 @@ class NewProduct(Resource):
             description=spider_data["PRODUCT_DESCRIPTION"],
             user_id=current_user.id,
         )
-        # session.add(newprodut)
+        newproduct.save_to_db()
+        for review in spider_data["REVIEWS"]:
+            new_review = CommentModel(
+                author=review["author"],
+                title=review["title"],
+                content=review["content"],
+                is_verified=review["verified"],
+                variant=review["variant"],
+                rating=review["rating"],
+                date=review["data"],
+                product_id=newproduct.id
+            )
+            new_review.save_to_db()
         return resp
 
 
 class LastProducts(Resource):
     def get(self):
-        number_of_products = ProductModel.query.filter_by(ProductModel.id).count()
+        number_of_products = ProductModel.query.filter_by(
+            ProductModel.id).count()
         products = []
         for _ in range(10):
             products.append(ProductModel.query.filter(
                 ProductModel.id == randint(1, number_of_products)))
-        return jsonify({"products": products})
+        return jsonify({"products": products}), 200
