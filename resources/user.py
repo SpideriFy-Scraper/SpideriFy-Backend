@@ -1,9 +1,9 @@
 from flask import jsonify
-from flask_jwt_extended import create_access_token, jwt_required, get_raw_jwt
+from flask_jwt_extended import create_access_token, jwt_required, get_jwt
 from flask_restful import Resource, reqparse
 from pyisemail import is_email
 from models.User import UserModel
-from common.blacklist import BLACKLIST
+from common.blocklist import BLOCKLIST
 
 
 class User(Resource):
@@ -91,8 +91,8 @@ class UserLoginAPI(Resource):
 class UserLogoutAPI(Resource):
     @jwt_required
     def post(self):
-        jti = get_raw_jwt()['jti']
-        BLACKLIST.add(jti)
+        jti = get_jwt()["jti"]
+        BLOCKLIST.add(jti)
         return jsonify({"message": "Successfully Logged Out"}), 200
 
 
