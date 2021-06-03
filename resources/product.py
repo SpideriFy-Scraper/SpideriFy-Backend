@@ -111,7 +111,7 @@ class NewProduct(Resource):
             asin=spider_data["ASIN"],
             name=spider_data["PRODUCT_NAME"],
             price=spider_data["PRICE"],
-            rating=spider_data["RATING"],
+            rating=float(spider_data["RATING"][:3]),
             description=spider_data["PRODUCT_DESCRIPTION"],
             user_id=current_user.id
         )
@@ -125,7 +125,9 @@ class NewProduct(Resource):
                 is_verified=review["verified"],
                 variant=review["variant"],
                 rating=review["rating"],
-                date=review["date"]
+                date=review["date"],
+                sentiment=review["sentiment"],
+                summerized_content=review["Summary"]
             )
             newproduct.comments.append(new_review)
             list_review.append(new_review)
