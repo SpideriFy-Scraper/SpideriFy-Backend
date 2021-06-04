@@ -87,7 +87,10 @@ bandit-check:
     - echo "bandit check for finding security issues......."
   script:
     - pip install bandit
-    - bandit -r .  || true
+    - bandit -r $PWD/crawler || true
+    - bandit -r $PWD/resources || true
+    - bandit -r $PWD/logger || true
+    - bandit app.py || true
 
 flake8-check:
   stage: test
