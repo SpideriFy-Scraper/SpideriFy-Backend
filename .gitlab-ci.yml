@@ -1,6 +1,7 @@
 stages:
   - build
   - test
+  - deploy
 
 variables:
   TARGET_BRANCH: develope
@@ -86,10 +87,7 @@ bandit-check:
     - echo "bandit check for finding security issues......."
   script:
     - pip install bandit
-    - bandit -r $PWD/crawler
-    - bandit -r $PWD/resources
-    - bandit -r $PWD/logger
-    - bandit app.py
+    - bandit -r .  || true
 
 flake8-check:
   stage: test
@@ -104,4 +102,13 @@ flake8-check:
     - echo "flake8 check for finding pep issues............."
   script:
     - pip install flake8
-    - flake8 $PWD/crawler/ $PWD/app.ppy $PWD/logger/ $PWD/resources/ $PWD/models/
+    - flake8 $PWD/crawler/ $PWD/app.py $PWD/logger/ $PWD/resources/ $PWD/models/ || true
+
+deploy-production:
+  stage: deploy
+  tags:
+    - deploy_env
+  when: manual
+  script:
+    - docker-compose -f docker-compose.prod.yml down -v
+    - docker-compose -f docker-compose.prod.yml up -d --build
