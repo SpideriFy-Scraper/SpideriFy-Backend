@@ -1,4 +1,4 @@
-from sqlalchemy import BigInteger, Boolean, Column, DateTime, Integer, String
+from sqlalchemy import BigInteger, Boolean, Column, DateTime, String
 from werkzeug.security import check_password_hash, generate_password_hash
 from common.db import db
 
