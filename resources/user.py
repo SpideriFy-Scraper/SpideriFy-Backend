@@ -13,6 +13,7 @@ class User(Resource):
         if not user:
             return make_response(jsonify({"message": "User Not Found"}), 404)
         return make_response(jsonify(user.json()), 200)
+
     @classmethod
     def delete(cls, user_id):
         user = UserModel.query.filter_by(id=user_id).one_or_none()
@@ -21,14 +22,45 @@ class User(Resource):
         user.delete_from_db()
         return make_response(jsonify({"message": "User Deleted"}), 200)
 
+
 class UserRegisterAPI(Resource):
     parser = reqparse.RequestParser()
-    parser.add_argument("username", type=str, required=True, help="This Field Is Username Of The User That Wants To Register")
-    parser.add_argument("password", type=str, required=True, help="This Field Is Password Of The User That Wants To Register")
-    parser.add_argument("firstname", type=str, required=True, help="This Field Is First_name Of The User That Wants To Register")
-    parser.add_argument("lastname", type=str, required=True, help="This Field Is Last_name Of The User That Wants To Register")
-    parser.add_argument("email", type=str, required=True, help="This Field Is Email Of The User That Wants To Register")
-    parser.add_argument("phone_number", type=str, required=False, help="This Field Is Phone Of The User That Wants To Register")
+    parser.add_argument(
+        "username",
+        type=str,
+        required=True,
+        help="This Field Is Username Of The User That Wants To Register",
+    )
+    parser.add_argument(
+        "password",
+        type=str,
+        required=True,
+        help="This Field Is Password Of The User That Wants To Register",
+    )
+    parser.add_argument(
+        "firstname",
+        type=str,
+        required=True,
+        help="This Field Is First_name Of The User That Wants To Register",
+    )
+    parser.add_argument(
+        "lastname",
+        type=str,
+        required=True,
+        help="This Field Is Last_name Of The User That Wants To Register",
+    )
+    parser.add_argument(
+        "email",
+        type=str,
+        required=True,
+        help="This Field Is Email Of The User That Wants To Register",
+    )
+    parser.add_argument(
+        "phone_number",
+        type=str,
+        required=False,
+        help="This Field Is Phone Of The User That Wants To Register",
+    )
 
     @classmethod
     def post(cls):
@@ -44,11 +76,19 @@ class UserRegisterAPI(Resource):
 
         user = UserModel.query.filter_by(username=username).one_or_none()
         if user:
-            return make_response(jsonify({"message": "Username has been registered! try another username"}), 400)
+            return make_response(
+                jsonify(
+                    {"message": "Username has been registered! try another username"}
+                ),
+                400,
+            )
 
         email_check = UserModel.query.filter_by(email=email).one_or_none()
         if email_check:
-            return make_response(jsonify({"message": "Email has been registered! try another email"}), 400)
+            return make_response(
+                jsonify({"message": "Email has been registered! try another email"}),
+                400,
+            )
 
         detailed_result_with_dns = is_email(email, check_dns=True, diagnose=True)
         if not detailed_result_with_dns:
@@ -70,14 +110,26 @@ class UserRegisterAPI(Resource):
 
 class UserLoginAPI(Resource):
     parser = reqparse.RequestParser()
-    parser.add_argument("username", type=str, required=True, help="This Field Is Username Of The User That Wants To Login")
-    parser.add_argument("password", type=str, required=True, help="This Field Is Password Of The User That Wants To Login")
+    parser.add_argument(
+        "username",
+        type=str,
+        required=True,
+        help="This Field Is Username Of The User That Wants To Login",
+    )
+    parser.add_argument(
+        "password",
+        type=str,
+        required=True,
+        help="This Field Is Password Of The User That Wants To Login",
+    )
 
     @classmethod
     def post(cls):
         data = cls.parser.parse_args()
         if not (data["username"] or data["password"]):
-            return make_response(jsonify({"message": "Username Or Password Can Not Be Empty"}), 401)
+            return make_response(
+                jsonify({"message": "Username Or Password Can Not Be Empty"}), 401
+            )
 
         user = UserModel.query.filter_by(username=data["username"]).one_or_none()
 
@@ -94,5 +146,3 @@ class UserLogoutAPI(Resource):
         jti = get_jwt()["jti"]
         BLOCKLIST.add(jti)
         return make_response(jsonify({"message": "Successfully Logged Out"}), 200)
-
-

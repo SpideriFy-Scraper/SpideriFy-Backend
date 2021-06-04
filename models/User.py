@@ -20,7 +20,7 @@ class UserModel(db.Model):
     phone_number = Column(String(10), nullable=True)
     is_active = Column(Boolean, default=True)
     is_admin = Column(Boolean, default=False)
-    products = db.relationship('ProductModel', backref='user', lazy=True)
+    products = db.relationship("ProductModel", backref="user", lazy=True)
     created_at = Column(
         DateTime(timezone=True), default=db.func.now(), onupdate=db.func.now()
     )
@@ -50,13 +50,12 @@ class UserModel(db.Model):
 
     def json(self):
         return {
-            'username': self.username,
-            'first_name': self.first_name,
-            'last_name': self.last_name,
-            'email': self.email,
-            'phone_number': self.phone_number
+            "username": self.username,
+            "first_name": self.first_name,
+            "last_name": self.last_name,
+            "email": self.email,
+            "phone_number": self.phone_number,
         }
-
 
     def set_password(self, password):
         return generate_password_hash(password)

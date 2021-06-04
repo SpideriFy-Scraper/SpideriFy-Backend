@@ -30,25 +30,27 @@ def create_db():
     db.create_all()
     db.session.commit()
 
+
 @manager.command
 def drop_db():
     """Drops the db tables."""
     db.drop_all()
     db.session.commit()
 
+
 @manager.command
 def create_admin():
     """Create Admin User"""
     admin = UserModel(
-            username="Tesla",
-            first_name="Homayoon",
-            last_name="Sadeghi",
-            email="homayoon.9171@gmailc.com",
-            password="123!@#qaz",
-            phone_number="9136830197",
-            is_active=True,
-            is_admin=True,
-        )
+        username="Tesla",
+        first_name="Homayoon",
+        last_name="Sadeghi",
+        email="homayoon.9171@gmailc.com",
+        password="123!@#qaz",
+        phone_number="9136830197",
+        is_active=True,
+        is_admin=True,
+    )
     admin.save_to_db()
 
 

@@ -29,8 +29,11 @@ class CommentModel(db.Model):
     date = Column(String(256), nullable=False)
     sentiment = Column(String(32), nullable=True)
     summarized_content = Column(Text, nullable=True)
-    product_id = Column(BigInteger, db.ForeignKey(
-        "products.product_id", ondelete="CASCADE"), nullable=True)
+    product_id = Column(
+        BigInteger,
+        db.ForeignKey("products.product_id", ondelete="CASCADE"),
+        nullable=True,
+    )
     created_at = Column(
         DateTime(timezone=True), default=db.func.now(), onupdate=db.func.now()
     )
@@ -39,7 +42,16 @@ class CommentModel(db.Model):
     )
 
     def __init__(
-        self, author, title, content, is_verified, variant, rating, date, sentiment, summarized_content
+        self,
+        author,
+        title,
+        content,
+        is_verified,
+        variant,
+        rating,
+        date,
+        sentiment,
+        summarized_content,
     ):
         self.author = author
         self.title = title

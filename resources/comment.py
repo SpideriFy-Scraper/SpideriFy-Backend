@@ -12,7 +12,8 @@ class CommentsList(Resource):
         Return all Comments of a given product using asin
         """
         product = ProductModel.query.filter_by(
-            asin=asin, user_id=current_user.id).one_or_none()
+            asin=asin, user_id=current_user.id
+        ).one_or_none()
         if product:
             return_product = {
                 "asin": product.asin,
@@ -39,4 +40,6 @@ class CommentsList(Resource):
             return_product["reviews"] = reviews
             return make_response(jsonify(return_product), 200)
         else:
-            return make_response(jsonify({"message": "Failed To Find Such Product"}), 404)
+            return make_response(
+                jsonify({"message": "Failed To Find Such Product"}), 404
+            )

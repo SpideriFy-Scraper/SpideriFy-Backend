@@ -17,7 +17,8 @@ class Product(Resource):
         Return the product row in the Product table using asin
         """
         product = ProductModel.query.filter_by(
-            asin=asin, user_id=current_user.id).one_or_none()
+            asin=asin, user_id=current_user.id
+        ).one_or_none()
         if product:
             return_product = {
                 "asin": product.asin,
@@ -28,7 +29,9 @@ class Product(Resource):
             }
             return make_response(jsonify(return_product), 200)
         else:
-            return make_response(jsonify({"message": "Failed To Find Such Product"}), 404)
+            return make_response(
+                jsonify({"message": "Failed To Find Such Product"}), 404
+            )
 
     def post(self):
         pass
@@ -39,9 +42,12 @@ class Product(Resource):
     @jwt_required()
     def delete(self, asin):
         product = ProductModel.query.filter_by(
-            asin=asin, user_id=current_user.id).one_or_none()
+            asin=asin, user_id=current_user.id
+        ).one_or_none()
         if product is None:
-            return make_response(jsonify({"message": "This Product is Already Deleted"}), 404)
+            return make_response(
+                jsonify({"message": "This Product is Already Deleted"}), 404
+            )
         product.delete_from_db()
         return make_response(jsonify({"message": "Product Has Been Deleted"}), 200)
 
@@ -72,13 +78,14 @@ class NewProduct(Resource):
     parser.add_argument(
         "url", type=str, required=True, help="This Is The Base Product URL"
     )
+
     @jwt_required()
     def post(self):
         data = NewProduct.parser.parse_args()
         spider = SpiderifyWrapper(str(data["url"]))
         spider_data = spider.start_amazon_spider()
         if spider_data is None:
-            return make_response(jsonify({"message":"Failed to Scrap Data"}))
+            return make_response(jsonify({"message": "Failed to Scrap Data"}))
         message = json.dumps(spider_data)
         resp = Response(message, status=200, mimetype="application/json")
         newproduct = ProductModel(
@@ -87,7 +94,7 @@ class NewProduct(Resource):
             price=spider_data["PRICE"],
             rating=float(spider_data["RATING"][:3]),
             description=spider_data["PRODUCT_DESCRIPTION"],
-            user_id=current_user.id
+            user_id=current_user.id,
         )
 
         for review in spider_data["REVIEWS"]:
@@ -101,7 +108,7 @@ class NewProduct(Resource):
                 rating=review["rating"],
                 date=review["date"],
                 sentiment=review["sentiment"],
-                summarized_content=review["Summary"]
+                summarized_content=review["Summary"],
             )
             newproduct.comments.append(new_review)
             list_review.append(new_review)
@@ -118,7 +125,8 @@ class LastProducts(Resource):
         products = []
         for _ in range(10):
             product_obj = ProductModel.query.filter_by(
-                id=randint(1, number_of_products))
+                id=randint(1, number_of_products)
+            )
             if product_obj is None:
                 continue
             products.append(product_obj)

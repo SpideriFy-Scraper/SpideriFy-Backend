@@ -14,54 +14,83 @@ app = Flask(__name__)
 jwt = JWTManager(app)
 CORS(app, resources={r"/api/v1/*": {"origins": "*"}})
 
+
 @jwt.additional_claims_loader
 def add_claims_to_access_token(identity):
     if identity == 1:
-        return {'is_admin': True}
-    return {'is_admin': False}
+        return {"is_admin": True}
+    return {"is_admin": False}
+
 
 @jwt.token_in_blocklist_loader
 def check_if_token_is_revoked(jwt_header, jwt_payload):
     jti = jwt_payload["jti"]
     return jti in BLOCKLIST
 
+
 @jwt.user_identity_loader
 def user_identity_lookup(user):
     return user.id
+
 
 @jwt.user_lookup_loader
 def user_lookup_callback(_jwt_header, jwt_data):
     identity = jwt_data["sub"]
     return UserModel.query.filter_by(id=identity).one_or_none()
 
+
 @jwt.expired_token_loader
 def expired_token_callback(jwt_header, jwt_payload):
-    return make_response(jsonify({
-        'description': 'The token {} hass been expired'.format(jwt_payload["jti"]),
-        'error': 'token_expired'
-    }), 401)
+    return make_response(
+        jsonify(
+            {
+                "description": "The token {} hass been expired".format(
+                    jwt_payload["jti"]
+                ),
+                "error": "token_expired",
+            }
+        ),
+        401,
+    )
+
 
 @jwt.invalid_token_loader
 def invalid_token_callback(error):
-    return make_response(jsonify({
-        'description': 'Signiture verification failed',
-        'error': 'invalid_token'
-    }), 401)
+    return make_response(
+        jsonify(
+            {"description": "Signiture verification failed", "error": "invalid_token"}
+        ),
+        401,
+    )
 
 
 @jwt.unauthorized_loader
 def missing_token_callback(error):
-    return make_response(jsonify({
-        'description': 'Request does not cantain an access token',
-        'error': 'authorization_required'
-    }), 401)
+    return make_response(
+        jsonify(
+            {
+                "description": "Request does not cantain an access token",
+                "error": "authorization_required",
+            }
+        ),
+        401,
+    )
+
 
 @jwt.revoked_token_loader
 def revoked_token_callback(jwt_header, jwt_payload):
-    return make_response(jsonify({
-        'description': 'The token {} hass been revoked'.format(jwt_payload["jti"]),
-        'error': 'token_revoked'
-    }), 401)
+    return make_response(
+        jsonify(
+            {
+                "description": "The token {} hass been revoked".format(
+                    jwt_payload["jti"]
+                ),
+                "error": "token_revoked",
+            }
+        ),
+        401,
+    )
+
 
 if app.config["ENV"] == "production":
     app.config.from_object("config.ProductionConfig")
