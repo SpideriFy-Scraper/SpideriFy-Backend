@@ -32,7 +32,7 @@ services:
     restart: unless-stopped
     env_file:
       - .env
-    command: ["python3", "app.py"]
+    command: ["gunicorn", "manage:app", "--bind=0.0.0.0:8080", "--workers=3", "--threads=3", "--timeout=600", "--worker-class=gevent", "--worker-connections=1000"]
     ports:
       - "8080:8080"
     depends_on:
@@ -70,6 +70,17 @@ services:
     depends_on:
       - spiderify-api
       - mysql
+  nginx:
+    build:
+      context: ./nginx
+      dockerfile: Dockerfile
+    image: nginx:${TAG:-local}
+    container_name: nginx
+    restart: unless-stopped
+    ports:
+      - "80:80"
+    depends_on:
+      - sentiment-api
 
 volumes:
   db-data:
