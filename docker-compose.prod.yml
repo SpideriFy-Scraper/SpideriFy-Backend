@@ -1,3 +1,5 @@
+# Before Start This File Use These Commands:
+# docker network create --driver bridge external-network
 version: '3.9'
 
 services:
@@ -21,6 +23,8 @@ services:
       - "db-data:/var/lib/mysql"
       - "./mysql/scripts:/docker-entrypoint-initdb.d/:ro"
       - "./mysql/conf.d:/etc/mysql/conf.d:ro"
+    networks:
+      - app-network
 
   spiderify-api:
     build:
@@ -32,11 +36,11 @@ services:
     restart: unless-stopped
     env_file:
       - .env
-    command: ["gunicorn", "manage:app", "--bind=0.0.0.0:8080", "--workers=3", "--threads=3", "--timeout=600", "--worker-class=gevent", "--worker-connections=1000"]
-    ports:
-      - "8080:8080"
+    command: ["gunicorn", "manage:app", "--bind=0.0.0.0:8080", "--workers=4", "--threads=4", "--timeout=600", "--worker-class=gevent", "--worker-connections=1000"]
     depends_on:
       - mysql
+    networks:
+      - app-network
 
   sentiment-api:
     image: tensorflow/serving:latest
@@ -54,6 +58,8 @@ services:
     depends_on:
       - spiderify-api
       - mysql
+    networks:
+      - app-network
 
   summarization-api:
     image: summarization:${TAG:-local}
@@ -70,6 +76,9 @@ services:
     depends_on:
       - spiderify-api
       - mysql
+    networks:
+      - app-network
+
   nginx:
     build:
       context: ./nginx
@@ -81,6 +90,16 @@ services:
       - "80:80"
     depends_on:
       - sentiment-api
+    networks:
+      - app-network
+      - external-network
+
+
+networks:
+  app-network:
+      external: false
+  external-network:
+      external: true
 
 volumes:
   db-data:
