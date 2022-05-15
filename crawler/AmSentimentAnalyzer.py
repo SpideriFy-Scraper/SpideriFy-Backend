@@ -2,7 +2,7 @@ import asyncio
 import json
 import os
 import shutil
-
+from config import Config
 import httpx
 
 load_model = True
@@ -41,7 +41,7 @@ class AmSentiment:
             content["signature_name"] = "serving_default"
             content["instances"] = reviews
             response = await requester.post(
-                url="http://sentiment-api:8501/v1/models/sentiment:predict",
+                url=Config.SENTIMENT_URI,
                 data=json.dumps(content),
                 timeout=None,
             )

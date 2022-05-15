@@ -15,6 +15,8 @@ class Config(object):
     SQLALCHEMY_DATABASE_URI = f'mysql+pymysql://{config["DB_USER"]}:{config["DB_PASSWORD"]}@localhost:3306/{config["DB_NAME"]}'
     SQLALCHEMY_TRACK_MODIFICATIONS = False
     PROPAGATE_EXCEPTIONS = True
+    SENTIMENT_URI = config["SENTIMENT_URI"]
+    SUMMARIZATION_URI = config["SUMMARIZATION_URI"]
 
 
 class ProductionConfig(Config):

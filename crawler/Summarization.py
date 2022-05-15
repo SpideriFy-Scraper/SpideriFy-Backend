@@ -4,7 +4,7 @@ import json
 import os.path
 from logger.corelogger import Logger
 from inspect import currentframe
-
+from config import Config
 
 class Summarization:
 
@@ -29,7 +29,7 @@ class Summarization:
         for review in self.REVIEWS.keys():
             async with httpx.AsyncClient() as requester:
                 response = await requester.post(
-                    url="http://summarization-api:8000/predict",
+                    url=Config.SUMMARIZATION_URI,
                     data=json.dumps({"text": self.REVIEWS[review]}),
                     timeout=None,
                 )
