@@ -1,0 +1,474 @@
+{
+    "request_info": {
+        "success": true,
+        "credits_used": 3,
+        "credits_remaining": 97,
+        "credits_used_this_request": 1
+    },
+    "request_parameters": {
+        "type": "reviews",
+        "amazon_domain": "amazon.com",
+        "asin": "B073JYC4XM"
+    },
+    "request_metadata": {
+        "created_at": "2022-05-15T17:44:32.800Z",
+        "processed_at": "2022-05-15T17:44:40.074Z",
+        "total_time_taken": 7.27,
+        "amazon_url": "https://www.amazon.com/product-reviews/B073JYC4XM"
+    },
+    "product": {
+        "title": "SanDisk 128GB Ultra MicroSDXC UHS-I Memory Card with Adapter - 100MB/s, C10, U1, Full HD, A1, Micro SD Card - SDSQUAR-128G-GN6MA",
+        "link": "https://www.amazon.com/SanDisk-128GB-microSDXC-Memory-Adapter/dp/B073JYC4XM/ref=cm_cr_arp_d_product_top?ie=UTF8",
+        "sub_title": {
+            "text": "SanDisk",
+            "link": "https://www.amazon.com/stores/SanDisk/page/CD971F4B-EE23-4EA1-96E3-567678AC9C0A?ref_=ast_bln"
+        },
+        "image": "https://m.media-amazon.com/images/I/41tF51Ka9iL._AC_US60_SCLZZZZZZZ__.jpg",
+        "asin": "B073JYC4XM",
+        "attributes": [
+            {
+                "name": "Capacity",
+                "value": "128GB"
+            }
+        ]
+    },
+    "summary": {
+        "rating": 4.7,
+        "ratings_total": 757586,
+        "ratings_total_filtered": 757586,
+        "reviews_total_filtered": 119438,
+        "reviews_total": 119438,
+        "rating_breakdown": {
+            "five_star": {
+                "percentage": 83,
+                "count": 99133
+            },
+            "four_star": {
+                "percentage": 11,
+                "count": 13138
+            },
+            "three_star": {
+                "percentage": 3,
+                "count": 3583
+            },
+            "two_star": {
+                "percentage": 1,
+                "count": 1194
+            },
+            "one_star": {
+                "percentage": 2,
+                "count": 2388
+            }
+        }
+    },
+    "top_positive": {
+        "id": "R3BW6QXL6FMGEE",
+        "title": "Believe the \"Fake Card\" Hype - Photo to Prove It",
+        "body": "Top card doesn't work / Bottom card works. Bought the top card June 18 2018 for a Nintendo Switch and the games would download to 99% and then suddenly I'd get an error. When these cards went on sale recently I bought a new one just to see if it was the card. I could not BELIEVE how different the fonts were! Check out photo. Also the color of the bad card is off (slightly more purple and less red). Sure enough, I was able to download games to the new card without incident. The real product works great but I just can't justify giving 5 stars when I had this experience. Buyer beware!",
+        "body_html": "<span class=\"a-size-base\">Top card doesn't work / Bottom card works. Bought the top card June 18 2018 for a Nintendo Switch and the games would download to 99% and then suddenly I'd get an error. When these cards went on sale recently I bought a new one just to see if it was the card. I could not BELIEVE how different the fonts were! Check out photo. Also the color of the bad card is off (slightly more purple and less red). Sure enough, I was able to download games to the new card without incident. The real product works great but I just can't justify giving 5 stars when I had this experience. Buyer beware!</span>",
+        "link": "https://www.amazon.com/gp/customer-reviews/R3BW6QXL6FMGEE/ref=cm_cr_arp_d_viewpnt?ie=UTF8&ASIN=B073JYC4XM#R3BW6QXL6FMGEE",
+        "rating": 4,
+        "date": {
+            "raw": "Reviewed in the United States on September 30, 2018",
+            "utc": "2018-09-30T00:00:00.000Z"
+        },
+        "profile": {
+            "name": "Jeffrey Fahndrich",
+            "link": "https://www.amazon.com/gp/profile/amzn1.account.AG7KMZZVZHIDW7Z4AREPN2NKB2MA/ref=cm_cr_arp_d_gw_lft?ie=UTF8",
+            "id": "AG7KMZZVZHIDW7Z4AREPN2NKB2MA"
+        },
+        "vine_program": false,
+        "verified_purchase": false,
+        "helpful_votes": 3985,
+        "review_country": "us",
+        "is_global_review": false
+    },
+    "top_critical": {
+        "id": "R2BRTXISCYFF5",
+        "title": "False warranty",
+        "body": "I had this for my dash cam for about 6 months, worked fine then it suddenly went out, the computer wont even read it anymore...I emailed about the warranty (10 years) I got told dash cams void the warranty,, I just read the entire warranty and this site as of 8/5/2018 and there is nothing about dash cams voiding warranty...I wont be buying another one due to the customer support.",
+        "body_html": "<span class=\"a-size-base\">I had this for my dash cam for about 6 months, worked fine then it suddenly went out, the computer wont even read it anymore...<br><br>I emailed about the warranty (10 years) I got told dash cams void the warranty,, I just read the entire warranty and this site as of 8/5/2018 and there is nothing about dash cams voiding warranty...<br><br>I wont be buying another one due to the customer support.</span>",
+        "link": "https://www.amazon.com/gp/customer-reviews/R2BRTXISCYFF5/ref=cm_cr_arp_d_viewpnt?ie=UTF8&ASIN=B073JYC4XM#R2BRTXISCYFF5",
+        "rating": 1,
+        "date": {
+            "raw": "Reviewed in the United States on August 5, 2018",
+            "utc": "2018-08-05T00:00:00.000Z"
+        },
+        "profile": {
+            "name": "Kevin",
+            "link": "https://www.amazon.com/gp/profile/amzn1.account.AFZGBPBT5QY5LBDC2L24JXDQQERA/ref=cm_cr_arp_d_gw_rgt?ie=UTF8",
+            "id": "AFZGBPBT5QY5LBDC2L24JXDQQERA"
+        },
+        "vine_program": false,
+        "verified_purchase": false,
+        "helpful_votes": 1285,
+        "review_country": "us",
+        "is_global_review": false
+    },
+    "reviews": [
+        {
+            "id": "R3BW6QXL6FMGEE",
+            "title": "Believe the \"Fake Card\" Hype - Photo to Prove It",
+            "body": "Top card doesn't work / Bottom card works. Bought the top card June 18 2018 for a Nintendo Switch and the games would download to 99% and then suddenly I'd get an error. When these cards went on sale recently I bought a new one just to see if it was the card. I could not BELIEVE how different the fonts were! Check out photo. Also the color of the bad card is off (slightly more purple and less red). Sure enough, I was able to download games to the new card without incident. The real product works great but I just can't justify giving 5 stars when I had this experience. Buyer beware!",
+            "asin": "B073JY5T7T",
+            "body_html": "<span>  Top card doesn't work / Bottom card works. Bought the top card June 18 2018 for a Nintendo Switch and the games would download to 99% and then suddenly I'd get an error. When these cards went on sale recently I bought a new one just to see if it was the card. I could not BELIEVE how different the fonts were! Check out photo. Also the color of the bad card is off (slightly more purple and less red). Sure enough, I was able to download games to the new card without incident. The real product works great but I just can't justify giving 5 stars when I had this experience. Buyer beware! </span>",
+            "link": "https://www.amazon.com/gp/customer-reviews/R3BW6QXL6FMGEE/ref=cm_cr_arp_d_rvw_ttl?ie=UTF8&ASIN=B073JYC4XM",
+            "rating": 4,
+            "date": {
+                "raw": "Reviewed in the United States on September 30, 2018",
+                "utc": "2018-09-30T00:00:00.000Z"
+            },
+            "profile": {
+                "name": "Jeffrey Fahndrich",
+                "link": "https://www.amazon.com/gp/profile/amzn1.account.AG7KMZZVZHIDW7Z4AREPN2NKB2MA/ref=cm_cr_arp_d_gw_btm?ie=UTF8",
+                "id": "AG7KMZZVZHIDW7Z4AREPN2NKB2MA"
+            },
+            "vine_program": false,
+            "verified_purchase": true,
+            "attributes": [
+                {
+                    "name": "Capacity",
+                    "value": "200GB"
+                }
+            ],
+            "attributes_flat": "Capacity: 200GB",
+            "images": [
+                {
+                    "link": "https://images-na.ssl-images-amazon.com/images/I/51PyL3COLIL.jpg"
+                }
+            ],
+            "helpful_votes": 3985,
+            "review_country": "us",
+            "is_global_review": false,
+            "position": 1
+        },
+        {
+            "id": "R2BRTXISCYFF5",
+            "title": "False warranty",
+            "body": "I had this for my dash cam for about 6 months, worked fine then it suddenly went out, the computer wont even read it anymore...  I emailed about the warranty (10 years) I got told dash cams void the warranty,, I just read the entire warranty and this site as of 8/5/2018 and there is nothing about dash cams voiding warranty...  I wont be buying another one due to the customer support.",
+            "asin": "B073JYVKNX",
+            "body_html": "<span>  I had this for my dash cam for about 6 months, worked fine then it suddenly went out, the computer wont even read it anymore...<br><br>I emailed about the warranty (10 years) I got told dash cams void the warranty,, I just read the entire warranty and this site as of 8/5/2018 and there is nothing about dash cams voiding warranty...<br><br>I wont be buying another one due to the customer support. </span>",
+            "link": "https://www.amazon.com/gp/customer-reviews/R2BRTXISCYFF5/ref=cm_cr_arp_d_rvw_ttl?ie=UTF8&ASIN=B073JYC4XM",
+            "rating": 1,
+            "date": {
+                "raw": "Reviewed in the United States on August 5, 2018",
+                "utc": "2018-08-05T00:00:00.000Z"
+            },
+            "profile": {
+                "name": "Kevin",
+                "link": "https://www.amazon.com/gp/profile/amzn1.account.AFZGBPBT5QY5LBDC2L24JXDQQERA/ref=cm_cr_arp_d_gw_btm?ie=UTF8",
+                "id": "AFZGBPBT5QY5LBDC2L24JXDQQERA"
+            },
+            "vine_program": false,
+            "verified_purchase": true,
+            "attributes": [
+                {
+                    "name": "Capacity",
+                    "value": "64GB"
+                }
+            ],
+            "attributes_flat": "Capacity: 64GB",
+            "helpful_votes": 1285,
+            "review_country": "us",
+            "is_global_review": false,
+            "position": 2
+        },
+        {
+            "id": "R2WT6C41F2VNN1",
+            "title": "Average write 14MB/S",
+            "body": "Bought two. Both averaged 14MB/s and would burst to about 20MB/s. Nowhere near the 98MB/S claimed. Tried to return same day received (after working with them for 90 minutes, and amazon wouldn't stating \"This item note qualified for return.\"",
+            "asin": "B073JWXGNT",
+            "body_html": "<span>  Bought two. Both averaged 14MB/s and would burst to about 20MB/s. Nowhere near the 98MB/S claimed. Tried to return same day received (after working with them for 90 minutes, and amazon wouldn't stating \"This item note qualified for return.\" </span>",
+            "link": "https://www.amazon.com/gp/customer-reviews/R2WT6C41F2VNN1/ref=cm_cr_arp_d_rvw_ttl?ie=UTF8&ASIN=B073JYC4XM",
+            "rating": 1,
+            "date": {
+                "raw": "Reviewed in the United States on April 13, 2018",
+                "utc": "2018-04-13T00:00:00.000Z"
+            },
+            "profile": {
+                "name": "mingAZ",
+                "link": "https://www.amazon.com/gp/profile/amzn1.account.AE5CKZDQIC2IF65PJF2O3TCCUWNQ/ref=cm_cr_arp_d_gw_btm?ie=UTF8",
+                "id": "AE5CKZDQIC2IF65PJF2O3TCCUWNQ"
+            },
+            "vine_program": false,
+            "verified_purchase": true,
+            "attributes": [
+                {
+                    "name": "Capacity",
+                    "value": "32GB"
+                }
+            ],
+            "attributes_flat": "Capacity: 32GB",
+            "helpful_votes": 1171,
+            "review_country": "us",
+            "is_global_review": false,
+            "position": 3
+        },
+        {
+            "id": "R1V8RUMC0ZFZRS",
+            "title": "DOA!  Amazon selling counterfit cards?",
+            "body": "Card dead on arrival. Immediate write errors and card cannot be formated. This is my first time ever having issues with an AD card.",
+            "asin": "B073JYC4XM",
+            "body_html": "<span>  Card dead on arrival. Immediate write errors and card cannot be formated. This is my first time ever having issues with an AD card. </span>",
+            "link": "https://www.amazon.com/gp/customer-reviews/R1V8RUMC0ZFZRS/ref=cm_cr_arp_d_rvw_ttl?ie=UTF8&ASIN=B073JYC4XM",
+            "rating": 1,
+            "date": {
+                "raw": "Reviewed in the United States on April 11, 2018",
+                "utc": "2018-04-11T00:00:00.000Z"
+            },
+            "profile": {
+                "name": "M. Olayan",
+                "link": "https://www.amazon.com/gp/profile/amzn1.account.AEXRHL2IHP5U53I4K2DPV3YIRSPQ/ref=cm_cr_arp_d_gw_btm?ie=UTF8",
+                "id": "AEXRHL2IHP5U53I4K2DPV3YIRSPQ"
+            },
+            "vine_program": false,
+            "verified_purchase": true,
+            "attributes": [
+                {
+                    "name": "Capacity",
+                    "value": "128GB"
+                }
+            ],
+            "attributes_flat": "Capacity: 128GB",
+            "helpful_votes": 1315,
+            "review_country": "us",
+            "is_global_review": false,
+            "position": 4
+        },
+        {
+            "id": "R1NCOD22D4NTU5",
+            "title": "I got a fake...Beware!",
+            "body": "I always use SanDisk and think they are top-notch. However, beware of fakes! I got an obvious fake microSD card, and the retail package had obviously been opened before I received it.",
+            "asin": "B073JWXGNT",
+            "body_html": "<span>  I always use SanDisk and think they are top-notch. However, beware of fakes! I got an obvious fake microSD card, and the retail package had obviously been opened before I received it. </span>",
+            "link": "https://www.amazon.com/gp/customer-reviews/R1NCOD22D4NTU5/ref=cm_cr_arp_d_rvw_ttl?ie=UTF8&ASIN=B073JYC4XM",
+            "rating": 1,
+            "date": {
+                "raw": "Reviewed in the United States on March 29, 2018",
+                "utc": "2018-03-29T00:00:00.000Z"
+            },
+            "profile": {
+                "name": "S Trent",
+                "link": "https://www.amazon.com/gp/profile/amzn1.account.AFD77BZLKCVOZ3AS5CEKV4ZD7KEA/ref=cm_cr_arp_d_gw_btm?ie=UTF8",
+                "id": "AFD77BZLKCVOZ3AS5CEKV4ZD7KEA"
+            },
+            "vine_program": false,
+            "verified_purchase": true,
+            "attributes": [
+                {
+                    "name": "Capacity",
+                    "value": "32GB"
+                }
+            ],
+            "attributes_flat": "Capacity: 32GB",
+            "images": [
+                {
+                    "link": "https://images-na.ssl-images-amazon.com/images/I/71uCRVOkqXL.jpg"
+                }
+            ],
+            "helpful_votes": 1742,
+            "review_country": "us",
+            "is_global_review": false,
+            "position": 5
+        },
+        {
+            "id": "R3NQV8GRG9AWVM",
+            "title": "Worked perfectly in my testing and in my tablets!",
+            "body": "I got this 128 GIG card to use with my tablets. So far it has worked perfectly in my testing. I always keep a couple of spares around for my future buys and I seem to give a lot of my SD cards away to family and friends. I picked up this 128 GIG at a great price and I just couldn\u2019t pass it up.  I own about 100 SD cards and I always do a speed test to verify the reading and writing speeds before I install the memory. This card checked out extremely well. The fastest write speed on this card was 73.143 MB/Sec and the fastest reading speed was 93.368 MB/Sec. I have attached the graphical test data for your information. I used a USB 3.0 port with a USB 3.0 card reader for the test.  Overall, this card worked well and I rated it five stars. If I have any future issues I will update my review.  I hope my review and photo of the test data helps you.  Out of 100 plus SD cards I have purchased from Sandisk I have only had one fail. With Sandisk\u2019s 10 year warranty they replaced it and sent me a new one at no charge. That is the advantage when you purchase high tech from a top company that stands behind their product.  I simply called them and returned the old chip and they sent me a new one.  I am amazed at how well these work and how low the price has gotten on a sale day. Putting one of these into your phone or tablet is a wonderful upgrade to the device\u2019s storage capability.  Almost no one needs a 128 GIG chip but at sales prices you can\u2019t pass up getting them.  This is a great product and it makes your smart devices even more powerful.  This is a simple and easy upgrade for your smart devices.",
+            "asin": "B073JYC4XM",
+            "body_html": "<span>  I got this 128 GIG card to use with my tablets. So far it has worked perfectly in my testing. I always keep a couple of spares around for my future buys and I seem to give a lot of my SD cards away to family and friends. I picked up this 128 GIG at a great price and I just couldn\u2019t pass it up.<br><br>I own about 100 SD cards and I always do a speed test to verify the reading and writing speeds before I install the memory. This card checked out extremely well. The fastest write speed on this card was 73.143 MB/Sec and the fastest reading speed was 93.368 MB/Sec. I have attached the graphical test data for your information. I used a USB 3.0 port with a USB 3.0 card reader for the test.<br><br>Overall, this card worked well and I rated it five stars. If I have any future issues I will update my review.<br><br>I hope my review and photo of the test data helps you.<br><br>Out of 100 plus SD cards I have purchased from Sandisk I have only had one fail. With Sandisk\u2019s 10 year warranty they replaced it and sent me a new one at no charge. That is the advantage when you purchase high tech from a top company that stands behind their product.<br><br>I simply called them and returned the old chip and they sent me a new one.<br><br>I am amazed at how well these work and how low the price has gotten on a sale day. Putting one of these into your phone or tablet is a wonderful upgrade to the device\u2019s storage capability.<br><br>Almost no one needs a 128 GIG chip but at sales prices you can\u2019t pass up getting them.<br><br>This is a great product and it makes your smart devices even more powerful.<br><br>This is a simple and easy upgrade for your smart devices. </span>",
+            "link": "https://www.amazon.com/gp/customer-reviews/R3NQV8GRG9AWVM/ref=cm_cr_arp_d_rvw_ttl?ie=UTF8&ASIN=B073JYC4XM",
+            "rating": 5,
+            "date": {
+                "raw": "Reviewed in the United States on December 17, 2017",
+                "utc": "2017-12-17T00:00:00.000Z"
+            },
+            "profile": {
+                "name": "JJCEO",
+                "link": "https://www.amazon.com/gp/profile/amzn1.account.AFDRVO62RWOQH7TDI5ZXBLINZGUA/ref=cm_cr_arp_d_gw_btm?ie=UTF8",
+                "id": "AFDRVO62RWOQH7TDI5ZXBLINZGUA",
+                "image": "https://images-na.ssl-images-amazon.com/images/S/amazon-avatars-global/d89cfec3-f960-4b4a-bec4-678bf66eb03a._CR0,0.0,332,332_SX48_.jpg"
+            },
+            "vine_program": true,
+            "vine_program_free_product": false,
+            "verified_purchase": true,
+            "attributes": [
+                {
+                    "name": "Capacity",
+                    "value": "128GB"
+                }
+            ],
+            "attributes_flat": "Capacity: 128GB",
+            "images": [
+                {
+                    "link": "https://images-na.ssl-images-amazon.com/images/I/51Yn+RZZzBL.jpg"
+                }
+            ],
+            "helpful_votes": 726,
+            "review_country": "us",
+            "is_global_review": false,
+            "position": 6
+        },
+        {
+            "id": "R1MYK3KMWXEMEN",
+            "title": "Always check if the card is legit when it arrives",
+            "body": "Beware of fake cards. The capacity shown on fake cards can be modified to show a size greater than what it actually is. Ex. A fake 256GB card having only 32GB instead. Some unknowing person could use the card without knowing it was fake and find that the data was corrupted when it got past 32GB or encounter a very very slow transfer rate past a certain point.  To check if the card you bought is legit or not use FakeFlashTest (fast) and H2testw (slower but thorough). This will delete the content on your card so backup whatever you have before using it.  The speed and pictures I got from my legit 256GB card are attached. Your results may vary. The product code is edited out for product support issues.",
+            "asin": "B0758NHWS8",
+            "body_html": "<span>  Beware of fake cards. The capacity shown on fake cards can be modified to show a size greater than what it actually is. Ex. A fake 256GB card having only 32GB instead. Some unknowing person could use the card without knowing it was fake and find that the data was corrupted when it got past 32GB or encounter a very very slow transfer rate past a certain point.<br><br>To check if the card you bought is legit or not use FakeFlashTest (fast) and H2testw (slower but thorough).<br>This will delete the content on your card so backup whatever you have before using it.<br><br>The speed and pictures I got from my legit 256GB card are attached. Your results may vary. The product code is edited out for product support issues. </span>",
+            "link": "https://www.amazon.com/gp/customer-reviews/R1MYK3KMWXEMEN/ref=cm_cr_arp_d_rvw_ttl?ie=UTF8&ASIN=B073JYC4XM",
+            "rating": 5,
+            "date": {
+                "raw": "Reviewed in the United States on June 10, 2018",
+                "utc": "2018-06-10T00:00:00.000Z"
+            },
+            "profile": {
+                "name": "OML",
+                "link": "https://www.amazon.com/gp/profile/amzn1.account.AHUZAUIN4N7P6FZ4TTD4MKO5HAQA/ref=cm_cr_arp_d_gw_btm?ie=UTF8",
+                "id": "AHUZAUIN4N7P6FZ4TTD4MKO5HAQA",
+                "image": "https://images-na.ssl-images-amazon.com/images/S/amazon-avatars-global/f761b33c-6fa8-4098-bdff-55f276072bf0._CR82,0,200,200_SX48_.jpg"
+            },
+            "vine_program": false,
+            "verified_purchase": true,
+            "attributes": [
+                {
+                    "name": "Capacity",
+                    "value": "256GB"
+                }
+            ],
+            "attributes_flat": "Capacity: 256GB",
+            "images": [
+                {
+                    "link": "https://images-na.ssl-images-amazon.com/images/I/51dsSe8MQnL.jpg"
+                },
+                {
+                    "link": "https://images-na.ssl-images-amazon.com/images/I/715Mrcgx02L.jpg"
+                },
+                {
+                    "link": "https://images-na.ssl-images-amazon.com/images/I/71zLmCFXENL.jpg"
+                }
+            ],
+            "helpful_votes": 332,
+            "review_country": "us",
+            "is_global_review": false,
+            "position": 7
+        },
+        {
+            "id": "RR00TLPBLLW8Q",
+            "title": "DOA: Card melted down while plugged in to my laptops card reader.",
+            "body": "Dead on Arrival. I was never able to format it. The worse part was that when I tried to pull it out from my laptop card reader, I burned my fingers touching it! The card was extremely hot. I took it out using a piece of cloth and once it cooled off, I could see that part of the adapter was melted. If I would had leave it plugged in more time it could have easily caused a fire. I have been using memory cards a lot, this is the first time something like this happened to me.",
+            "asin": "B073JYVKNX",
+            "body_html": "<span>  Dead on Arrival. I was never able to format it. The worse part was that when I tried to pull it out from my laptop card reader, I burned my fingers touching it! The card was extremely hot. I took it out using a piece of cloth and once it cooled off, I could see that part of the adapter was melted. If I would had leave it plugged in more time it could have easily caused a fire. I have been using memory cards a lot, this is the first time something like this happened to me. </span>",
+            "link": "https://www.amazon.com/gp/customer-reviews/RR00TLPBLLW8Q/ref=cm_cr_arp_d_rvw_ttl?ie=UTF8&ASIN=B073JYC4XM",
+            "rating": 1,
+            "date": {
+                "raw": "Reviewed in the United States on June 9, 2018",
+                "utc": "2018-06-09T00:00:00.000Z"
+            },
+            "profile": {
+                "name": "TonyDC",
+                "link": "https://www.amazon.com/gp/profile/amzn1.account.AHWWUYA4JRPHZEZHSNUVN6MHPM3Q/ref=cm_cr_arp_d_gw_btm?ie=UTF8",
+                "id": "AHWWUYA4JRPHZEZHSNUVN6MHPM3Q"
+            },
+            "vine_program": false,
+            "verified_purchase": true,
+            "attributes": [
+                {
+                    "name": "Capacity",
+                    "value": "64GB"
+                }
+            ],
+            "attributes_flat": "Capacity: 64GB",
+            "images": [
+                {
+                    "link": "https://images-na.ssl-images-amazon.com/images/I/7195GdPd8sL.jpg"
+                },
+                {
+                    "link": "https://images-na.ssl-images-amazon.com/images/I/71hFbCL6TnL.jpg"
+                },
+                {
+                    "link": "https://images-na.ssl-images-amazon.com/images/I/71xsJR8U4iL.jpg"
+                },
+                {
+                    "link": "https://images-na.ssl-images-amazon.com/images/I/81DphOE-fRL.jpg"
+                }
+            ],
+            "helpful_votes": 249,
+            "review_country": "us",
+            "is_global_review": false,
+            "position": 8
+        },
+        {
+            "id": "R12MBAJX515NL7",
+            "title": "GREAT CARD - I doubt I'll ever run out of storage!",
+            "body": "I love it! Works great in my Galaxy Note 8! Fast enough that I can throw pretty much anything at it. If you're wondering, modern Android versions (starting with Lollipop, as I recall) have the ability to read up to 1 TB of external storage. While this 400GB card is the maximum capacity you can currently buy*, the leading manufacturers are feverishly working to make larger capacity cards. For now, though, I think 400GB is enough to handle all the 4K video I can shoot.  *- Don't be fooled by unscrupulous sellers, particularly on auction sites ( I won't name it because there are a lot of fake cards here, too), who list ridiculously large capacity cards for astonishingly low prices... you don't get what you pay for! They take cheap, generic cards, usually no more than 4 or 8 GB, and rewrite the card's firmware & re-label it to make it act and appear like a larger card... 256GB, 500GB or higher! There are tons of listings out there for 1 TERABYTE microSD cards! Of course there's no such thing: and when the physical memory of the card is reached, your device will simply start overwriting data... and your precious photos, videos and other files will be gone forever. In fact, one third of all SanDisk cards on the market are counterfeit! You can avoid all this by installing and using a free app called SD Insight to determine if your card is legitimate.",
+            "asin": "B074RNRM2B",
+            "body_html": "<span>  I love it! Works great in my Galaxy Note 8! Fast enough that I can throw pretty much anything at it. If you're wondering, modern Android versions (starting with Lollipop, as I recall) have the ability to read up to 1 TB of external storage. While this 400GB card is the maximum capacity you can currently buy*, the leading manufacturers are feverishly working to make larger capacity cards. For now, though, I think 400GB is enough to handle all the 4K video I can shoot.<br><br>*- Don't be fooled by unscrupulous sellers, particularly on auction sites ( I won't name it because there are a lot of fake cards here, too), who list ridiculously large capacity cards for astonishingly low prices... you don't get what you pay for! They take cheap, generic cards, usually no more than 4 or 8 GB, and rewrite the card's firmware &amp; re-label it to make it act and appear like a larger card... 256GB, 500GB or higher! There are tons of listings out there for 1 TERABYTE microSD cards! Of course there's no such thing: and when the physical memory of the card is reached, your device will simply start overwriting data... and your precious photos, videos and other files will be gone forever. In fact, one third of all SanDisk cards on the market are counterfeit! You can avoid all this by installing and using a free app called SD Insight to determine if your card is legitimate. </span>",
+            "link": "https://www.amazon.com/gp/customer-reviews/R12MBAJX515NL7/ref=cm_cr_arp_d_rvw_ttl?ie=UTF8&ASIN=B073JYC4XM",
+            "rating": 5,
+            "date": {
+                "raw": "Reviewed in the United States on November 10, 2017",
+                "utc": "2017-11-10T00:00:00.000Z"
+            },
+            "profile": {
+                "name": "The_Chief",
+                "link": "https://www.amazon.com/gp/profile/amzn1.account.AH4KV34TUKSAKGMLYTWDXTQFBBHQ/ref=cm_cr_arp_d_gw_btm?ie=UTF8",
+                "id": "AH4KV34TUKSAKGMLYTWDXTQFBBHQ",
+                "image": "https://images-na.ssl-images-amazon.com/images/S/amazon-avatars-global/8b13547b-43dc-4cc3-89b3-4df502c29ee4._CR62,0,375,375_SX48_.jpg"
+            },
+            "vine_program": false,
+            "verified_purchase": true,
+            "attributes": [
+                {
+                    "name": "Capacity",
+                    "value": "400GB"
+                }
+            ],
+            "attributes_flat": "Capacity: 400GB",
+            "helpful_votes": 938,
+            "review_country": "us",
+            "is_global_review": false,
+            "position": 9
+        },
+        {
+            "id": "R283LVHN43CXV",
+            "title": "this was not a good purchase, my previous review was deleted but here ...",
+            "body": "SD card failed after only a couple of weeks, will not read, will not save anything, this was not a good purchase, my previous review was deleted but here it is, in reality I am dissatisfied with the way this was handled, the card was bad, did not work as intended and I wished it was shipped on time. As such I would say stay away, there are other cards and other sellers.",
+            "asin": "B073JY5T7T",
+            "body_html": "<span>  SD card failed after only a couple of weeks, will not read, will not save anything, this was not a good purchase, my previous review was deleted but here it is, in reality I am dissatisfied with the way this was handled, the card was bad, did not work as intended and I wished it was shipped on time. As such I would say stay away, there are other cards and other sellers. </span>",
+            "link": "https://www.amazon.com/gp/customer-reviews/R283LVHN43CXV/ref=cm_cr_arp_d_rvw_ttl?ie=UTF8&ASIN=B073JYC4XM",
+            "rating": 1,
+            "date": {
+                "raw": "Reviewed in the United States on April 18, 2018",
+                "utc": "2018-04-18T00:00:00.000Z"
+            },
+            "profile": {
+                "name": "K. T.",
+                "link": "https://www.amazon.com/gp/profile/amzn1.account.AFAERXXXD4FQEODHJF5T7OV66ZLQ/ref=cm_cr_arp_d_gw_btm?ie=UTF8",
+                "id": "AFAERXXXD4FQEODHJF5T7OV66ZLQ",
+                "image": "https://images-na.ssl-images-amazon.com/images/S/amazon-avatars-global/be7de2c6-d420-4a79-a22c-47faaba7fbb4._CR90,0,320,320_SX48_.jpg"
+            },
+            "vine_program": false,
+            "verified_purchase": true,
+            "attributes": [
+                {
+                    "name": "Capacity",
+                    "value": "200GB"
+                }
+            ],
+            "attributes_flat": "Capacity: 200GB",
+            "helpful_votes": 245,
+            "review_country": "us",
+            "is_global_review": false,
+            "position": 10
+        }
+    ],
+    "pagination": {
+        "current_page": 1,
+        "ratings_total_filtered": 757586,
+        "reviews_total_filtered": 119438,
+        "reviews_total": 119438,
+        "total_results": 119438,
+        "total_pages": 11944,
+        "message": "There are a high number of reviews for this product. It is likely Amazon will not allow pagination through all of the review pages. Please check the API response for presence of the 'reviews' array before continuing to the next page."
+    }
+}

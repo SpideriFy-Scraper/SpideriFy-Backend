@@ -275,7 +275,7 @@ class AmazonSpider:
             all_review_url, product_url=product_url, headers=None
         )
 
-        return self.AmSpiderConfig.AM_SCRAPER.scrap("dict")
+        return self.AmSpiderConfig.AM_SCRAPER.scrap(asin=self.AmSpiderConfig.ASIN,export_type="dict")
 
     def call_sentiment_analyzer(self, review_list: list):
         """

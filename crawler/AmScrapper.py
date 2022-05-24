@@ -260,7 +260,8 @@ class AmScrapper:
 
     def check_language_content(self, reviews: dict):
         content = TextBlob(reviews["content"])
-        return content.detect_language() != "en"
+        return False
+        # return content.detect_language() != "en"
 
     async def extract_product(self) -> bool:
         """
@@ -322,7 +323,62 @@ class AmScrapper:
         )
         return review
 
-    async def extraction_wrapper(self, max_reviews) -> bool:
+    async def rainforest_reviews_api_request(self,asin):
+        params = {
+        'api_key': '9EC4C8D2370341CB8E75130DC75E35E1',
+        'type': 'reviews',
+        'amazon_domain': 'amazon.com',
+        'asin': asin
+        }
+        async with httpx.AsyncClient() as requester:
+            response = await requester.get(
+                "https://api.rainforestapi.com/request",
+                params=params, timeout=None
+            )
+        if response.status_code != httpx.codes.OK:
+            return False
+        
+        raw_dic = dict(response.json())
+        print("====================",raw_dic)
+        print("====================")
+        for review in raw_dic["reviews"]:
+            review["content"] = review["body"]
+            if self.check_language_content(review):
+                continue
+            self.Review.REVIEW_COUNTS += 1
+            self.Review.NORMALIZED_REVIEW_DATA[
+                    f"REVIEW #{self.Review.REVIEW_COUNTS}"
+                ] = review
+        self.Review.NORMALIZED_REVIEW_DATA["REVIEW_COUNTS"] = self.Review.REVIEW_COUNTS
+        self.Review.NORMALIZED_REVIEW_DATA["Amazon_Rating_Summary"] = raw_dic["summary"]
+        return True
+            
+    async def rainforest_product_api_request(self,asin):
+        params = {
+        'api_key': '9EC4C8D2370341CB8E75130DC75E35E1',
+        'type': 'product',
+        'amazon_domain': 'amazon.com',
+        'asin': asin
+        }
+        async with httpx.AsyncClient() as requester:
+            response = await requester.get(
+                "https://api.rainforestapi.com/request",
+                params=params, timeout=None
+            )
+        if response.status_code != httpx.codes.OK:
+            return False
+        raw_dic = dict(response.json())
+        print("====================",raw_dic)
+        print("====================")
+        if "price" in raw_dic["product"]["buybox_winner"].keys():
+            self.Product.NORMALIZED_PRODUCT_DATA["PRICE"] = raw_dic["product"]["buybox_winner"]["price"]["raw"]
+        self.Product.NORMALIZED_PRODUCT_DATA["PRODUCT_URL"] = self.Product.URL
+        self.Product.NORMALIZED_PRODUCT_DATA["RATING"] = raw_dic["product"]["rating"]
+        self.Product.NORMALIZED_PRODUCT_DATA["PRODUCT_DESCRIPTION"] = raw_dic["product"]["description"]
+        return True
+        
+
+    async def extraction_wrapper(self, max_reviews,asin) -> bool:
         """
         This Func creates two tasks of review extraction and \
             product extraction and start the event loop
@@ -341,9 +397,16 @@ class AmScrapper:
             "info",
         )
 
+        # results = await asyncio.gather(
+        #     self.extract_review(max_reviews), self.extract_product()
+        # )
+
         results = await asyncio.gather(
-            self.extract_review(max_reviews), self.extract_product()
+            self.rainforest_product_api_request(asin=asin),
+            self.rainforest_reviews_api_request(asin=asin)
         )
+
+
         # log checking the extraction results
         logger = Logger(
             os.path.basename(__file__),
@@ -362,7 +425,7 @@ class AmScrapper:
             return True
         return False
 
-    def scrap(self, export_type="json", max_reviews: int = 30):
+    def scrap(self,asin, export_type="json", max_reviews: int = 30):
         """
         Calls The extractor func and exporter func
         -------------------------------------------
@@ -379,7 +442,7 @@ class AmScrapper:
             "info",
         )
 
-        result = asyncio.run(self.extraction_wrapper(max_reviews))
+        result = asyncio.run(self.extraction_wrapper(max_reviews,asin=asin))
         if result:
             return getattr(self, export_type)()
         else:
