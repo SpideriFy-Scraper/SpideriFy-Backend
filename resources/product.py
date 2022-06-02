@@ -92,7 +92,7 @@ class NewProduct(Resource):
             asin=spider_data["ASIN"],
             name=spider_data["PRODUCT_NAME"],
             price=spider_data["PRICE"],
-            rating=float(spider_data["RATING"][:3]),
+            rating=float(spider_data["RATING"]),
             description=spider_data["PRODUCT_DESCRIPTION"],
             user_id=current_user.id,
         )
@@ -100,13 +100,13 @@ class NewProduct(Resource):
         for review in spider_data["REVIEWS"]:
             list_review = []
             new_review = CommentModel(
-                author=review["author"],
+                author="",
                 title=review["title"],
                 content=review["content"],
-                is_verified=review["verified"],
-                variant=review["variant"],
+                is_verified=review["verified_purchase"],
+                variant="",
                 rating=review["rating"],
-                date=review["date"],
+                date="U/N",
                 sentiment=review["sentiment"],
                 summarized_content=review["Summary"],
             )
