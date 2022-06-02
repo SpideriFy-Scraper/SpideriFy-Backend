@@ -370,8 +370,10 @@ class AmScrapper:
         raw_dic = dict(response.json())
         print("====================",raw_dic)
         print("====================")
+        self.Product.NORMALIZED_PRODUCT_DATA["PRICE"] = ""
         if "price" in raw_dic["product"]["buybox_winner"].keys():
             self.Product.NORMALIZED_PRODUCT_DATA["PRICE"] = raw_dic["product"]["buybox_winner"]["price"]["raw"]
+        self.Product.NORMALIZED_PRODUCT_DATA["PRODUCT_NAME"] = raw_dic["product"]["title"]    
         self.Product.NORMALIZED_PRODUCT_DATA["PRODUCT_URL"] = self.Product.URL
         self.Product.NORMALIZED_PRODUCT_DATA["RATING"] = raw_dic["product"]["rating"]
         self.Product.NORMALIZED_PRODUCT_DATA["PRODUCT_DESCRIPTION"] = raw_dic["product"]["description"]
