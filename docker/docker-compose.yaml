@@ -1,0 +1,112 @@
+version: '3.8'
+
+services:
+    mariadb-galera-0:
+        image: docker.io/bitnami/mariadb-galera:latest
+        environment:
+            - MARIADB_GALERA_CLUSTER_NAME=galera
+            - MARIADB_GALERA_MARIABACKUP_USER=my_mariabackup_user
+            - MARIADB_GALERA_MARIABACKUP_PASSWORD=my_mariabackup_password
+            - MARIADB_ROOT_PASSWORD=P4SSW0RD123
+            - MARIADB_USER=my_user
+            - MARIADB_PASSWORD=my_password
+            - MARIADB_DATABASE=my_database
+            - MARIADB_REPLICATION_USER=my_replication_user
+            - MARIADB_REPLICATION_PASSWORD=my_replication_password
+        volumes:
+            - 'mariadb_galera_data_0:/bitnami/mariadb'
+        healthcheck:
+            test:
+                [
+                    'CMD',
+                    '/opt/bitnami/scripts/mariadb-galera/healthcheck.sh'
+                ]
+            interval: 15s
+            timeout: 5s
+            retries: 6
+
+    mariadb-galera-1:
+        image: docker.io/bitnami/mariadb-galera:latest
+        command:
+            - bash
+            - -ec
+            - |
+              # Wait 20 seconds to guarantee creation order
+              sleep 20
+              exec /opt/bitnami/scripts/mariadb-galera/entrypoint.sh /opt/bitnami/scripts/mariadb-galera/run.sh
+        environment:
+            - MARIADB_GALERA_CLUSTER_NAME=galera
+            - MARIADB_GALERA_CLUSTER_ADDRESS=gcomm://mariadb-galera-0:4567,0.0.0.0:4567
+            - MARIADB_GALERA_MARIABACKUP_USER=my_mariabackup_user
+            - MARIADB_GALERA_MARIABACKUP_PASSWORD=my_mariabackup_password
+            - MARIADB_ROOT_PASSWORD=P4SSW0RD123
+            - MARIADB_REPLICATION_USER=my_replication_user
+            - MARIADB_REPLICATION_PASSWORD=my_replication_password
+        volumes:
+            - 'mariadb_galera_data_1:/bitnami/mariadb'
+        healthcheck:
+            test:
+                [
+                    'CMD',
+                    '/opt/bitnami/scripts/mariadb-galera/healthcheck.sh'
+                ]
+            start_period: 20s
+            interval: 15s
+            timeout: 5s
+            retries: 6
+        depends_on:
+            - mariadb-galera-0
+
+    proxy-sql:
+        image: proxysql/proxysql:latest
+        ports:
+            - "16032:6032"
+            - "16033:6033"
+            - "16080:6080"
+        volumes:
+            - './proxysql/proxysql.cnf:/etc/proxysql.cnf'
+            - 'proxy_sql_data:/var/lib/proxysql"'
+
+        depends_on:
+            - mariadb-galera-0
+            - mariadb-galera-1
+
+    spiderify-api:
+        build:
+            context: .
+            dockerfile: Dockerfile
+            target: production
+        image: spiderify-api:${TAG:-local}
+        container_name: spiderify-api
+        restart: unless-stopped
+        env_file:
+            - .env
+        command:
+            [
+                "gunicorn",
+                "manage:app",
+                "--bind=0.0.0.0:8080",
+                "--workers=3",
+                "--threads=3",
+                "--timeout=600",
+                "--worker-class=gevent",
+                "--worker-connections=1000"
+            ]
+
+    nginx:
+        build:
+            context: ./nginx
+            dockerfile: Dockerfile
+        image: nginx:${TAG:-local}
+        container_name: nginx
+        restart: unless-stopped
+        ports:
+            - "8080:80"
+
+volumes:
+    mariadb_galera_data_0:
+        driver: local
+    mariadb_galera_data_1:
+        driver: local
+    proxy_sql_data:
+        driver: local
