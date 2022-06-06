@@ -1,0 +1,124 @@
+version: "3.8"
+
+x-deploy-base: &deployBase
+  update_config:
+    order: start-first
+    parallelism: 2
+    delay: 10s
+    failure_action: rollback
+  rollback_config:
+    parallelism: 0
+    order: stop-first
+  restart_policy:
+    condition: any
+    delay: 5s
+    max_attempts: 5
+    window: 20s
+
+# It Is Just A Demo Of How Can We Scale All Of Our Services in Docker Swarm Without The Database Service
+services:
+  # The Actual Crawler Whitch Does Crawl Data From Amazon But Call Two Mock Service OF
+  # Sentiment & Summarizar & Does Not Connect To Any Database (Even Cluser Of DBs)
+  spiderify-api:
+    image: spiderify-api:${TAG:-local}
+    labels:
+      docker.service: "spiderify-api"
+      spiderify.service.description: "The Main Crawler For SpideriFy Stack"
+      spiderify.component: "The Crawler Service"
+      spiderify.service.os: "Debian"
+    env_file:
+      - .env
+    command:
+      [
+        "gunicorn",
+        "manage:app",
+        "--bind=0.0.0.0:8080",
+        "--workers=3",
+        "--threads=3",
+        "--timeout=600",
+        "--worker-class=gevent",
+        "--worker-connections=1000",
+      ]
+    networks:
+      - app-network
+    stop_grace_period: 10s
+    deploy:
+      mode: replicated
+      replicas: 3
+      <<: *deployBase
+
+  sentiment-api:
+    image: sentiment-api:${TAG:-local}
+    labels:
+      docker.service: "sentiment-api"
+      spiderify.service.description: "The Mock Service Of Sentiment Analayzer With The Same API Design Scheam For SpideriFy Stack"
+      spiderify.component: "The Mock Sentiment Analayzer Service"
+      spiderify.service.os: "Debian"
+    command:
+      [
+        "uvicorn",
+        "api:app",
+        "--workers",
+        "4",
+        "--host",
+        "0.0.0.0",
+        "--port",
+        "8501",
+      ]
+    depends_on:
+      - spiderify-api
+    networks:
+      - app-network
+    deploy:
+      mode: replicated
+      replicas: 3
+      <<: *deployBase
+
+  summarization-api:
+    image: summarization-api:${TAG:-local}
+    labels:
+      docker.service: "summarization-api"
+      spiderify.service.description: "The Mock Service Of Summarization With The Same API Design Scheam For SpideriFy Stack"
+      spiderify.component: "The Mock Summarization Service"
+      spiderify.service.os: "Debian"
+    command:
+      [
+        "uvicorn",
+        "api:app",
+        "--workers",
+        "4",
+        "--host",
+        "0.0.0.0",
+        "--port",
+        "8000",
+      ]
+    depends_on:
+      - spiderify-api
+    networks:
+      - app-network
+    deploy:
+      mode: replicated
+      replicas: 3
+      <<: *deployBase
+
+  nginx:
+    image: nginx:${TAG:-local}
+    labels:
+      docker.service: "Front NGINX"
+      spiderify.service.description: "The Main Front Nginx Service For SpideriFy Stack That Proxy Requests To spiderify-api Service VIP Address"
+      spiderify.component: "The Front NGINX (Reverse Proxy & LoadBalancer)"
+      spiderify.service.os: "Alpine"
+    ports:
+      - "8080:80"
+    depends_on:
+      - spiderify-api
+    networks:
+      - app-network
+    deploy:
+      mode: replicated
+      replicas: 3
+      <<: *deployBase
+
+networks:
+  app-network:
+    external: true
