@@ -31,7 +31,7 @@ services:
     restart: unless-stopped
     tty: true
     stdin_open: true
-    command: ["python3", "app.py"]
+    command: [ "python3", "app.py" ]
     # if You Want To Serve Your Model Embedded In Your API Backend UnCommnet These Configs
     # volumes:
     #   - "./common/sentiment_model/1:/app/common/sentiment_model/1:ro"
@@ -62,7 +62,17 @@ services:
     restart: unless-stopped
     tty: true
     stdin_open: true
-    command: ["uvicorn", "api:app", "--workers", "4", "--host", "0.0.0.0", "--port", "8000"]
+    command:
+      [
+        "uvicorn",
+        "api:app",
+        "--workers",
+        "4",
+        "--host",
+        "0.0.0.0",
+        "--port",
+        "8000"
+      ]
     volumes:
       - "/home/tesla/Project/SpideriFy/spiderify-summarization/model:/home/appuser/model"
     # ports:
@@ -76,4 +86,3 @@ volumes:
     driver: local
     name: db-data
     external: false
-
