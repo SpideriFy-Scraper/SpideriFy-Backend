@@ -17,6 +17,9 @@ class Config(object):
     PROPAGATE_EXCEPTIONS = True
     SENTIMENT_URI = config["SENTIMENT_URI"]
     SUMMARIZATION_URI = config["SUMMARIZATION_URI"]
+    REDIS_HOST = config["REDIS_HOST"]
+    REDIS_PASS = config["REDIS_PASS"]
+    REDIS_PORT = config["REDIS_PORT"]
 
 
 class ProductionConfig(Config):
