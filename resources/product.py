@@ -1,7 +1,7 @@
 from flask import Response, json, jsonify, make_response
 from flask_jwt_extended import current_user, jwt_required
 from flask_restful import Resource, reqparse
-
+from common.utils import get_asin_from_cache, set_asin_to_cache, get_asin_from_url
 from crawler.SpiderifyWrapper import SpiderifyWrapper
 from common.db import db
 from models.Product import ProductModel
@@ -82,40 +82,54 @@ class NewProduct(Resource):
     @jwt_required()
     def post(self):
         data = NewProduct.parser.parse_args()
-        spider = SpiderifyWrapper(str(data["url"]))
-        spider_data = spider.start_amazon_spider()
-        if spider_data is None:
-            return make_response(jsonify({"message": "Failed to Scrap Data"}))
-        message = json.dumps(spider_data)
-        resp = Response(message, status=200, mimetype="application/json")
-        newproduct = ProductModel(
-            asin=spider_data["ASIN"],
-            name=spider_data["PRODUCT_NAME"],
-            price=spider_data["PRICE"],
-            rating=float(spider_data["RATING"]),
-            description=spider_data["PRODUCT_DESCRIPTION"],
-            user_id=current_user.id,
-        )
+        # First it looks for the data in redis cache
+        product_asin = get_asin_from_url(str(data["url"]))
+        resp = get_asin_from_cache(key=product_asin)
+        # If cache is found then serves the data from cache
+        if resp is not None:
+            resp = json.loads(resp)
+            resp["cache"] = True
+            return resp
+        else:
+            # If cache is not found then sends request to the RainForest API
+            spider = SpiderifyWrapper(str(data["url"]))
+            spider_data = spider.start_amazon_spider()
+            if spider_data is None:
+                return make_response(jsonify({"message": "Failed to Scrap Data"}))
 
-        for review in spider_data["REVIEWS"]:
-            list_review = []
-            new_review = CommentModel(
-                author="",
-                title=review["title"],
-                content=review["content"],
-                is_verified=review["verified_purchase"],
-                variant="",
-                rating=review["rating"],
-                date="U/N",
-                sentiment=review["sentiment"],
-                summarized_content=review["Summary"],
+            message = json.dumps(spider_data)
+            is_cached = set_asin_to_cache(key=spider_data["ASIN"], value=message)
+            if is_cached is True:
+                 resp = Response(message, status=200, mimetype="application/json")
+
+            newproduct = ProductModel(
+                asin=spider_data["ASIN"],
+                name=spider_data["PRODUCT_NAME"],
+                price=spider_data["PRICE"],
+                rating=float(spider_data["RATING"]),
+                description=spider_data["PRODUCT_DESCRIPTION"],
+                user_id=current_user.id,
             )
-            newproduct.comments.append(new_review)
-            list_review.append(new_review)
 
-        db.session.add(newproduct)
-        db.session.add_all(list_review)
-        db.session.commit()
+            for review in spider_data["REVIEWS"]:
+                list_review = []
+                new_review = CommentModel(
+                    author="",
+                    title=review["title"],
+                    content=review["content"],
+                    is_verified=review["verified_purchase"],
+                    variant="",
+                    rating=review["rating"],
+                    date="U/N",
+                    sentiment=review["sentiment"],
+                    summarized_content=review["Summary"],
+                )
+                newproduct.comments.append(new_review)
+                list_review.append(new_review)
+
+            db.session.add(newproduct)
+            db.session.add_all(list_review)
+            db.session.commit()
         return resp
 
 
