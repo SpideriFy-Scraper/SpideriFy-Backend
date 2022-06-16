@@ -33,11 +33,48 @@ services:
     networks:
       - app-network
 
+  redis:
+    container_name: redis
+    image: "redis:6.2-bullseye"
+    restart: on-failure
+    profiles:
+      - all
+      - full
+    environment:
+      - TZ="Asia/Tehran"
+      - REDIS_PASSWORD=ubuntu
+      - REDIS_REPLICATION_MODE=master
+    command: ["--save 10 100", "--requirepass ubuntu"]
+    mem_limit: 4G
+    memswap_limit: 4G
+    mem_reservation: 3G
+    mem_swappiness: 0
+    sysctls:
+      net.core.somaxconn: '511'
+    volumes:
+      - "redis-data:/data"
+    depends_on:
+      - mysql
+    networks:
+      - app-network
+
+  redisinsight:
+    container_name: redisinsight
+    image: redislabs/redisinsight
+    restart: unless-stopped
+    profiles:
+      - all
+      - full
+    ports:
+      - "8001:8001"
+    volumes:
+      - "redisinsight-data:/db"
+    depends_on:
+      - redis
+    networks:
+      - app-network
+
   spiderify-api:
-    build:
-      context: .
-      dockerfile: Dockerfile
-      target: production
     image: spiderify-api:${TAG:-local}
     container_name: spiderify-api
     restart: unless-stopped
@@ -50,14 +87,15 @@ services:
         "gunicorn",
         "manage:app",
         "--bind=0.0.0.0:8080",
-        "--workers=3",
-        "--threads=3",
+        "--workers=4",
+        "--threads=4",
         "--timeout=600",
         "--worker-class=gevent",
         "--worker-connections=1000"
       ]
     depends_on:
       - mysql
+      - redis
     networks:
       - app-network
 
@@ -112,44 +150,7 @@ services:
     networks:
       - app-network
 
-  redis:
-    container_name: redis-cont
-    image: "redis:alpine"
-    restart: unless-stopped
-    profiles:
-      - all
-      - full
-    environment:
-      - REDIS_PASSWORD=ubuntu
-      - REDIS_REPLICATION_MODE=master
-    ports:
-      - "6379:6379"
-    volumes:
-      # save redisearch data to your current working directory
-      - "redis-data:/data"
-    command:
-      # Save if 100 keys are added in every 10 seconds
-      - "--save 10 100"
-      # Set password
-      - "--requirepass ubuntu"
-
-  redisinsight:
-    # redis db visualization dashboard
-    container_name: redisinsight-cont
-    image: redislabs/redisinsight
-    restart: unless-stopped
-    profiles:
-      - all
-      - full
-    ports:
-      - 8001:8001
-    volumes:
-      - "redisinsight-data:/db"
-
   nginx:
-    build:
-      context: ./nginx
-      dockerfile: Dockerfile
     image: nginx:${TAG:-local}
     container_name: nginx
     restart: unless-stopped
@@ -157,9 +158,9 @@ services:
       - all
       - full
     ports:
-      - "8080:80"
+      - "80:80"
     depends_on:
-      - sentiment-api
+      - spiderify-api
     networks:
       - app-network
       - external-network

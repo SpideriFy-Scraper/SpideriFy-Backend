@@ -57,7 +57,7 @@ services:
     command:
       [
         "uvicorn",
-        "api:app",
+        "app:app",
         "--workers",
         "4",
         "--host",
@@ -84,7 +84,7 @@ services:
     command:
       [
         "uvicorn",
-        "api:app",
+        "app:app",
         "--workers",
         "4",
         "--host",
