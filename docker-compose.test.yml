@@ -1,0 +1,213 @@
+# Before Start This File Use These Commands:
+# docker network create --driver bridge external-network
+# docker compose -f docker-compose.test.yml --profile all ps -a
+
+version: '3.9'
+
+services:
+  mysql:
+    image: mysql:latest
+    container_name: mysql
+    restart: on-failure
+    profiles:
+      - all
+      - full
+    env_file:
+      - .env
+    environment:
+      MYSQL_DATABASE: ${DB_NAME}
+      MYSQL_USER: ${DB_USER}
+      MYSQL_PASSWORD: ${DB_PASSWORD}
+      MYSQL_ROOT_PASSWORD: ${DB_PASSWORD}
+    healthcheck:
+      test:
+        [
+          "CMD-SHELL",
+          "mysqladmin -h 'localhost' -u root -p${DB_PASSWORD} ping --silent"
+        ]
+      interval: 30s
+      timeout: 30s
+      retries: 3
+    volumes:
+      - "db-data:/var/lib/mysql"
+      - "./mysql/scripts:/docker-entrypoint-initdb.d/:ro"
+      - "./mysql/conf.d:/etc/mysql/conf.d:ro"
+    networks:
+      - app-network
+
+  redis:
+    container_name: redis
+    image: "redis:6.2-bullseye"
+    restart: on-failure
+    profiles:
+      - all
+      - full
+    environment:
+      - TZ="Asia/Tehran"
+      - REDIS_PASSWORD=ubuntu
+      - REDIS_REPLICATION_MODE=master
+    command: ["--save 10 100", "--requirepass ubuntu"]
+    sysctls:
+      net.core.somaxconn: '511'
+    ports:
+      - "6379:6379"
+    volumes:
+      # save redisearch data to your current working directory
+      - "redis-data:/data"
+    depends_on:
+      - mysql
+    networks:
+      - app-network
+
+  redisinsight:
+    # redis db visualization dashboard
+    container_name: redisinsight
+    image: redislabs/redisinsight
+    restart: unless-stopped
+    profiles:
+      - all
+      - full
+    ports:
+      - 8001:8001
+    volumes:
+      - "redisinsight-data:/db"
+    depends_on:
+      - redis
+    networks:
+      - app-network
+
+  spiderify-api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: production
+    image: spiderify-api:${TAG:-local}
+    labels:
+      docker.service: "spiderify-api"
+      spiderify.service.description: "The Main Crawler For SpideriFy Stack"
+      spiderify.component: "The Crawler Service"
+      spiderify.service.os: "Debian"
+    container_name: spiderify-api
+    restart: unless-stopped
+    profiles:
+      - all
+    env_file:
+      - .env
+    command:
+      [
+        "gunicorn",
+        "manage:app",
+        "--bind=0.0.0.0:8080",
+        "--workers=3",
+        "--threads=3",
+        "--timeout=600",
+        "--worker-class=gevent",
+        "--worker-connections=1000"
+      ]
+    depends_on:
+      - mysql
+      - redis
+    networks:
+      - app-network
+
+  sentiment-api:
+    image: sentiment-api:${TAG:-local}
+    labels:
+      docker.service: "sentiment-api"
+      spiderify.service.description: "The Mock Service Of Sentiment Analayzer With The Same API Design Scheam For SpideriFy Stack"
+      spiderify.component: "The Mock Sentiment Analayzer Service"
+      spiderify.service.os: "Debian"
+    container_name: sentiment-api
+    restart: unless-stopped
+    profiles:
+      - all
+    command:
+      [
+        "uvicorn",
+        "app:app",
+        "--workers",
+        "4",
+        "--host",
+        "0.0.0.0",
+        "--port",
+        "8501"
+      ]
+    depends_on:
+      - spiderify-api
+      - mysql
+    networks:
+      - app-network
+
+  summarization-api:
+    image: summarization-api:${TAG:-local}
+    labels:
+      docker.service: "summarization-api"
+      spiderify.service.description: "The Mock Service Of Summarization With The Same API Design Scheam For SpideriFy Stack"
+      spiderify.component: "The Mock Summarization Service"
+      spiderify.service.os: "Debian"
+    container_name: summarization-api
+    restart: unless-stopped
+    profiles:
+      - all
+    command:
+      [
+        "uvicorn",
+        "app:app",
+        "--workers",
+        "4",
+        "--host",
+        "0.0.0.0",
+        "--port",
+        "8000"
+      ]
+    depends_on:
+      - spiderify-api
+      - mysql
+    networks:
+      - app-network
+
+  nginx:
+    build:
+      context: ./nginx
+      dockerfile: Dockerfile
+    image: nginx:${TAG:-local}
+    labels:
+      docker.service: "Front NGINX"
+      spiderify.service.description: "The Main Front Nginx Service For SpideriFy Stack That Proxy Requests To spiderify-api Service VIP Address"
+      spiderify.component: "The Front NGINX (Reverse Proxy & LoadBalancer)"
+      spiderify.service.os: "Alpine"
+    container_name: nginx
+    restart: unless-stopped
+    profiles:
+      - all
+      - full
+    ports:
+      - "8080:80"
+    depends_on:
+      - spiderify-api
+    networks:
+      - app-network
+      - external-network
+
+networks:
+  app-network:
+    external: false
+  external-network:
+    external: true
+
+volumes:
+  db-data:
+    name: db_data
+    driver: local-persist
+    driver_opts:
+      mountpoint: "/var/spiderify-db/mysql/"
+  redis-data:
+    name: redis_data
+    driver: local-persist
+    driver_opts:
+      mountpoint: "/var/spiderify-db/redis/"
+  redisinsight-data:
+    name: redisinsight_data
+    driver: local-persist
+    driver_opts:
+      mountpoint: "/var/spiderify-db/redisinsight/"
