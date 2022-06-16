@@ -1,3 +1,11 @@
+# IP            Hostname                     Deployment instance
+# 192.168.1.136 spiderify-production-cluster-1 redis1, sentinel1
+# 192.168.1.135 spiderify-production-cluster-2 redis2, sentinel2
+# 192.168.1.134 spiderify-production-cluster-3 redis3, sentinel2
+# docker node update --label-add cluster.redis=node1 spiderify-production-cluster-1
+# docker node update --label-add cluster.redis=node2 spiderify-production-cluster-2
+# docker node update --label-add cluster.redis=node3 spiderify-production-cluster-3
+
 version: "3.8"
 
 x-deploy-base: &deployBase
@@ -118,6 +126,253 @@ services:
       mode: replicated
       replicas: 3
       <<: *deployBase
+
+  redis1:
+    image: redis:5
+    environment:
+      TZ: "Asia/Tehran"
+    ports:
+      - target: 6379
+        published: 6379
+        protocol: tcp
+        mode: host
+    volumes:
+      - redis-data-0:/data
+      - redis-config-0:/conf
+    networks:
+      - app-network
+    deploy:
+      mode: global
+      placement:
+        constraints:
+          - node.labels.cluster.redis == node1
+      resources:
+        limits:
+          cpus: '0.7'
+          memory: 100M
+        reservations:
+          cpus: '0.5'
+          memory: 30M
+    sysctls:
+      net.core.somaxconn: '511'
+    command: >
+      bash -c "if [ ! -f /conf/redis.conf ];then
+      echo 'port 6379' > /conf/redis.conf ;
+      echo 'bind 0.0.0.0' >> /conf/redis.conf ;
+      echo 'slave-announce-ip 192.168.1.136' >> /conf/redis.conf ;
+      echo 'slave-announce-port 6379' >> /conf/redis.conf ;
+      echo 'masterauth 123456' >> /conf/redis.conf;
+      echo 'requirepass 123456' >> /conf/redis.conf ;
+      echo 'appendonly yes' >> /conf/redis.conf ; fi &&
+      redis-server /conf/redis.conf"
+
+  redis2:
+    image: redis:5
+    environment:
+      TZ: "Asia/Tehran"
+    ports:
+      - target: 6379
+        published: 6379
+        protocol: tcp
+        mode: host
+    volumes:
+      - redis-data-0:/data
+      - redis-config-0:/conf
+    networks:
+      - app-network
+    depends_on:
+      - redis1
+    deploy:
+      mode: global
+      placement:
+        constraints:
+          - node.labels.cluster.redis == node2
+      resources:
+        limits:
+          cpus: '0.7'
+          memory: 100M
+        reservations:
+          cpus: '0.5'
+          memory: 30M
+    sysctls:
+      net.core.somaxconn: '511'
+    command: >
+      bash -c "if [ ! -f /conf/redis.conf ];then
+      echo 'port 6379' > /conf/redis.conf ;
+      echo 'bind 0.0.0.0' >> /conf/redis.conf ;
+      echo 'slave-announce-ip 192.168.1.135' >> /conf/redis.conf ;
+      echo 'slave-announce-port 6379' >> /conf/redis.conf ;
+      echo 'masterauth 123456' >> /conf/redis.conf;
+      echo 'requirepass 123456' >> /conf/redis.conf ;
+      echo 'replicaof 192.168.1.136 6379' >> /conf/redis.conf ;
+      echo 'appendonly yes' >> /conf/redis.conf ; fi &&
+      redis-server /conf/redis.conf"
+
+  redis3:
+    image: redis:5
+    environment:
+      TZ: "Asia/Tehran"
+    ports:
+      - target: 6379
+        published: 6379
+        protocol: tcp
+        mode: host
+    volumes:
+      - redis-data-0:/data
+      - redis-config-0:/conf
+    networks:
+      - app-network
+    depends_on:
+      - redis1
+    deploy:
+      mode: global
+      placement:
+        constraints:
+          - node.labels.cluster.redis == node3
+      resources:
+        limits:
+          cpus: '0.7'
+          memory: 100M
+        reservations:
+          cpus: '0.5'
+          memory: 30M
+    sysctls:
+      net.core.somaxconn: '511'
+    command: >
+      bash -c "if [ ! -f /conf/redis.conf ];then
+      echo 'port 6379' > /conf/redis.conf ;
+      echo 'bind 0.0.0.0' >> /conf/redis.conf ;
+      echo 'slave-announce-ip 192.168.1.134' >> /conf/redis.conf ;
+      echo 'slave-announce-port 6379' >> /conf/redis.conf ;
+      echo 'masterauth 123456' >> /conf/redis.conf;
+      echo 'requirepass 123456' >> /conf/redis.conf ;
+      echo 'replicaof 192.168.1.136 6379' >> /conf/redis.conf ;
+      echo 'appendonly yes' >> /conf/redis.conf ; fi &&
+      redis-server /conf/redis.conf"
+
+  sentinel1:
+    image: redis:5
+    environment:
+      TZ: "Asia/Tehran"
+    ports:
+      - target: 26379
+        published: 26379
+        protocol: tcp
+        mode: host
+    depends_on:
+      - redis1
+      - redis2
+      - redis3
+    volumes:
+      - redis-data-0:/data
+      - redis-config-0:/conf
+    networks:
+      - app-network
+    deploy:
+      mode: global
+      placement:
+        constraints:
+          - node.labels.cluster.redis == node1
+      resources:
+        limits:
+          cpus: '0.7'
+          memory: 100M
+        reservations:
+          cpus: '0.5'
+          memory: 30M
+    sysctls:
+      net.core.somaxconn: '511'
+    command: >
+      bash -c "if [ ! -f /conf/sentinel.conf ];then
+      echo 'port 26379' > /conf/sentinel.conf ;
+      echo 'sentinel announce-ip 192.168.1.136' >> /conf/sentinel.conf ;
+      echo 'sentinel monitor mymaster 192.168.1.136 6379 2' >> /conf/sentinel.conf ;
+      echo 'sentinel auth-pass mymaster 123456' >> /conf/sentinel.conf ; fi &&
+      redis-server /conf/sentinel.conf --sentinel"
+
+  sentinel2:
+    image: redis:5
+    environment:
+      TZ: "Asia/Tehran"
+    ports:
+      - target: 26379
+        published: 26379
+        protocol: tcp
+        mode: host
+    depends_on:
+      - redis1
+      - redis2
+      - redis3
+    volumes:
+      - redis-data-0:/data
+      - redis-config-0:/conf
+    networks:
+      - app-network
+    deploy:
+      mode: global
+      placement:
+        constraints:
+          - node.labels.cluster.redis == node2
+      resources:
+        limits:
+          cpus: '0.7'
+          memory: 100M
+        reservations:
+          cpus: '0.5'
+          memory: 30M
+    sysctls:
+      net.core.somaxconn: '511'
+    command: >
+      bash -c "if [ ! -f /conf/sentinel.conf ];then
+      echo 'port 26379' > /conf/sentinel.conf ;
+      echo 'sentinel announce-ip 192.168.1.135' >> /conf/sentinel.conf ;
+      echo 'sentinel monitor mymaster 192.168.1.136 6379 2' >> /conf/sentinel.conf ;
+      echo 'sentinel auth-pass mymaster 123456' >> /conf/sentinel.conf ; fi &&
+      redis-server /conf/sentinel.conf --sentinel"
+
+  sentinel3:
+    image: redis:5
+    environment:
+      TZ: "Asia/Tehran"
+    ports:
+      - target: 26379
+        published: 26379
+        protocol: tcp
+        mode: host
+    depends_on:
+      - redis1
+      - redis2
+      - redis3
+    volumes:
+      - redis-data-0:/data
+      - redis-config-0:/conf
+    networks:
+      - app-network
+    deploy:
+      mode: global
+      placement:
+        constraints:
+          - node.labels.cluster.redis == node3
+      resources:
+        limits:
+          cpus: '0.7'
+          memory: 100M
+        reservations:
+          cpus: '0.5'
+          memory: 30M
+    sysctls:
+      net.core.somaxconn: '511'
+    command: >
+      bash -c "if [ ! -f /conf/sentinel.conf ];then
+      echo 'port 26379' > /conf/sentinel.conf ;
+      echo 'sentinel announce-ip 192.168.1.134' >> /conf/sentinel.conf ;
+      echo 'sentinel monitor mymaster 192.168.1.136 6379 2' >> /conf/sentinel.conf ;
+      echo 'sentinel auth-pass mymaster 123456' >> /conf/sentinel.conf ; fi &&
+      redis-server /conf/sentinel.conf --sentinel"
+
+volumes:
+  redis-data-0:
+  redis-config-0:
 
 networks:
   app-network:
